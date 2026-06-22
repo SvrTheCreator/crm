@@ -1,61 +1,101 @@
 import {type dashboardProject, projectsSyntra} from "../dal/api.tsx";
 import {useState} from "react";
+import {AddProject} from "./AddProject.tsx";
+
+interface SortConfig {
+    field: keyof dashboardProject | null;
+    order: boolean | null;
+}
 
 export function ProjectsTable() {
     const [projects, setProjects] = useState<Array<dashboardProject>>(projectsSyntra)
+    const [sortConfig, setSortConfig] = useState<SortConfig>({
+        field: null,
+        order: null
+    })
+    const [popup, togglePopup] = useState(false)
 
+    const cell = {
+        maxWidth: '300px',
+        overflow: 'hidden',
+        border: '0.5px solid grey',
+        whiteSpace: 'nowrap',
+        textOverflow: 'ellipsis'
+    };
 
-    const handleClick = () => {
-        const newProject: dashboardProject = {
-            id: Date.now(),
-            projectName: 'new Project',
-            description: 'new description',
-            assignee: 'new assignee',
-            priority: 'new priority',
-            dueDate: 'new',
-            status: 'to do',
-            tasks: 0,
-        }
-        setProjects([...projects, newProject])
+    const handleAddProject = (project: dashboardProject) => {
+        setProjects([...projects, project])
     }
 
     const handleRemove = (id: number) => {
-        console.log(id)
         const projectsWithoutDeleted = projects.filter(el => {
             return el.id !== id
         })
         setProjects(projectsWithoutDeleted)
     }
 
+    const handleConfig = (arg: 'priority' | 'projectName' | 'status') => {
+        setSortConfig(prev => ({
+                ...prev,
+                field: arg,
+                order: !prev.order
+            })
+        )
+
+        console.log(sortConfig)
+    }
+
+    const sortedProjects = [...projects].sort((a, b) => {
+        if (!sortConfig.field) return 0
+
+        const aValue = a[sortConfig.field]
+        const bValue = b[sortConfig.field]
+
+        return sortConfig.order
+            ? aValue.toString().localeCompare(bValue.toString(), undefined, {
+                numeric: true,
+                sensitivity: "base"
+            })
+            : bValue.toString().localeCompare(aValue.toString(), undefined, {
+                numeric: true,
+                sensitivity: "base"
+            })
+    })
+
     return (
         <div>
-            <button onClick={handleClick}>Add project</button>
+            <button onClick={() => togglePopup(!popup)}>Add project</button>
+            {popup && <AddProject handleAddProject={handleAddProject}/>}
             {projects && <table>
                 <thead>
                 <tr>
-                    <th>delete</th>
-                    <th>Project Name</th>
+                    <th></th>
+                    <th onClick={() => {
+                        handleConfig('projectName')
+                    }
+                    }>Project Name
+                    </th>
                     <th>Description</th>
                     <th>Assignee</th>
-                    <th>Priority</th>
+                    <th onClick={() => handleConfig('priority')}>Priority</th>
                     <th>Due Date</th>
-                    <th>Status</th>
-                    <th>Tasks</th>
+                    <th onClick={() => handleConfig('status')}>Status</th>
+                    {/*<th onClick={() => handleConfig('tasks')}>Tasks</th>*/}
                 </tr>
                 </thead>
                 <tbody>
-                {projects.map((project: dashboardProject) => (
+                {sortedProjects.map((project: dashboardProject) => (
                     <tr key={project.id}>
-                        <td onClick={() => handleRemove(project.id)}>
-                            delete
+                        <td style={cell}>
+                            <button onClick={() => handleRemove(project.id)}>delete</button>
                         </td>
-                        <td>{project.projectName}</td>
-                        <td>{project.description}</td>
-                        <td>{project.assignee}</td>
-                        <td>{project.priority}</td>
-                        <td>{project.dueDate}</td>
-                        <td>{project.status}</td>
-                        <td>{project.tasks}</td>
+                        <td style={cell}>{project.projectName}</td>
+                        <td style={cell}>{project.description}</td>
+                        <td style={cell}>{project.assignee}</td>
+                        <td style={cell}>{project.priority}</td>
+                        <td style={cell}>{project.dueDate}</td>
+                        <td style={cell}>{project.status}</td>
+                        {/*<td style={cell}>{project.tasks}</td>*/}
                     </tr>
                 ))}
                 </tbody>
