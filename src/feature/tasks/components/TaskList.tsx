@@ -1,4 +1,4 @@
-import {projectsMock, tasksMock} from "../../../dal/api.tsx";
+import {tasksMock} from "../../../dal/api.tsx";
 import type {SortField, Task, UpdateTaskField, UpdateTaskValue} from "../types.ts";
 import {useState} from "react";
 import {AddTask} from "./AddTask.tsx";
@@ -9,7 +9,11 @@ interface SortConfig {
     order: boolean | null;
 }
 
-export function TaskList() {
+type Props = {
+    projectId: string | null;
+}
+
+export function TaskList(props: Props) {
     const [taskList, setTaskList] = useState<Array<Task>>(tasksMock)
     const [sortConfig, setSortConfig] = useState<SortConfig>({
         field: null,
@@ -17,12 +21,11 @@ export function TaskList() {
     })
     const [isAddProjectOpen, setIsAddProjectOpen] = useState(false)
 
-    const currentProject = projectsMock[0]
-    const currentProjectId = currentProject.id
+    const currentProjectId = props.projectId
 
 
-    const handleAddTask = (project: Task) => {
-        setTaskList([...taskList, project])
+    const handleAddTask = (task: Task) => {
+        setTaskList([...taskList, task])
     }
 
     const handleRemoveTask = (id: string) => {
@@ -78,29 +81,36 @@ export function TaskList() {
 
     return (
         <div>
-            <button onClick={() => setIsAddProjectOpen(!isAddProjectOpen)}>Add project</button>
-            {isAddProjectOpen && <AddTask currentProjectId={currentProjectId} handleAddTask={handleAddTask}/>}
-            {taskList && <table>
-                <thead>
-                <tr>
-                    <th></th>
-                    <th onClick={() => {
-                        handleConfig('title')
-                    }
-                    }>Project Name
-                    </th>
-                    <th>Description</th>
-                    <th>Assignee</th>
-                    <th onClick={() => handleConfig('priority')}>Priority</th>
-                    <th>Due Date</th>
-                    <th onClick={() => handleConfig('status')}>Status</th>
-                </tr>
-                </thead>
-                <TaskTableBody
-                    handleUpdateTask={handleUpdateTask}
-                    sortedProjects={sortedTaskList}
-                    handleRemoveTask={handleRemoveTask}/>
-            </table>}
+            {currentProjectId === null
+                ? 'Выбери проект'
+                : <div>
+                    <button onClick={() => setIsAddProjectOpen(!isAddProjectOpen)}>Add task</button>
+                    {isAddProjectOpen && <AddTask currentProjectId={currentProjectId} handleAddTask={handleAddTask}/>}
+                    {<table>
+                        <thead>
+                        <tr>
+                            <th></th>
+                            <th onClick={() => {
+                                handleConfig('title')
+                            }
+                            }>Task Name
+                            </th>
+                            <th>Description</th>
+                            <th>Assignee</th>
+                            <th onClick={() => handleConfig('priority')}>Priority</th>
+                            <th>Due Date</th>
+                            <th onClick={() => handleConfig('status')}>Status</th>
+                        </tr>
+                        </thead>
+                        <TaskTableBody
+                            handleUpdateTask={handleUpdateTask}
+                            sortedProjects={sortedTaskList}
+                            handleRemoveTask={handleRemoveTask}/>
+                    </table>}
+                </div>
+
+            }
+
         </div>
     )
 }

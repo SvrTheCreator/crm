@@ -1,7 +1,14 @@
-export function Sidebar() {
+import {ProjectsList} from "../projects/components/ProjectsList.tsx";
+
+type Props = {
+    setProjectId: (id: string) => void
+}
+
+export function Sidebar(props: Props) {
+
     return (
-        <div>
-            <h2>syntra</h2>
-        </div>
+        <aside>
+            <ProjectsList setProjectId={props.setProjectId}/>
+        </aside>
     )
 }

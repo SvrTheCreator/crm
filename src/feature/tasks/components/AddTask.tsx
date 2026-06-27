@@ -4,7 +4,7 @@ import type {Task} from "../types.ts";
 
 type Props = {
     handleAddTask: (task: Task) => void,
-    currentProjectId: string
+    currentProjectId: string | null,
 }
 
 export function AddTask(props: Props) {
