@@ -26,6 +26,7 @@ export function TaskList(props: Props) {
 
     const handleAddTask = (task: Task) => {
         setTaskList([...taskList, task])
+        setIsAddProjectOpen(false)
     }
 
     const handleRemoveTask = (id: string) => {
@@ -80,13 +81,19 @@ export function TaskList(props: Props) {
     }
 
     return (
-        <div>
+        <div style={{padding: '24px'}}>
             {currentProjectId === null
                 ? 'Выбери проект'
                 : <div>
-                    <button onClick={() => setIsAddProjectOpen(!isAddProjectOpen)}>Add task</button>
-                    {isAddProjectOpen && <AddTask currentProjectId={currentProjectId} handleAddTask={handleAddTask}/>}
-                    {<table>
+                    <div style={{marginBottom: '12px'}}>
+                        <button onClick={() => setIsAddProjectOpen(!isAddProjectOpen)}>Add task</button>
+                        {(isAddProjectOpen && currentProjectId) &&
+                            <AddTask
+                                currentProjectId={currentProjectId} handleAddTask={handleAddTask}
+                            />}
+                    </div>
+                    {!currentProjectTasks.length && 'Добавь новую задачу для этого проекта'}
+                    {currentProjectTasks.length > 0 && <table>
                         <thead>
                         <tr>
                             <th></th>

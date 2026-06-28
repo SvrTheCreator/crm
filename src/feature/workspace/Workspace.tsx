@@ -4,12 +4,11 @@ import {useState} from "react";
 
 export function Workspace() {
     const [projectId, setProjectId] = useState<string | null>(null)
-
     console.log(projectId)
 
     return (
         <>
-            <Sidebar setProjectId={setProjectId}/>
+            <Sidebar projectId={projectId} setProjectId={setProjectId}/>
             <TaskList projectId={projectId}/>
         </>
     )

@@ -4,7 +4,7 @@ import type {Task} from "../types.ts";
 
 type Props = {
     handleAddTask: (task: Task) => void,
-    currentProjectId: string | null,
+    currentProjectId: string,
 }
 
 export function AddTask(props: Props) {
@@ -24,7 +24,8 @@ export function AddTask(props: Props) {
 
         props.handleAddTask(task);
 
-        console.log(task.id)
+
+        // console.log(task.id)
         reset()
     }
 
@@ -65,7 +66,8 @@ export function AddTask(props: Props) {
                     <option value="In progress">In progress</option>
                 </select>
             </div>
-            <button type="submit">Add New Project</button>
+            <button type="submit">Add New Project
+            </button>
         </form>
     )
 }
