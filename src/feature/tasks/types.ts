@@ -1,4 +1,4 @@
-export type Task = {
+export type TaskType = {
     id: string;
     projectId: string;
     title: string;
@@ -9,12 +9,12 @@ export type Task = {
     status: Status;
 };
 
-export type Priority = "Low" | "Medium" | "High";
+export type Priority = 'Low' | 'Medium' | 'High';
 
-export type Status = "To Do" | "In progress" | "Done";
+export type Status = 'To Do' | 'In progress' | 'Done';
 
-export type SortField = "title" | "priority" | "status";
+export type SortField = 'title' | 'priority' | 'status';
 
-export type UpdateTaskField = "priority" | "status";
+export type UpdateField = 'priority' | 'status';
 
-export type UpdateTaskValue = Priority | Status;
+export type UpdateValue = Priority | Status;

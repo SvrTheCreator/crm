@@ -1,124 +1,133 @@
-import {tasksMock} from "../../../dal/api.tsx";
-import type {SortField, Task, UpdateTaskField, UpdateTaskValue} from "../types.ts";
-import {useState} from "react";
-import {AddTask} from "./AddTask.tsx";
-import {TaskTableBody} from "./TaskTableBody.tsx";
+import { tasksMock } from '../../../dal/api.tsx';
+import { type SortField, type TaskType, type UpdateField, type UpdateValue } from '../types.ts';
+import { useState } from 'react';
+import { AddTask } from './AddTask.tsx';
+import { Task } from './Task.tsx';
 
 interface SortConfig {
-    field: keyof Task | null;
+    field: SortField | null;
     order: boolean | null;
 }
 
 type Props = {
     projectId: string | null;
-}
+};
 
 export function TaskList(props: Props) {
-    const [taskList, setTaskList] = useState<Array<Task>>(tasksMock)
+    const [taskList, setTaskList] = useState<Array<TaskType>>(tasksMock);
     const [sortConfig, setSortConfig] = useState<SortConfig>({
         field: null,
-        order: null
-    })
-    const [isAddProjectOpen, setIsAddProjectOpen] = useState(false)
+        order: null,
+    });
+    const [isAddTaskOpen, setIsAddTaskOpen] = useState(false);
 
-    const currentProjectId = props.projectId
+    const currentProjectId = props.projectId;
 
-
-    const handleAddTask = (task: Task) => {
-        setTaskList([...taskList, task])
-        setIsAddProjectOpen(false)
-    }
+    const handleAddTask = (task: TaskType) => {
+        setTaskList([...taskList, task]);
+        setIsAddTaskOpen(false);
+    };
 
     const handleRemoveTask = (id: string) => {
-        const projectsWithoutDeleted = taskList.filter(el => {
-            return el.id !== id
-        })
-        setTaskList(projectsWithoutDeleted)
-    }
+        const tasksWithoutDeleted = taskList.filter((el) => {
+            return el.id !== id;
+        });
+        setTaskList(tasksWithoutDeleted);
+    };
 
     const handleConfig = (arg: SortField) => {
-        setSortConfig(prev => ({
-                ...prev,
-                field: arg,
-                order: !prev.order
-            })
-        )
-    }
+        setSortConfig((prev) => ({
+            ...prev,
+            field: arg,
+            order: !prev.order,
+        }));
+    };
 
-    const currentProjectTasks = taskList.filter(task => {
-        return task.projectId === currentProjectId
-    })
+    const currentProjectTasks = taskList.filter((task) => {
+        return task.projectId === props.projectId;
+    });
 
     const sortedTaskList = [...currentProjectTasks].sort((a, b) => {
-        if (!sortConfig.field) return 0
+        if (!sortConfig.field) return 0;
 
-        const aValue = a[sortConfig.field]
-        const bValue = b[sortConfig.field]
+        const aValue = a[sortConfig.field];
+        const bValue = b[sortConfig.field];
 
         return sortConfig.order
             ? aValue.toString().localeCompare(bValue.toString(), undefined, {
-                numeric: true,
-                sensitivity: "base"
-            })
+                  numeric: true,
+                  sensitivity: 'base',
+              })
             : bValue.toString().localeCompare(aValue.toString(), undefined, {
-                numeric: true,
-                sensitivity: "base"
-            })
-    })
+                  numeric: true,
+                  sensitivity: 'base',
+              });
+    });
 
-    const handleUpdateTask = (id: string, field: UpdateTaskField, value: UpdateTaskValue) => {
-        const projectEditStatus = taskList.map(el => {
+    const handleUpdateTask = (id: string, field: UpdateField, value: UpdateValue) => {
+        const updatedTasks = taskList.map((el) => {
             if (el.id === id) {
                 return {
                     ...el,
-                    [field]: value
-                }
-            } else return el
-        })
-        setTaskList(projectEditStatus)
-        console.log(id, field, value)
-        console.log(taskList)
-    }
+                    [field]: value,
+                };
+            } else return el;
+        });
+        setTaskList(updatedTasks);
+    };
 
     return (
-        <div style={{padding: '24px'}}>
-            {currentProjectId === null
-                ? 'Выбери проект'
-                : <div>
-                    <div style={{marginBottom: '12px'}}>
-                        <button onClick={() => setIsAddProjectOpen(!isAddProjectOpen)}>Add task</button>
-                        {(isAddProjectOpen && currentProjectId) &&
+        <div style={{ padding: '24px' }}>
+            {currentProjectId === null ? (
+                'Выбери проект'
+            ) : (
+                <div>
+                    <div style={{ marginBottom: '12px' }}>
+                        <button onClick={() => setIsAddTaskOpen(!isAddTaskOpen)}>Add task</button>
+                        {isAddTaskOpen && currentProjectId && (
                             <AddTask
-                                currentProjectId={currentProjectId} handleAddTask={handleAddTask}
-                            />}
+                                currentProjectId={currentProjectId}
+                                handleAddTask={handleAddTask}
+                            />
+                        )}
                     </div>
                     {!currentProjectTasks.length && 'Добавь новую задачу для этого проекта'}
-                    {currentProjectTasks.length > 0 && <table>
-                        <thead>
-                        <tr>
-                            <th></th>
-                            <th onClick={() => {
-                                handleConfig('title')
-                            }
-                            }>Task Name
-                            </th>
-                            <th>Description</th>
-                            <th>Assignee</th>
-                            <th onClick={() => handleConfig('priority')}>Priority</th>
-                            <th>Due Date</th>
-                            <th onClick={() => handleConfig('status')}>Status</th>
-                        </tr>
-                        </thead>
-                        <TaskTableBody
-                            handleUpdateTask={handleUpdateTask}
-                            sortedProjects={sortedTaskList}
-                            handleRemoveTask={handleRemoveTask}/>
-                    </table>}
+                    {currentProjectTasks.length > 0 && (
+                        <>
+                            <h2>Tasks</h2>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th
+                                            onClick={() => {
+                                                handleConfig('title');
+                                            }}
+                                        >
+                                            Task Name
+                                        </th>
+                                        <th>Description</th>
+                                        <th>Assignee</th>
+                                        <th onClick={() => handleConfig('priority')}>Priority</th>
+                                        <th>Due Date</th>
+                                        <th onClick={() => handleConfig('status')}>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {sortedTaskList.map((task: TaskType) => (
+                                        <Task
+                                            key={task.id}
+                                            task={task}
+                                            handleUpdateTask={handleUpdateTask}
+                                            handleRemoveTask={handleRemoveTask}
+                                        />
+                                    ))}
+                                </tbody>
+                            </table>
+                        </>
+                    )}
                 </div>
-
-            }
-
+            )}
         </div>
-    )
+    );
 }
-
