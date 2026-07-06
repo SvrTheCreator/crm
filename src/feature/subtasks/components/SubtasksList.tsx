@@ -3,6 +3,7 @@ import { useState } from 'react';
 import type { SubtaskType } from '../types.ts';
 import { Subtask } from './Subtask.tsx';
 import type { Priority, Status, UpdateField } from '../../tasks/types.ts';
+import { AddSubtask } from './AddSubtask.tsx';
 
 type Props = {
     taskId: string;
@@ -10,6 +11,7 @@ type Props = {
 
 export function SubtasksList(props: Props) {
     const [subtasksList, setSubtasksList] = useState<Array<SubtaskType>>(subtasksMock);
+    const [addSubtaskOpen, setAddSubtaskOpen] = useState<boolean>(false);
 
     const currentTaskSubtasks = subtasksList.filter((subtask: SubtaskType) => {
         return subtask.taskId === props.taskId;
@@ -39,12 +41,19 @@ export function SubtasksList(props: Props) {
         console.log(updateSubtask);
     };
 
+    const handleAddSubtask = (newSubtask: SubtaskType) => {
+        setSubtasksList([...subtasksList, newSubtask]);
+        setAddSubtaskOpen(false);
+    };
+
     return (
         <div style={{ marginLeft: '50px', padding: '20px' }}>
             <div style={{ display: 'flex', gap: '10px' }}>
-                <button>Add subtask</button>
-                {/*<h3>Subtasks</h3>*/}
+                <button onClick={() => setAddSubtaskOpen(!addSubtaskOpen)}>Add subtask</button>
             </div>
+            {addSubtaskOpen && (
+                <AddSubtask taskId={props.taskId} handleAddSubtask={handleAddSubtask} />
+            )}
             {currentTaskSubtasks.length === 0 ? (
                 'Нет активных подзадач'
             ) : (
