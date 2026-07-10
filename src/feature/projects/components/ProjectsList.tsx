@@ -36,6 +36,18 @@ export function ProjectsList(props: Props) {
         }
     }
 
+    async function handleRemoveProject(projectId: string) {
+        const response = await supabase.from('projects').delete().eq('id', projectId);
+        console.log(response.data);
+
+        if (response.error) {
+            console.error(response.error);
+            return;
+        }
+
+        setProjects(projects.filter((item) => item.id !== projectId));
+    }
+
     return (
         <div>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
@@ -62,8 +74,7 @@ export function ProjectsList(props: Props) {
                         setProjectId={props.setProjectId}
                         project={project}
                         projectId={props.projectId}
-                        // setCurrentProject={setCurrentProject}
-                        // currentProject={currentProject}
+                        handleRemoveProject={handleRemoveProject}
                     />
                 ))}
             </ul>
