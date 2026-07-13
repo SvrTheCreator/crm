@@ -16,18 +16,27 @@ export function ProjectsList(props: Props) {
 
     useEffect(() => {
         async function getProjects() {
-            const response = await supabase.from('projects').select().select();
+            const response = await supabase.from('projects').select();
+
+            if (response.error) {
+                console.error(response.error);
+                return;
+            }
 
             if (response.data) {
                 setProjects(response.data);
             }
         }
         getProjects();
-    }, [projects]);
+    }, []);
 
     async function handleAddProject(newProject: CreateProjectType) {
-        // setProjects([...projects, newProject]);
         const response = await supabase.from('projects').insert(newProject).select().single();
+
+        if (response.error) {
+            console.error(response.error);
+            return;
+        }
 
         if (response.data) {
             setProjects([...projects, response.data]);
@@ -46,6 +55,33 @@ export function ProjectsList(props: Props) {
         }
 
         setProjects(projects.filter((item) => item.id !== projectId));
+    }
+    async function handleEditProject(newProjectName: ProjectType) {
+        const response = await supabase
+            .from('projects')
+            .update({ title: newProjectName.title })
+            .eq('id', newProjectName.id)
+            .select();
+
+        if (response.error) {
+            console.error(response.error);
+            return;
+        }
+
+        if (response.data) {
+            const renamedProject = projects.map((item) => {
+                if (item.id === newProjectName.id) {
+                    return {
+                        ...item,
+                        title: newProjectName.title,
+                    };
+                } else {
+                    return item;
+                }
+            });
+            setProjects(renamedProject);
+        }
+        console.log(newProjectName);
     }
 
     return (
@@ -75,6 +111,7 @@ export function ProjectsList(props: Props) {
                         project={project}
                         projectId={props.projectId}
                         handleRemoveProject={handleRemoveProject}
+                        handleEditProject={handleEditProject}
                     />
                 ))}
             </ul>
