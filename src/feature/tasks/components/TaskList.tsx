@@ -1,8 +1,15 @@
-import { tasksMock } from '../../../dal/api.tsx';
-import { type SortField, type TaskType, type UpdateField, type UpdateValue } from '../types.ts';
-import { useState } from 'react';
+import {
+    type CreateTaskType,
+    type SortField,
+    type TaskType,
+    type UpdateField,
+    type UpdateValue,
+    type UsersType,
+} from '../types.ts';
+import { useEffect, useState } from 'react';
 import { AddTask } from './AddTask.tsx';
 import { Task } from './Task.tsx';
+import { supabase } from '../../../utils/supabase.ts';
 
 interface SortConfig {
     field: SortField | null;
@@ -14,19 +21,60 @@ type Props = {
 };
 
 export function TaskList(props: Props) {
-    const [taskList, setTaskList] = useState<Array<TaskType>>(tasksMock);
+    const [taskList, setTaskList] = useState<Array<TaskType>>([]);
     const [sortConfig, setSortConfig] = useState<SortConfig>({
         field: null,
         order: null,
     });
     const [isAddTaskOpen, setIsAddTaskOpen] = useState(false);
+    const [users, setUsers] = useState<Array<UsersType>>([]);
+
+    useEffect(() => {
+        async function getTasks() {
+            const response = await supabase.from('tasks').select();
+
+            if (response.error) {
+                console.log(response.error);
+                return;
+            }
+
+            if (response.data) {
+                // console.log(response.data);
+                setTaskList(response.data);
+            }
+        }
+        getTasks();
+
+        async function getProfiles() {
+            const response = await supabase.from('profiles').select();
+
+            if (response.error) {
+                console.log(response.error);
+                return;
+            }
+            if (response.data) {
+                setUsers(response.data);
+                console.log(response.data);
+            }
+        }
+        getProfiles();
+    }, []);
 
     const currentProjectId = props.projectId;
 
-    const handleAddTask = (task: TaskType) => {
-        setTaskList([...taskList, task]);
-        setIsAddTaskOpen(false);
-    };
+    async function handleAddTask(task: CreateTaskType) {
+        const response = await supabase.from('tasks').insert(task).select().single();
+
+        if (response.error) {
+            console.error(response.error);
+            return;
+        }
+
+        if (response.data) {
+            setTaskList([...taskList, response.data]);
+            setIsAddTaskOpen(false);
+        }
+    }
 
     const handleRemoveTask = (id: string) => {
         const tasksWithoutDeleted = taskList.filter((el) => {
@@ -44,7 +92,7 @@ export function TaskList(props: Props) {
     };
 
     const currentProjectTasks = taskList.filter((task) => {
-        return task.projectId === props.projectId;
+        return task.project_id === props.projectId;
     });
 
     const sortedTaskList = [...currentProjectTasks].sort((a, b) => {
@@ -88,6 +136,7 @@ export function TaskList(props: Props) {
                             <AddTask
                                 currentProjectId={currentProjectId}
                                 handleAddTask={handleAddTask}
+                                users={users}
                             />
                         )}
                     </div>
@@ -118,6 +167,7 @@ export function TaskList(props: Props) {
                                         <Task
                                             key={task.id}
                                             task={task}
+                                            users={users}
                                             handleUpdateTask={handleUpdateTask}
                                             handleRemoveTask={handleRemoveTask}
                                         />

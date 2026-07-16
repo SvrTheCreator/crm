@@ -1,18 +1,35 @@
 import { useForm } from 'react-hook-form';
-import type { TaskType } from '../types.ts';
+import type { CreateTaskType, UsersType } from '../types.ts';
 
 type Props = {
-    handleAddTask: (task: TaskType) => void;
+    handleAddTask: (task: CreateTaskType) => void;
     currentProjectId: string;
+    users: UsersType[];
 };
 
 export function AddTask(props: Props) {
-    const { register, handleSubmit, reset } = useForm<TaskType>();
+    const { register, handleSubmit, reset } = useForm<CreateTaskType>();
+    // const [users, setUsers] = useState<Array<UsersType>>([]);
+    //
+    // useEffect(() => {
+    //     async function getProfiles() {
+    //         const response = await supabase.from('profiles').select();
+    //
+    //         if (response.error) {
+    //             console.log(response.error);
+    //             return;
+    //         }
+    //         if (response.data) {
+    //             setUsers(response.data);
+    //             console.log(response.data);
+    //         }
+    //     }
+    //     getProfiles();
+    // }, []);
 
-    const handleCreateNewTask = (data: TaskType) => {
-        const task: TaskType = {
-            id: crypto.randomUUID(),
-            projectId: props.currentProjectId,
+    const handleCreateNewTask = (data: CreateTaskType) => {
+        const task: CreateTaskType = {
+            project_id: props.currentProjectId,
             title: data.title,
             description: data.description,
             assignee: data.assignee,
@@ -23,6 +40,7 @@ export function AddTask(props: Props) {
 
         props.handleAddTask(task);
 
+        console.log(task);
         // console.log(task.id)
         reset();
     };
@@ -38,8 +56,17 @@ export function AddTask(props: Props) {
                 <input {...register('description', { required: true })} />
             </div>
             <div>
-                <label htmlFor="assignee">assignee</label>
-                <input {...register('assignee', { required: true })} />
+                <label htmlFor="assignee">Assignee</label>
+                <select {...register('assignee', { required: true })}>
+                    <option value="">Select...</option>
+                    {props.users.map((item: UsersType) => {
+                        return (
+                            <option key={item.id} value={item.id}>
+                                {item.name}
+                            </option>
+                        );
+                    })}
+                </select>
             </div>
             <div>
                 <label htmlFor="priority">priority</label>

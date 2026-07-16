@@ -1,4 +1,4 @@
-import type { Priority, Status, TaskType, UpdateField, UpdateValue } from '../types.ts';
+import type { Priority, Status, TaskType, UpdateField, UpdateValue, UsersType } from '../types.ts';
 import { Fragment, useState } from 'react';
 import { SubtasksList } from '../../subtasks/components/SubtasksList.tsx';
 
@@ -12,6 +12,7 @@ const cell = {
 
 type Props = {
     task: TaskType;
+    users: UsersType[];
     handleRemoveTask: (id: string) => void;
     handleUpdateTask: (id: string, field: UpdateField, value: UpdateValue) => void;
 };
@@ -25,7 +26,6 @@ export function Task(props: Props) {
         } else {
             setOpenTaskId(taskId);
         }
-        // console.log(openTaskId);
     };
 
     return (

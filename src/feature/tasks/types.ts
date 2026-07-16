@@ -1,12 +1,27 @@
 export type TaskType = {
     id: string;
-    projectId: string;
+    project_id: string;
     title: string;
     description: string;
-    assignee: string[];
+    assignee: string | null;
     priority: Priority;
     dueDate: string;
     status: Status;
+};
+
+export type CreateTaskType = {
+    project_id: string;
+    title: string;
+    description: string;
+    assignee: string | null;
+    priority: Priority;
+    dueDate: string;
+    status: Status;
+};
+
+export type UsersType = {
+    id: string;
+    name: string;
 };
 
 export type Priority = 'Low' | 'Medium' | 'High';
