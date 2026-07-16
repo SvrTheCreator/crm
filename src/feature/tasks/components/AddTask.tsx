@@ -9,30 +9,13 @@ type Props = {
 
 export function AddTask(props: Props) {
     const { register, handleSubmit, reset } = useForm<CreateTaskType>();
-    // const [users, setUsers] = useState<Array<UsersType>>([]);
-    //
-    // useEffect(() => {
-    //     async function getProfiles() {
-    //         const response = await supabase.from('profiles').select();
-    //
-    //         if (response.error) {
-    //             console.log(response.error);
-    //             return;
-    //         }
-    //         if (response.data) {
-    //             setUsers(response.data);
-    //             console.log(response.data);
-    //         }
-    //     }
-    //     getProfiles();
-    // }, []);
 
     const handleCreateNewTask = (data: CreateTaskType) => {
         const task: CreateTaskType = {
             project_id: props.currentProjectId,
             title: data.title,
             description: data.description,
-            assignee: data.assignee,
+            assignee: data.assignee === '' ? null : data.assignee,
             priority: data.priority,
             dueDate: data.dueDate,
             status: data.status,
@@ -57,7 +40,7 @@ export function AddTask(props: Props) {
             </div>
             <div>
                 <label htmlFor="assignee">Assignee</label>
-                <select {...register('assignee', { required: true })}>
+                <select {...register('assignee')}>
                     <option value="">Select...</option>
                     {props.users.map((item: UsersType) => {
                         return (

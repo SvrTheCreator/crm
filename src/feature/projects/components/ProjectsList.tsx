@@ -53,7 +53,6 @@ export function ProjectsList(props: Props) {
             console.error(response.error);
             return;
         }
-
         setProjects(projects.filter((item) => item.id !== projectId));
     }
     async function handleEditProject(newProjectName: ProjectType) {
@@ -61,7 +60,8 @@ export function ProjectsList(props: Props) {
             .from('projects')
             .update({ title: newProjectName.title })
             .eq('id', newProjectName.id)
-            .select();
+            .select()
+            .order('created_at', { ascending: false });
 
         if (response.error) {
             console.error(response.error);
@@ -81,7 +81,6 @@ export function ProjectsList(props: Props) {
             });
             setProjects(renamedProject);
         }
-        console.log(newProjectName);
     }
 
     return (

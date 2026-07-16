@@ -21,12 +21,11 @@ export function Task(props: Props) {
     const [openTaskId, setOpenTaskId] = useState<string | null>(null);
 
     const handleCurrentTask = (taskId: string) => {
-        if (openTaskId === taskId) {
-            setOpenTaskId(null);
-        } else {
-            setOpenTaskId(taskId);
-        }
+        return openTaskId === taskId ? setOpenTaskId(null) : setOpenTaskId(taskId);
     };
+
+    const currentUser = props.users.find((user) => user.id === props.task.assignee);
+    const assigneeName = currentUser ? currentUser.name : 'Не выбран';
 
     return (
         <Fragment>
@@ -43,7 +42,7 @@ export function Task(props: Props) {
                     </button>
                 </td>
                 <td style={cell}>{props.task.description}</td>
-                <td style={cell}>{props.task.assignee}</td>
+                <td style={cell}>{assigneeName}</td>
                 <td style={cell}>
                     <select
                         defaultValue={props.task.priority}
