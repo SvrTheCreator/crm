@@ -56,7 +56,7 @@ export function TaskList(props: Props) {
             }
             if (response.data) {
                 setUsers(response.data);
-                console.log(response.data);
+                // console.log(response.data);
             }
         }
         getProfiles();

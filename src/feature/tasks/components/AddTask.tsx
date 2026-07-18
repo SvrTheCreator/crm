@@ -1,5 +1,6 @@
 import { useForm } from 'react-hook-form';
 import type { CreateTaskType, UsersType } from '../types.ts';
+import { getCurrentDate } from '../../../utils/getCurrentDate.ts';
 
 type Props = {
     handleAddTask: (task: CreateTaskType) => void;
@@ -17,7 +18,7 @@ export function AddTask(props: Props) {
             description: data.description,
             assignee: data.assignee === '' ? null : data.assignee,
             priority: data.priority,
-            dueDate: data.dueDate,
+            due_date: data.due_date,
             status: data.status,
         };
 
@@ -62,7 +63,7 @@ export function AddTask(props: Props) {
             </div>
             <div>
                 <label htmlFor="dueDate">dueDate</label>
-                <input type="date" {...register('dueDate', { required: true })} />
+                <input min={getCurrentDate()} type="date" {...register('due_date')} />
             </div>
             <div>
                 <label htmlFor="status">status</label>

@@ -5,7 +5,7 @@ export type TaskType = {
     description: string;
     assignee: string | null;
     priority: Priority;
-    dueDate: string;
+    due_date: string | null;
     status: Status;
 };
 
@@ -15,7 +15,7 @@ export type CreateTaskType = {
     description: string;
     assignee: string | null;
     priority: Priority;
-    dueDate: string;
+    due_date: string;
     status: Status;
 };
 
@@ -30,6 +30,6 @@ export type Status = 'To Do' | 'In progress' | 'Done';
 
 export type SortField = 'title' | 'priority' | 'status';
 
-export type UpdateField = 'priority' | 'status';
+export type UpdateField = 'priority' | 'status' | 'assignee';
 
-export type UpdateValue = Priority | Status;
+export type UpdateValue = Priority | Status | TaskType['assignee'];

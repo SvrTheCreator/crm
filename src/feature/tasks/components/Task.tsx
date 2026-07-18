@@ -25,7 +25,9 @@ export function Task(props: Props) {
     };
 
     const currentUser = props.users.find((user) => user.id === props.task.assignee);
-    const assigneeName = currentUser ? currentUser.name : 'Не выбран';
+    const modifiedDate = props.task.due_date
+        ? props.task.due_date.split('-').reverse().join('.')
+        : 'Не выбрано';
 
     return (
         <Fragment>
@@ -42,7 +44,27 @@ export function Task(props: Props) {
                     </button>
                 </td>
                 <td style={cell}>{props.task.description}</td>
-                <td style={cell}>{assigneeName}</td>
+                <td style={cell}>
+                    <select
+                        onChange={(event) => {
+                            props.handleUpdateTask(
+                                props.task.id,
+                                'assignee',
+                                event.target.value === '' ? null : event.target.value,
+                            );
+                        }}
+                        defaultValue={currentUser ? currentUser.id : ''}
+                    >
+                        <option value="">Не выбран</option>
+                        {props.users.map((item: UsersType) => {
+                            return (
+                                <option key={item.id} value={item.id}>
+                                    {item.name}
+                                </option>
+                            );
+                        })}
+                    </select>
+                </td>
                 <td style={cell}>
                     <select
                         defaultValue={props.task.priority}
@@ -59,7 +81,11 @@ export function Task(props: Props) {
                         <option value="Low">Low</option>
                     </select>
                 </td>
-                <td style={cell}>{props.task.dueDate}</td>
+                <td style={cell}>
+                    {/*<label>{modifiedDate}</label>*/}
+                    {/*<input min={getCurrentDate()} type="date" />*/}
+                    {modifiedDate}
+                </td>
                 <td style={cell}>
                     <select
                         defaultValue={props.task.status}
