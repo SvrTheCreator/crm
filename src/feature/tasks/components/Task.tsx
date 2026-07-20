@@ -1,6 +1,7 @@
 import type { Priority, Status, TaskType, UpdateField, UpdateValue, UsersType } from '../types.ts';
 import { Fragment, useState } from 'react';
 import { SubtasksList } from '../../subtasks/components/SubtasksList.tsx';
+import { getCurrentDate } from '../../../utils/getCurrentDate.ts';
 
 const cell = {
     maxWidth: '300px',
@@ -19,15 +20,20 @@ type Props = {
 
 export function Task(props: Props) {
     const [openTaskId, setOpenTaskId] = useState<string | null>(null);
+    const [isEdit, setIsEdit] = useState(false);
 
     const handleCurrentTask = (taskId: string) => {
         return openTaskId === taskId ? setOpenTaskId(null) : setOpenTaskId(taskId);
     };
 
     const currentUser = props.users.find((user) => user.id === props.task.assignee);
-    const modifiedDate = props.task.due_date
-        ? props.task.due_date.split('-').reverse().join('.')
-        : 'Не выбрано';
+    // const modifiedDate = props.task.due_date
+    //     ? props.task.due_date.split('-').reverse().join('.')
+    //     : 'Не выбрано';
+
+    const handleEditTask = (field: string, value: string) => {
+        console.log(field, value);
+    };
 
     return (
         <Fragment>
@@ -36,14 +42,36 @@ export function Task(props: Props) {
                     <button onClick={() => props.handleRemoveTask(props.task.id)}>delete</button>
                 </td>
                 <td style={cell}>
-                    <button
-                        onClick={() => handleCurrentTask(props.task.id)}
-                        style={{ textDecoration: 'underline', cursor: 'pointer' }}
-                    >
-                        {props.task.title}
-                    </button>
+                    {isEdit ? (
+                        <input
+                            placeholder={props.task.title}
+                            name="title"
+                            onChange={(event) => {
+                                handleEditTask(event.target.name, event.target.value);
+                            }}
+                        />
+                    ) : (
+                        <button
+                            onClick={() => handleCurrentTask(props.task.id)}
+                            style={{ textDecoration: 'underline', cursor: 'pointer' }}
+                        >
+                            {props.task.title}
+                        </button>
+                    )}
                 </td>
-                <td style={cell}>{props.task.description}</td>
+                <td style={cell}>
+                    {isEdit ? (
+                        <input
+                            placeholder={props.task.description}
+                            name="description"
+                            onChange={(event) => {
+                                handleEditTask(event.target.name, event.target.value);
+                            }}
+                        />
+                    ) : (
+                        props.task.description
+                    )}
+                </td>
                 <td style={cell}>
                     <select
                         onChange={(event) => {
@@ -82,9 +110,19 @@ export function Task(props: Props) {
                     </select>
                 </td>
                 <td style={cell}>
-                    {/*<label>{modifiedDate}</label>*/}
-                    {/*<input min={getCurrentDate()} type="date" />*/}
-                    {modifiedDate}
+                    <input
+                        min={getCurrentDate()}
+                        type="date"
+                        defaultValue={props.task.due_date === null ? '' : props.task.due_date}
+                        onChange={(event) => {
+                            props.handleUpdateTask(
+                                props.task.id,
+                                'due_date',
+                                event.target.value === '' ? null : event.target.value,
+                            );
+                        }}
+                    />
+                    {/*{modifiedDate}*/}
                 </td>
                 <td style={cell}>
                     <select
@@ -102,7 +140,11 @@ export function Task(props: Props) {
                         <option value="In progress">In progress</option>
                     </select>
                 </td>
+                <td>
+                    <button onClick={() => setIsEdit(!isEdit)}>✏️</button>
+                </td>
             </tr>
+
             {openTaskId === props.task.id && (
                 <tr>
                     <td colSpan={7}>

@@ -30,6 +30,6 @@ export type Status = 'To Do' | 'In progress' | 'Done';
 
 export type SortField = 'title' | 'priority' | 'status';
 
-export type UpdateField = 'priority' | 'status' | 'assignee';
+export type UpdateField = 'priority' | 'status' | 'assignee' | 'due_date';
 
-export type UpdateValue = Priority | Status | TaskType['assignee'];
+export type UpdateValue = Priority | Status | TaskType['assignee'] | TaskType['due_date'];
