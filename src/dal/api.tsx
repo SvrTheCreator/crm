@@ -15,12 +15,12 @@ export const projectsMock = [
 export const tasksMock: TaskType[] = [
     {
         id: '1',
-        projectId: '1',
+        projectId: '12',
         title: 'CraftVision.studio',
         description:
             'The project requires UX/UI design, front-end development, and SEO optimization. The design' +
             ' should be intuitive, visually appealing, and responsive. SEO strategies should be applied to improve visibility and traffic.',
-        assignee: ['Robert MLG', 'VALERA NOSKOPE'],
+        assignee: 'Robert MLG',
         priority: 'High',
         dueDate: '17.03.2025',
         status: 'In progress',

@@ -18,9 +18,18 @@ type Props = {
     handleUpdateTask: (id: string, field: UpdateField, value: UpdateValue) => void;
 };
 
+type EditedFieldType = {
+    title: string;
+    description: string;
+};
+
 export function Task(props: Props) {
     const [openTaskId, setOpenTaskId] = useState<string | null>(null);
     const [isEdit, setIsEdit] = useState(false);
+    const [editedField, setEditedField] = useState<EditedFieldType>({
+        title: props.task.title,
+        description: props.task.description,
+    });
 
     const handleCurrentTask = (taskId: string) => {
         return openTaskId === taskId ? setOpenTaskId(null) : setOpenTaskId(taskId);
@@ -31,8 +40,14 @@ export function Task(props: Props) {
     //     ? props.task.due_date.split('-').reverse().join('.')
     //     : 'Не выбрано';
 
-    const handleEditTask = (field: string, value: string) => {
-        console.log(field, value);
+    const handleFieldChange = () => {
+        if (props.task.title !== editedField.title) {
+            props.handleUpdateTask(props.task.id, 'title', editedField.title);
+        }
+        if (props.task.description !== editedField.description) {
+            props.handleUpdateTask(props.task.id, 'description', editedField.description);
+        }
+        setIsEdit(false);
     };
 
     return (
@@ -44,10 +59,13 @@ export function Task(props: Props) {
                 <td style={cell}>
                     {isEdit ? (
                         <input
-                            placeholder={props.task.title}
+                            value={editedField.title}
                             name="title"
                             onChange={(event) => {
-                                handleEditTask(event.target.name, event.target.value);
+                                setEditedField({
+                                    ...editedField,
+                                    [event.target.name]: event.target.value,
+                                });
                             }}
                         />
                     ) : (
@@ -62,10 +80,13 @@ export function Task(props: Props) {
                 <td style={cell}>
                     {isEdit ? (
                         <input
-                            placeholder={props.task.description}
+                            value={editedField.description}
                             name="description"
                             onChange={(event) => {
-                                handleEditTask(event.target.name, event.target.value);
+                                setEditedField({
+                                    ...editedField,
+                                    [event.target.name]: event.target.value,
+                                });
                             }}
                         />
                     ) : (
@@ -141,7 +162,24 @@ export function Task(props: Props) {
                     </select>
                 </td>
                 <td>
-                    <button onClick={() => setIsEdit(!isEdit)}>✏️</button>
+                    {isEdit ? (
+                        <div>
+                            <button onClick={() => handleFieldChange()}>💾</button>
+                            <button
+                                onClick={() => {
+                                    setEditedField({
+                                        title: props.task.title,
+                                        description: props.task.description,
+                                    });
+                                    setIsEdit(false);
+                                }}
+                            >
+                                ❌
+                            </button>
+                        </div>
+                    ) : (
+                        <button onClick={() => setIsEdit(true)}>✏️</button>
+                    )}
                 </td>
             </tr>
 
