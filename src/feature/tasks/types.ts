@@ -15,7 +15,7 @@ export type CreateTaskType = {
     description: string;
     assignee: string | null;
     priority: Priority;
-    due_date: string;
+    due_date: string | null;
     status: Status;
 };
 

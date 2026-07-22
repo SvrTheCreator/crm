@@ -1,31 +1,76 @@
-import { subtasksMock } from '../../../dal/api.tsx';
-import { useState } from 'react';
-import type { SubtaskType } from '../types.ts';
+import { useEffect, useState } from 'react';
+import type { CreateSubtaskType, SubtaskType } from '../types.ts';
 import { Subtask } from './Subtask.tsx';
-import type { Priority, Status, UpdateField } from '../../tasks/types.ts';
+import type { UpdateField, UpdateValue, UsersType } from '../../tasks/types.ts';
 import { AddSubtask } from './AddSubtask.tsx';
+import { supabase } from '../../../utils/supabase.ts';
 
 type Props = {
     taskId: string;
+    users: UsersType[];
 };
 
 export function SubtasksList(props: Props) {
-    const [subtasksList, setSubtasksList] = useState<Array<SubtaskType>>(subtasksMock);
+    const [subtasksList, setSubtasksList] = useState<Array<SubtaskType>>([]);
     const [addSubtaskOpen, setAddSubtaskOpen] = useState<boolean>(false);
 
+    useEffect(() => {
+        async function getSubtasks() {
+            const response = await supabase
+                .from('subtasks')
+                .select()
+                .order('created_at', { ascending: false });
+            if (response.error) {
+                console.log(response.error);
+                return;
+            }
+            if (response.data) setSubtasksList(response.data);
+        }
+        getSubtasks();
+    }, []);
+
     const currentTaskSubtasks = subtasksList.filter((subtask: SubtaskType) => {
-        return subtask.taskId === props.taskId;
+        return subtask.task_id === props.taskId;
     });
 
-    const handleDeleteSubtask = (id: string) => {
+    async function handleAddSubtask(newSubtask: CreateSubtaskType) {
+        const response = await supabase.from('subtasks').insert(newSubtask).select().single();
+        if (response.error) {
+            console.log(response.error);
+            return;
+        }
+        if (response.data) {
+            setSubtasksList([response.data, ...subtasksList]);
+            setAddSubtaskOpen(false);
+        }
+    }
+
+    async function handleDeleteSubtask(id: string) {
+        const response = await supabase.from('subtasks').delete().eq('id', id);
+
+        if (response.error) {
+            console.log(response.error);
+            return;
+        }
+
         const subtasksWithoutDeleted = subtasksList.filter((subtask) => {
             return subtask.id !== id;
         });
 
         setSubtasksList(subtasksWithoutDeleted);
-    };
+    }
 
-    const handleUpdateSubtask = (id: string, field: UpdateField, value: Status | Priority) => {
+    async function handleUpdateSubtask(id: string, field: UpdateField, value: UpdateValue) {
+        const response = await supabase
+            .from('subtasks')
+            .update({ [field]: value })
+            .eq('id', id);
+
+        if (response.error) {
+            console.log(response.error);
+            return;
+        }
+
         const updateSubtask = subtasksList.map((subtask: SubtaskType) => {
             if (subtask.id === id) {
                 return {
@@ -37,14 +82,7 @@ export function SubtasksList(props: Props) {
             }
         });
         setSubtasksList(updateSubtask);
-        console.log(id, field, value);
-        console.log(updateSubtask);
-    };
-
-    const handleAddSubtask = (newSubtask: SubtaskType) => {
-        setSubtasksList([...subtasksList, newSubtask]);
-        setAddSubtaskOpen(false);
-    };
+    }
 
     return (
         <div style={{ marginLeft: '50px', padding: '20px' }}>
@@ -52,7 +90,11 @@ export function SubtasksList(props: Props) {
                 <button onClick={() => setAddSubtaskOpen(!addSubtaskOpen)}>Add subtask</button>
             </div>
             {addSubtaskOpen && (
-                <AddSubtask taskId={props.taskId} handleAddSubtask={handleAddSubtask} />
+                <AddSubtask
+                    taskId={props.taskId}
+                    users={props.users}
+                    handleAddSubtask={handleAddSubtask}
+                />
             )}
             {currentTaskSubtasks.length === 0 ? (
                 'Нет активных подзадач'
@@ -62,8 +104,10 @@ export function SubtasksList(props: Props) {
                         <tr>
                             <th></th>
                             <th>Subtask Name</th>
+                            <th>Description</th>
                             <th>Assignee</th>
                             <th>Priority</th>
+                            <th>Due date</th>
                             <th>Status</th>
                         </tr>
                     </thead>
@@ -72,6 +116,7 @@ export function SubtasksList(props: Props) {
                             <tr key={subtask.id}>
                                 <Subtask
                                     subtask={subtask}
+                                    users={props.users}
                                     handleDeleteSubtask={handleDeleteSubtask}
                                     handleUpdateSubtask={handleUpdateSubtask}
                                 />

@@ -18,7 +18,7 @@ export function AddTask(props: Props) {
             description: data.description,
             assignee: data.assignee === '' ? null : data.assignee,
             priority: data.priority,
-            due_date: data.due_date,
+            due_date: data.due_date === '' ? null : data.due_date,
             status: data.status,
         };
 
@@ -37,7 +37,7 @@ export function AddTask(props: Props) {
             </div>
             <div>
                 <label htmlFor="description">Description</label>
-                <input {...register('description', { required: true })} />
+                <input {...register('description')} />
             </div>
             <div>
                 <label htmlFor="assignee">Assignee</label>

@@ -186,7 +186,7 @@ export function Task(props: Props) {
             {openTaskId === props.task.id && (
                 <tr>
                     <td colSpan={7}>
-                        <SubtasksList taskId={props.task.id} />
+                        <SubtasksList users={props.users} taskId={props.task.id} />
                     </td>
                 </tr>
             )}
