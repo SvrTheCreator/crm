@@ -30,15 +30,11 @@ export function Task(props: Props) {
         title: props.task.title,
         description: props.task.description,
     });
-
     const handleCurrentTask = (taskId: string) => {
         return openTaskId === taskId ? setOpenTaskId(null) : setOpenTaskId(taskId);
     };
 
     const currentUser = props.users.find((user) => user.id === props.task.assignee);
-    // const modifiedDate = props.task.due_date
-    //     ? props.task.due_date.split('-').reverse().join('.')
-    //     : 'Не выбрано';
 
     const handleFieldChange = () => {
         if (props.task.title !== editedField.title) {

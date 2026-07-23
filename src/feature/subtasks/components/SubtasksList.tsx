@@ -19,7 +19,8 @@ export function SubtasksList(props: Props) {
             const response = await supabase
                 .from('subtasks')
                 .select()
-                .order('created_at', { ascending: false });
+                .order('created_at', { ascending: false })
+                .eq('task_id', props.taskId);
             if (response.error) {
                 console.log(response.error);
                 return;
@@ -27,11 +28,11 @@ export function SubtasksList(props: Props) {
             if (response.data) setSubtasksList(response.data);
         }
         getSubtasks();
-    }, []);
+    }, [props.taskId]);
 
-    const currentTaskSubtasks = subtasksList.filter((subtask: SubtaskType) => {
-        return subtask.task_id === props.taskId;
-    });
+    // const currentTaskSubtasks = subtasksList.filter((subtask: SubtaskType) => {
+    //     return subtask.task_id === props.taskId;
+    // });
 
     async function handleAddSubtask(newSubtask: CreateSubtaskType) {
         const response = await supabase.from('subtasks').insert(newSubtask).select().single();
@@ -96,7 +97,7 @@ export function SubtasksList(props: Props) {
                     handleAddSubtask={handleAddSubtask}
                 />
             )}
-            {currentTaskSubtasks.length === 0 ? (
+            {subtasksList.length === 0 ? (
                 'Нет активных подзадач'
             ) : (
                 <table style={{ minWidth: '100%' }}>
@@ -112,7 +113,7 @@ export function SubtasksList(props: Props) {
                         </tr>
                     </thead>
                     <tbody>
-                        {currentTaskSubtasks.map((subtask: SubtaskType) => (
+                        {subtasksList.map((subtask: SubtaskType) => (
                             <tr key={subtask.id}>
                                 <Subtask
                                     subtask={subtask}

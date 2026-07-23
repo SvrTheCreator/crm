@@ -25,7 +25,6 @@ export function AddTask(props: Props) {
         props.handleAddTask(task);
 
         console.log(task);
-        // console.log(task.id)
         reset();
     };
 

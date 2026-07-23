@@ -30,7 +30,7 @@ export function Subtask(props: Props) {
             <td style={cell}>
                 <select
                     name="assignee"
-                    defaultValue={props.subtask.assignee === null ? '' : props.subtask.assignee}
+                    value={props.subtask.assignee === null ? '' : props.subtask.assignee}
                     onChange={(event) => {
                         props.handleUpdateSubtask(
                             props.subtask.id,
