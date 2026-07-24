@@ -1,6 +1,7 @@
 import type { SubtaskType } from '../types.ts';
 import type { Priority, Status, UpdateField, UpdateValue, UsersType } from '../../tasks/types.ts';
 import { getCurrentDate } from '../../../utils/getCurrentDate.ts';
+import { useState } from 'react';
 
 const cell = {
     maxWidth: '300px',
@@ -18,14 +19,65 @@ type Props = {
 };
 
 export function Subtask(props: Props) {
+    const [isEdit, setIsEdit] = useState(false);
+    const [editedField, setEditedField] = useState({
+        title: props.subtask.title,
+        description: props.subtask.description,
+    });
+
+    const handleFieldChange = () => {
+        if (editedField.title !== props.subtask.title) {
+            props.handleUpdateSubtask(props.subtask.id, 'title', editedField.title);
+        }
+        if (editedField.description !== props.subtask.description) {
+            props.handleUpdateSubtask(props.subtask.id, 'description', editedField.description);
+        }
+        setIsEdit(false);
+    };
+
     return (
         <>
             <td style={cell}>
                 <button onClick={() => props.handleDeleteSubtask(props.subtask.id)}>delete</button>
             </td>
-            <td style={cell}>{props.subtask.title}</td>
             <td style={cell}>
-                {props.subtask.description ? props.subtask.description : 'Нет описания'}
+                {isEdit ? (
+                    <input
+                        type="text"
+                        name="title"
+                        value={editedField.title}
+                        onBlur={handleFieldChange}
+                        onChange={(event) =>
+                            setEditedField({
+                                ...editedField,
+                                [event.target.name]: event.target.value,
+                            })
+                        }
+                    />
+                ) : (
+                    props.subtask.title
+                )}
+            </td>
+            <td style={cell}>
+                {isEdit ? (
+                    <input
+                        type="text"
+                        name="description"
+                        value={editedField.description === null ? '' : editedField.description}
+                        onBlur={handleFieldChange}
+                        onChange={(event) =>
+                            setEditedField({
+                                ...editedField,
+                                [event.target.name]: event.target.value,
+                            })
+                        }
+                    />
+                ) : props.subtask.description ? (
+                    props.subtask.description
+                ) : (
+                    'Нет описания'
+                )}
+                {/*{props.subtask.description ? props.subtask.description : 'Нет описания'}*/}
             </td>
             <td style={cell}>
                 <select
@@ -95,6 +147,26 @@ export function Subtask(props: Props) {
                     <option value="Done">Done</option>
                     <option value="In progress">In progress</option>
                 </select>
+            </td>
+            <td>
+                {isEdit ? (
+                    <>
+                        <button onClick={() => handleFieldChange()}>💾</button>
+                        <button
+                            onClick={() => {
+                                setEditedField({
+                                    title: props.subtask.title,
+                                    description: props.subtask.description,
+                                });
+                                setIsEdit(false);
+                            }}
+                        >
+                            ❌
+                        </button>
+                    </>
+                ) : (
+                    <button onClick={() => setIsEdit(true)}>✏️</button>
+                )}
             </td>
         </>
     );

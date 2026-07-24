@@ -57,6 +57,7 @@ export function Task(props: Props) {
                         <input
                             value={editedField.title}
                             name="title"
+                            onBlur={handleFieldChange}
                             onChange={(event) => {
                                 setEditedField({
                                     ...editedField,
@@ -78,6 +79,7 @@ export function Task(props: Props) {
                         <input
                             value={editedField.description}
                             name="description"
+                            onBlur={handleFieldChange}
                             onChange={(event) => {
                                 setEditedField({
                                     ...editedField,

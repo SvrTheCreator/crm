@@ -13,26 +13,28 @@ type Props = {
 export function SubtasksList(props: Props) {
     const [subtasksList, setSubtasksList] = useState<Array<SubtaskType>>([]);
     const [addSubtaskOpen, setAddSubtaskOpen] = useState<boolean>(false);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         async function getSubtasks() {
+            setLoading(true);
             const response = await supabase
                 .from('subtasks')
                 .select()
                 .order('created_at', { ascending: false })
                 .eq('task_id', props.taskId);
             if (response.error) {
+                setLoading(false);
                 console.log(response.error);
                 return;
             }
-            if (response.data) setSubtasksList(response.data);
+            if (response.data) {
+                setLoading(false);
+                setSubtasksList(response.data);
+            }
         }
         getSubtasks();
     }, [props.taskId]);
-
-    // const currentTaskSubtasks = subtasksList.filter((subtask: SubtaskType) => {
-    //     return subtask.task_id === props.taskId;
-    // });
 
     async function handleAddSubtask(newSubtask: CreateSubtaskType) {
         const response = await supabase.from('subtasks').insert(newSubtask).select().single();
@@ -85,7 +87,9 @@ export function SubtasksList(props: Props) {
         setSubtasksList(updateSubtask);
     }
 
-    return (
+    return loading ? (
+        'Loading...'
+    ) : (
         <div style={{ marginLeft: '50px', padding: '20px' }}>
             <div style={{ display: 'flex', gap: '10px' }}>
                 <button onClick={() => setAddSubtaskOpen(!addSubtaskOpen)}>Add subtask</button>

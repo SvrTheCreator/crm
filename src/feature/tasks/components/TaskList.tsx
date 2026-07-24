@@ -33,6 +33,7 @@ export function TaskList(props: Props) {
     useEffect(() => {
         async function getTasks() {
             if (props.projectId === null) return;
+            setLoading(true);
             const response = await supabase
                 .from('tasks')
                 .select()
