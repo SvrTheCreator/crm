@@ -87,8 +87,10 @@ export function Task(props: Props) {
                                 });
                             }}
                         />
-                    ) : (
+                    ) : props.task.description ? (
                         props.task.description
+                    ) : (
+                        'Нет описания'
                     )}
                 </td>
                 <td style={cell}>

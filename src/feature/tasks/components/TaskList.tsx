@@ -8,9 +8,8 @@ import {
 import { useEffect, useState } from 'react';
 import { AddTask } from './AddTask.tsx';
 import { Task } from './Task.tsx';
-import { supabase } from '../../../utils/supabase.ts';
 import { useUsers } from '../../users/hooks/useUsers.ts';
-import { getTasks } from '../../../dal/api.ts';
+import { addTask, getTasks, removeTask, updateTask } from '../api.ts';
 
 interface SortConfig {
     field: SortField | null;
@@ -23,7 +22,9 @@ type Props = {
 
 export function TaskList(props: Props) {
     const [taskList, setTaskList] = useState<Array<TaskType>>([]);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState<boolean>(true);
+    const [error, setError] = useState('');
+
     const [sortConfig, setSortConfig] = useState<SortConfig>({
         field: null,
         order: null,
@@ -35,85 +36,52 @@ export function TaskList(props: Props) {
         async function load() {
             if (props.projectId === null) return;
             setTaskList([]);
+            setError('');
             setLoading(true);
-            // async function getTasks() {
-            //     if (props.projectId === null) return;
-            //     setLoading(true);
-            //     const response = await supabase
-            //         .from('tasks')
-            //         .select()
-            //         .order('created_at', { ascending: false })
-            //         .eq('project_id', props.projectId);
-            //
-            //     if (response.error) {
-            //         setLoading(false);
-            //         console.log(response.error);
-            //         return;
-            //     }
-            //
-            //     if (response.data) {
-            //         setLoading(false);
-            //         setTaskList(response.data);
-            //     }
-            // }
-            try {
-                const data = await getTasks(props.projectId);
-                if (data) {
-                    setTaskList(data);
-                }
+            const { data, error } = await getTasks(props.projectId);
+
+            if (error !== null) {
+                // console.log('error', error?.message);
+                setError(error.message);
                 setLoading(false);
-            } catch (error) {
-                console.error(error);
+                return;
             }
-            setLoading(false);
+            if (data) {
+                setTaskList(data);
+                setLoading(false);
+            }
         }
         load();
     }, [props.projectId]);
 
     async function handleAddTask(task: CreateTaskType) {
-        const response = await supabase.from('tasks').insert(task).select().single();
-
-        if (response.error) {
-            console.error(response.error);
-            return;
-        }
-
-        if (response.data) {
-            setTaskList([response.data, ...taskList]);
+        const data = await addTask(task);
+        if (data) {
+            setTaskList([data, ...taskList]);
             setIsAddTaskOpen(false);
         }
     }
 
     async function handleRemoveTask(id: string) {
-        const response = await supabase.from('tasks').delete().eq('id', id);
-        if (response.error) {
-            console.log(response.error);
-            return;
+        const error = await removeTask(id);
+        if (error === null) {
+            setTaskList(taskList.filter((task) => task.id !== id));
         }
-
-        setTaskList(taskList.filter((task) => task.id !== id));
     }
 
     async function handleUpdateTask(id: string, field: UpdateField, value: UpdateValue) {
-        const response = await supabase
-            .from('tasks')
-            .update({ [field]: value })
-            .eq('id', id);
-
-        if (response.error) {
-            console.log(response.error);
-            return;
+        const error = await updateTask(id, field, value);
+        if (error === null) {
+            const updatedTasks = taskList.map((el) => {
+                if (el.id === id) {
+                    return {
+                        ...el,
+                        [field]: value,
+                    };
+                } else return el;
+            });
+            setTaskList(updatedTasks);
         }
-
-        const updatedTasks = taskList.map((el) => {
-            if (el.id === id) {
-                return {
-                    ...el,
-                    [field]: value,
-                };
-            } else return el;
-        });
-        setTaskList(updatedTasks);
     }
 
     const handleConfig = (arg: SortField) => {
@@ -145,6 +113,8 @@ export function TaskList(props: Props) {
         <div style={{ padding: '24px' }}>
             {props.projectId === null ? (
                 'Выбери проект'
+            ) : error !== '' ? (
+                error
             ) : loading ? (
                 'Loading...'
             ) : (
