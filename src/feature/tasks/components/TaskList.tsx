@@ -10,6 +10,7 @@ import { AddTask } from './AddTask.tsx';
 import { Task } from './Task.tsx';
 import { supabase } from '../../../utils/supabase.ts';
 import { useUsers } from '../../users/hooks/useUsers.ts';
+import { getTasks } from '../../../dal/api.ts';
 
 interface SortConfig {
     field: SortField | null;
@@ -31,27 +32,42 @@ export function TaskList(props: Props) {
     const { users } = useUsers();
 
     useEffect(() => {
-        async function getTasks() {
+        async function load() {
             if (props.projectId === null) return;
+            setTaskList([]);
             setLoading(true);
-            const response = await supabase
-                .from('tasks')
-                .select()
-                .order('created_at', { ascending: false })
-                .eq('project_id', props.projectId);
-
-            if (response.error) {
+            // async function getTasks() {
+            //     if (props.projectId === null) return;
+            //     setLoading(true);
+            //     const response = await supabase
+            //         .from('tasks')
+            //         .select()
+            //         .order('created_at', { ascending: false })
+            //         .eq('project_id', props.projectId);
+            //
+            //     if (response.error) {
+            //         setLoading(false);
+            //         console.log(response.error);
+            //         return;
+            //     }
+            //
+            //     if (response.data) {
+            //         setLoading(false);
+            //         setTaskList(response.data);
+            //     }
+            // }
+            try {
+                const data = await getTasks(props.projectId);
+                if (data) {
+                    setTaskList(data);
+                }
                 setLoading(false);
-                console.log(response.error);
-                return;
+            } catch (error) {
+                console.error(error);
             }
-
-            if (response.data) {
-                setLoading(false);
-                setTaskList(response.data);
-            }
+            setLoading(false);
         }
-        getTasks();
+        load();
     }, [props.projectId]);
 
     async function handleAddTask(task: CreateTaskType) {
