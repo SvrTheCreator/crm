@@ -1,4 +1,12 @@
-import type { Priority, Status, TaskType, UpdateField, UpdateValue, UsersType } from '../types.ts';
+import type {
+    EditedFieldType,
+    Priority,
+    Status,
+    TaskType,
+    UpdateField,
+    UpdateValue,
+    UsersType,
+} from '../types.ts';
 import { Fragment, useState } from 'react';
 import { SubtasksList } from '../../subtasks/components/SubtasksList.tsx';
 import { getCurrentDate } from '../../../utils/getCurrentDate.ts';
@@ -16,11 +24,6 @@ type Props = {
     users: UsersType[];
     handleRemoveTask: (id: string) => void;
     handleUpdateTask: (id: string, field: UpdateField, value: UpdateValue) => void;
-};
-
-type EditedFieldType = {
-    title: string;
-    description: string;
 };
 
 export function Task(props: Props) {
@@ -77,7 +80,7 @@ export function Task(props: Props) {
                 <td style={cell}>
                     {isEdit ? (
                         <input
-                            value={editedField.description}
+                            value={editedField.description === null ? '' : editedField.description}
                             name="description"
                             onBlur={handleFieldChange}
                             onChange={(event) => {

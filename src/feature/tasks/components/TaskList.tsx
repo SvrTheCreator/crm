@@ -5,11 +5,12 @@ import {
     type UpdateField,
     type UpdateValue,
 } from '../types.ts';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { AddTask } from './AddTask.tsx';
 import { Task } from './Task.tsx';
 import { useUsers } from '../../users/hooks/useUsers.ts';
 import { addTask, getTasks, removeTask, updateTask } from '../api.ts';
+import { useLoad } from '../../../hooks/useLoad.ts';
 
 interface SortConfig {
     field: SortField | null;
@@ -21,9 +22,10 @@ type Props = {
 };
 
 export function TaskList(props: Props) {
-    const [taskList, setTaskList] = useState<Array<TaskType>>([]);
-    const [loading, setLoading] = useState<boolean>(true);
-    const [error, setError] = useState('');
+    const { itemsList, setItemsList, loading, error } = useLoad<TaskType, Props['projectId']>(
+        getTasks,
+        props.projectId,
+    );
 
     const [sortConfig, setSortConfig] = useState<SortConfig>({
         field: null,
@@ -32,32 +34,10 @@ export function TaskList(props: Props) {
     const [isAddTaskOpen, setIsAddTaskOpen] = useState(false);
     const { users } = useUsers();
 
-    useEffect(() => {
-        async function load() {
-            if (props.projectId === null) return;
-            setTaskList([]);
-            setError('');
-            setLoading(true);
-            const { data, error } = await getTasks(props.projectId);
-
-            if (error !== null) {
-                // console.log('error', error?.message);
-                setError(error.message);
-                setLoading(false);
-                return;
-            }
-            if (data) {
-                setTaskList(data);
-                setLoading(false);
-            }
-        }
-        load();
-    }, [props.projectId]);
-
     async function handleAddTask(task: CreateTaskType) {
         const data = await addTask(task);
         if (data) {
-            setTaskList([data, ...taskList]);
+            setItemsList([data, ...itemsList]);
             setIsAddTaskOpen(false);
         }
     }
@@ -65,14 +45,14 @@ export function TaskList(props: Props) {
     async function handleRemoveTask(id: string) {
         const error = await removeTask(id);
         if (error === null) {
-            setTaskList(taskList.filter((task) => task.id !== id));
+            setItemsList(itemsList.filter((task) => task.id !== id));
         }
     }
 
     async function handleUpdateTask(id: string, field: UpdateField, value: UpdateValue) {
         const error = await updateTask(id, field, value);
         if (error === null) {
-            const updatedTasks = taskList.map((el) => {
+            const updatedTasks = itemsList.map((el) => {
                 if (el.id === id) {
                     return {
                         ...el,
@@ -80,7 +60,7 @@ export function TaskList(props: Props) {
                     };
                 } else return el;
             });
-            setTaskList(updatedTasks);
+            setItemsList(updatedTasks);
         }
     }
 
@@ -92,7 +72,7 @@ export function TaskList(props: Props) {
         }));
     };
 
-    const sortedTaskList = [...taskList].sort((a, b) => {
+    const sortedTaskList = [...itemsList].sort((a, b) => {
         if (!sortConfig.field) return 0;
 
         const aValue = a[sortConfig.field];
@@ -129,8 +109,8 @@ export function TaskList(props: Props) {
                             />
                         )}
                     </div>
-                    {!taskList.length && 'Добавь новую задачу для этого проекта'}
-                    {taskList.length > 0 && (
+                    {!itemsList.length && 'Добавь новую задачу для этого проекта'}
+                    {itemsList.length > 0 && (
                         <>
                             <h2>Tasks</h2>
                             <table>

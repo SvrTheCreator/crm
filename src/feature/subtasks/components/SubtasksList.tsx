@@ -1,9 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import type { CreateSubtaskType, SubtaskType } from '../types.ts';
 import { Subtask } from './Subtask.tsx';
 import type { UpdateField, UpdateValue, UsersType } from '../../tasks/types.ts';
 import { AddSubtask } from './AddSubtask.tsx';
-import { supabase } from '../../../utils/supabase.ts';
+import { addSubtask, deleteSubtask, getSubtasks, updateSubtask } from '../api.ts';
+import { useLoad } from '../../../hooks/useLoad.ts';
 
 type Props = {
     taskId: string;
@@ -11,83 +12,64 @@ type Props = {
 };
 
 export function SubtasksList(props: Props) {
-    const [subtasksList, setSubtasksList] = useState<Array<SubtaskType>>([]);
     const [addSubtaskOpen, setAddSubtaskOpen] = useState<boolean>(false);
-    const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        async function getSubtasks() {
-            setLoading(true);
-            const response = await supabase
-                .from('subtasks')
-                .select()
-                .order('created_at', { ascending: false })
-                .eq('task_id', props.taskId);
-            if (response.error) {
-                setLoading(false);
-                console.log(response.error);
-                return;
-            }
-            if (response.data) {
-                setLoading(false);
-                setSubtasksList(response.data);
-            }
-        }
-        getSubtasks();
-    }, [props.taskId]);
+    const { itemsList, setItemsList, loading, error } = useLoad<SubtaskType, Props['taskId']>(
+        getSubtasks,
+        props.taskId,
+    );
 
     async function handleAddSubtask(newSubtask: CreateSubtaskType) {
-        const response = await supabase.from('subtasks').insert(newSubtask).select().single();
-        if (response.error) {
-            console.log(response.error);
-            return;
+        const { data, error } = await addSubtask(newSubtask);
+
+        if (data) {
+            setItemsList([data, ...itemsList]);
+            setAddSubtaskOpen(false);
         }
-        if (response.data) {
-            setSubtasksList([response.data, ...subtasksList]);
+
+        if (error !== null) {
+            console.log(error.message);
             setAddSubtaskOpen(false);
         }
     }
 
     async function handleDeleteSubtask(id: string) {
-        const response = await supabase.from('subtasks').delete().eq('id', id);
+        const { error } = await deleteSubtask(id);
 
-        if (response.error) {
-            console.log(response.error);
-            return;
+        if (error === null) {
+            const subtasksWithoutDeleted = itemsList.filter((subtask) => {
+                return subtask.id !== id;
+            });
+
+            setItemsList(subtasksWithoutDeleted);
+        } else {
+            console.log(error.message);
         }
-
-        const subtasksWithoutDeleted = subtasksList.filter((subtask) => {
-            return subtask.id !== id;
-        });
-
-        setSubtasksList(subtasksWithoutDeleted);
     }
 
     async function handleUpdateSubtask(id: string, field: UpdateField, value: UpdateValue) {
-        const response = await supabase
-            .from('subtasks')
-            .update({ [field]: value })
-            .eq('id', id);
+        const { error } = await updateSubtask(id, field, value);
 
-        if (response.error) {
-            console.log(response.error);
-            return;
+        if (error === null) {
+            const updateSubtask = itemsList.map((subtask: SubtaskType) => {
+                if (subtask.id === id) {
+                    return {
+                        ...subtask,
+                        [field]: value,
+                    };
+                } else {
+                    return subtask;
+                }
+            });
+            setItemsList(updateSubtask);
+        } else {
+            console.log(error.message);
         }
-
-        const updateSubtask = subtasksList.map((subtask: SubtaskType) => {
-            if (subtask.id === id) {
-                return {
-                    ...subtask,
-                    [field]: value,
-                };
-            } else {
-                return subtask;
-            }
-        });
-        setSubtasksList(updateSubtask);
     }
 
-    return loading ? (
+    return error !== '' ? (
+        error
+    ) : loading ? (
         'Loading...'
     ) : (
         <div style={{ marginLeft: '50px', padding: '20px' }}>
@@ -101,7 +83,7 @@ export function SubtasksList(props: Props) {
                     handleAddSubtask={handleAddSubtask}
                 />
             )}
-            {subtasksList.length === 0 ? (
+            {itemsList.length === 0 ? (
                 'Нет активных подзадач'
             ) : (
                 <table style={{ minWidth: '100%' }}>
@@ -117,7 +99,7 @@ export function SubtasksList(props: Props) {
                         </tr>
                     </thead>
                     <tbody>
-                        {subtasksList.map((subtask: SubtaskType) => (
+                        {itemsList.map((subtask: SubtaskType) => (
                             <tr key={subtask.id}>
                                 <Subtask
                                     subtask={subtask}

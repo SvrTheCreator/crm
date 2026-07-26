@@ -2,7 +2,7 @@ export type TaskType = {
     id: string;
     project_id: string;
     title: string;
-    description: string;
+    description: string | null;
     assignee: string | null;
     priority: Priority;
     due_date: string | null;
@@ -12,7 +12,7 @@ export type TaskType = {
 export type CreateTaskType = {
     project_id: string;
     title: string;
-    description: string;
+    description: string | null;
     assignee: string | null;
     priority: Priority;
     due_date: string | null;
@@ -22,6 +22,11 @@ export type CreateTaskType = {
 export type UsersType = {
     id: string;
     name: string;
+};
+
+export type EditedFieldType = {
+    title: string;
+    description: string | null;
 };
 
 export type Priority = 'Low' | 'Medium' | 'High';

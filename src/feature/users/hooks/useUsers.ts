@@ -1,25 +1,17 @@
 import { useEffect, useState } from 'react';
 import type { UsersType } from '../../tasks/types.ts';
-import { supabase } from '../../../utils/supabase.ts';
+import { getUsers } from '../api.ts';
 
 export function useUsers() {
     const [users, setUsers] = useState<Array<UsersType>>([]);
 
     useEffect(() => {
-        async function getProfiles() {
-            const response = await supabase.from('profiles').select();
-
-            if (response.error) {
-                console.log(response.error);
-                return;
-            }
-            if (response.data) {
-                setUsers(response.data);
-
-                // console.log(response.data);
-            }
+        async function load() {
+            const { data, error } = await getUsers();
+            if (data) setUsers(data);
+            if (error !== null) console.log(error.message);
         }
-        getProfiles();
+        load();
     }, []);
 
     return { users };

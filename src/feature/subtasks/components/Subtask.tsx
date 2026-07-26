@@ -1,5 +1,12 @@
 import type { SubtaskType } from '../types.ts';
-import type { Priority, Status, UpdateField, UpdateValue, UsersType } from '../../tasks/types.ts';
+import type {
+    EditedFieldType,
+    Priority,
+    Status,
+    UpdateField,
+    UpdateValue,
+    UsersType,
+} from '../../tasks/types.ts';
 import { getCurrentDate } from '../../../utils/getCurrentDate.ts';
 import { useState } from 'react';
 
@@ -20,7 +27,7 @@ type Props = {
 
 export function Subtask(props: Props) {
     const [isEdit, setIsEdit] = useState(false);
-    const [editedField, setEditedField] = useState({
+    const [editedField, setEditedField] = useState<EditedFieldType>({
         title: props.subtask.title,
         description: props.subtask.description,
     });
