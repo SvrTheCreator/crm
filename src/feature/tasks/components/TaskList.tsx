@@ -1,16 +1,10 @@
-import {
-    type CreateTaskType,
-    type SortField,
-    type TaskType,
-    type UpdateField,
-    type UpdateValue,
-} from '../types.ts';
+import { type CreateTaskType, type SortField, type TaskType } from '../types.ts';
 import { useState } from 'react';
 import { AddTask } from './AddTask.tsx';
 import { Task } from './Task.tsx';
+import { createTask, readTasks, deleteTask, updateTask } from '../api.ts';
+import { useCrud } from '../../../hooks/useCollection.ts';
 import { useUsers } from '../../users/hooks/useUsers.ts';
-import { addTask, getTasks, removeTask, updateTask } from '../api.ts';
-import { useLoad } from '../../../hooks/useLoad.ts';
 
 interface SortConfig {
     field: SortField | null;
@@ -22,47 +16,29 @@ type Props = {
 };
 
 export function TaskList(props: Props) {
-    const { itemsList, setItemsList, loading, error } = useLoad<TaskType, Props['projectId']>(
-        getTasks,
-        props.projectId,
-    );
+    const {
+        itemsList,
+        loading,
+        error,
+        isAddItemOpen,
+        setIsAddItemOpen,
+        handleAddItem,
+        handleRemoveItem,
+        handleUpdateItem,
+    } = useCrud<TaskType, Props['projectId'], CreateTaskType>({
+        readItems: readTasks,
+        required_ID: props.projectId,
+        createItem: createTask,
+        deleteItem: deleteTask,
+        updateItem: updateTask,
+    });
+
+    const { users } = useUsers();
 
     const [sortConfig, setSortConfig] = useState<SortConfig>({
         field: null,
         order: null,
     });
-    const [isAddTaskOpen, setIsAddTaskOpen] = useState(false);
-    const { users } = useUsers();
-
-    async function handleAddTask(task: CreateTaskType) {
-        const data = await addTask(task);
-        if (data) {
-            setItemsList([data, ...itemsList]);
-            setIsAddTaskOpen(false);
-        }
-    }
-
-    async function handleRemoveTask(id: string) {
-        const error = await removeTask(id);
-        if (error === null) {
-            setItemsList(itemsList.filter((task) => task.id !== id));
-        }
-    }
-
-    async function handleUpdateTask(id: string, field: UpdateField, value: UpdateValue) {
-        const error = await updateTask(id, field, value);
-        if (error === null) {
-            const updatedTasks = itemsList.map((el) => {
-                if (el.id === id) {
-                    return {
-                        ...el,
-                        [field]: value,
-                    };
-                } else return el;
-            });
-            setItemsList(updatedTasks);
-        }
-    }
 
     const handleConfig = (arg: SortField) => {
         setSortConfig((prev) => ({
@@ -100,11 +76,11 @@ export function TaskList(props: Props) {
             ) : (
                 <div>
                     <div style={{ marginBottom: '12px' }}>
-                        <button onClick={() => setIsAddTaskOpen(!isAddTaskOpen)}>Add task</button>
-                        {isAddTaskOpen && props.projectId && (
+                        <button onClick={() => setIsAddItemOpen(!isAddItemOpen)}>Add task</button>
+                        {isAddItemOpen && props.projectId && (
                             <AddTask
                                 currentProjectId={props.projectId}
-                                handleAddTask={handleAddTask}
+                                handleAddTask={handleAddItem}
                                 users={users}
                             />
                         )}
@@ -137,8 +113,8 @@ export function TaskList(props: Props) {
                                             key={task.id}
                                             users={users}
                                             task={task}
-                                            handleUpdateTask={handleUpdateTask}
-                                            handleRemoveTask={handleRemoveTask}
+                                            handleUpdateTask={handleUpdateItem}
+                                            handleRemoveTask={handleRemoveItem}
                                         />
                                     ))}
                                 </tbody>

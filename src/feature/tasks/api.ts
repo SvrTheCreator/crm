@@ -1,7 +1,7 @@
 import { supabase } from '../../utils/supabase.ts';
 import type { CreateTaskType, UpdateField, UpdateValue } from './types.ts';
 
-export async function getTasks(projectId: string | null) {
+export async function readTasks(projectId: string | null) {
     const response = await supabase
         .from('tasks')
         .select()
@@ -11,17 +11,13 @@ export async function getTasks(projectId: string | null) {
     return { data: response.data, error: response.error };
 }
 
-export async function addTask(task: CreateTaskType) {
+export async function createTask(task: CreateTaskType) {
     const response = await supabase.from('tasks').insert(task).select().single();
 
-    if (response.error) {
-        console.error(response.error);
-        return;
-    }
-    return response.data;
+    return { data: response.data, error: response.error };
 }
 
-export async function removeTask(id: string) {
+export async function deleteTask(id: string) {
     const response = await supabase.from('tasks').delete().eq('id', id);
 
     if (response.error) {
@@ -29,7 +25,7 @@ export async function removeTask(id: string) {
     }
     console.log('response:', response);
 
-    return response.error;
+    return { error: response.error };
 }
 
 export async function updateTask(id: string, field: UpdateField, value: UpdateValue) {
@@ -41,5 +37,6 @@ export async function updateTask(id: string, field: UpdateField, value: UpdateVa
     if (response.error) {
         console.log(response.error);
     }
-    return response.error;
+
+    return { data: response.data, error: response.error };
 }

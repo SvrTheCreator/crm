@@ -1,12 +1,13 @@
 import type { ProjectType } from '../types.ts';
 import { useState } from 'react';
+import type { UpdateField, UpdateValue } from '../../tasks/types.ts';
 
 type Props = {
     project: ProjectType;
     setProjectId: (projectId: string) => void;
     projectId: string | null;
     handleRemoveProject: (projectId: string) => void;
-    handleEditProject: (newProjectName: ProjectType) => void;
+    handleUpdateProject: (id: string, field: UpdateField, value: UpdateValue) => void;
 };
 
 const flex = {
@@ -15,24 +16,17 @@ const flex = {
     gap: '10px',
 };
 
-const errorName = {
-    border: '2px solid red',
-};
+// const errorName = {
+//     border: '2px solid red',
+// };
 
 export function Project(props: Props) {
-    const [isEditing, setIsEditing] = useState(false);
-    const [newProjectName, setNewProjectName] = useState('');
-    const [chooseName, setChooseName] = useState(true);
+    const [isEdit, setIsEdit] = useState(false);
+    const [newProjectName, setNewProjectName] = useState(props.project.title);
 
-    const renameProject = (project: ProjectType) => {
-        if (!project.title.trim().length) {
-            setChooseName(false);
-            return;
-        }
-
-        props.handleEditProject(project);
-        setIsEditing(false);
-        setChooseName(true);
+    const handleFieldChange = () => {
+        props.handleUpdateProject(props.project.id, 'title', newProjectName);
+        setIsEdit(false);
     };
 
     return (
@@ -45,28 +39,21 @@ export function Project(props: Props) {
             //     props.setProjectId(props.project.id);
             // }}
         >
-            {isEditing ? (
+            {isEdit ? (
                 <div style={{ display: 'flex' }}>
                     <input
-                        style={chooseName ? undefined : errorName}
+                        // style={chooseName ? undefined : errorName}
                         value={newProjectName}
                         onChange={(event) => {
                             setNewProjectName(event.target.value);
                         }}
-                        placeholder={props.project.title}
                         type="text"
                     />
-                    <button
-                        onClick={() =>
-                            renameProject({ id: props.project.id, title: newProjectName })
-                        }
-                    >
-                        💾
-                    </button>
+                    <button onClick={() => handleFieldChange()}>💾</button>
                     <button
                         onClick={() => {
-                            setIsEditing(false);
-                            setChooseName(true);
+                            setNewProjectName(props.project.title);
+                            setIsEdit(false);
                         }}
                     >
                         ❌
@@ -81,7 +68,7 @@ export function Project(props: Props) {
                 >
                     <h3> {props.project.title}</h3>
                     <div style={flex}>
-                        <div onClick={() => setIsEditing(true)}>✏️</div>️
+                        <div onClick={() => setIsEdit(true)}>✏️</div>️
                         <div onClick={() => props.handleRemoveProject(props.project.id)}>🗑️</div>️
                     </div>
                 </div>
