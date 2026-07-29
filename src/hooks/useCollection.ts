@@ -5,16 +5,20 @@ import type { UpdateField, UpdateValue } from '../feature/tasks/types.ts';
 type PromiseType<ItemsType> = Promise<{ data: ItemsType | null; error: PostgrestError | null }>;
 
 type CrudPropsType<ItemsType, IdType, CreateItemType> = {
-    readItems: (required_ID?: IdType) => PromiseType<ItemsType[]>;
-    required_ID?: IdType;
+    readItems: (required_ID: IdType) => PromiseType<ItemsType[]>;
+    required_ID: IdType;
     createItem: (item: CreateItemType) => PromiseType<ItemsType>;
     deleteItem: (id: string) => Promise<{ error: PostgrestError | null }>;
     updateItem: (id: string, field: UpdateField, value: UpdateValue) => PromiseType<ItemsType>;
 };
 
-export const useCrud = <ItemsType extends { id: string }, IdType, CreateItemType>(
-    props: CrudPropsType<ItemsType, IdType, CreateItemType>,
-) => {
+export const useCrud = <ItemsType extends { id: string }, IdType, CreateItemType>({
+    required_ID,
+    readItems,
+    createItem,
+    deleteItem,
+    updateItem,
+}: CrudPropsType<ItemsType, IdType, CreateItemType>) => {
     const [itemsList, setItemsList] = useState<Array<ItemsType>>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState('');
@@ -22,11 +26,11 @@ export const useCrud = <ItemsType extends { id: string }, IdType, CreateItemType
 
     useEffect(() => {
         async function load() {
-            if (props.required_ID === null) return;
+            if (required_ID === null) return;
             setItemsList([]);
             setError('');
             setLoading(true);
-            const { data, error } = await props.readItems(props.required_ID);
+            const { data, error } = await readItems(required_ID);
 
             if (error !== null) {
                 setError(error.message);
@@ -39,10 +43,10 @@ export const useCrud = <ItemsType extends { id: string }, IdType, CreateItemType
             }
         }
         load();
-    }, [props.required_ID, props.readItems]);
+    }, [required_ID, readItems]);
 
     async function handleAddItem(item: CreateItemType) {
-        const { data, error } = await props.createItem(item);
+        const { data, error } = await createItem(item);
 
         if (error !== null) {
             console.log(error.message);
@@ -55,7 +59,7 @@ export const useCrud = <ItemsType extends { id: string }, IdType, CreateItemType
     }
 
     async function handleRemoveItem(id: string) {
-        const { error } = await props.deleteItem(id);
+        const { error } = await deleteItem(id);
         if (error !== null) {
             console.log(error.message);
             return;
@@ -63,7 +67,7 @@ export const useCrud = <ItemsType extends { id: string }, IdType, CreateItemType
         setItemsList(itemsList.filter((item) => item.id !== id));
     }
     async function handleUpdateItem(id: string, field: UpdateField, value: UpdateValue) {
-        const { error } = await props.updateItem(id, field, value);
+        const { error } = await updateItem(id, field, value);
         if (error !== null) {
             console.log(error.message);
             return;

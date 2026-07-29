@@ -2,7 +2,7 @@ import { useForm } from 'react-hook-form';
 import type { CreateProjectType } from '../types.ts';
 
 type Props = {
-    handleAddProject: (project: CreateProjectType) => void;
+    handleCreateProject: (project: CreateProjectType) => void;
 };
 
 export function AddProject(props: Props) {
@@ -12,7 +12,7 @@ export function AddProject(props: Props) {
         const newProject = {
             title: project.title,
         };
-        props.handleAddProject(newProject);
+        props.handleCreateProject(newProject);
         reset();
     };
 

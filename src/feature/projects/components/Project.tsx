@@ -6,7 +6,7 @@ type Props = {
     project: ProjectType;
     setProjectId: (projectId: string) => void;
     projectId: string | null;
-    handleRemoveProject: (projectId: string) => void;
+    handleDeleteProject: (projectId: string) => void;
     handleUpdateProject: (id: string, field: UpdateField, value: UpdateValue) => void;
 };
 
@@ -35,14 +35,10 @@ export function Project(props: Props) {
                 color: props.projectId === props.project.id ? 'gold' : 'white',
                 cursor: 'pointer',
             }}
-            // onClick={() => {
-            //     props.setProjectId(props.project.id);
-            // }}
         >
             {isEdit ? (
                 <div style={{ display: 'flex' }}>
                     <input
-                        // style={chooseName ? undefined : errorName}
                         value={newProjectName}
                         onChange={(event) => {
                             setNewProjectName(event.target.value);
@@ -69,7 +65,7 @@ export function Project(props: Props) {
                     <h3> {props.project.title}</h3>
                     <div style={flex}>
                         <div onClick={() => setIsEdit(true)}>✏️</div>️
-                        <div onClick={() => props.handleRemoveProject(props.project.id)}>🗑️</div>️
+                        <div onClick={() => props.handleDeleteProject(props.project.id)}>🗑️</div>️
                     </div>
                 </div>
             )}

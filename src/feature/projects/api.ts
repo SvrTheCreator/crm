@@ -22,10 +22,10 @@ export async function deleteProject(projectId: string) {
 }
 
 export async function updateProject(id: string, field: UpdateField, value: UpdateValue) {
-    const { data, error } = await supabase
+    const { error } = await supabase
         .from('projects')
         .update({ [field]: value })
         .eq('id', id);
 
-    return { data, error };
+    return { error };
 }
