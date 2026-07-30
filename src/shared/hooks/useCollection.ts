@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import type { PostgrestError } from '@supabase/supabase-js';
-import type { UpdateField, UpdateValue } from '../feature/tasks/types.ts';
+import type { UpdateField, UpdateValue } from '../../features/tasks/types.ts';
 
 type PromiseType<ItemsType> = Promise<{ data: ItemsType | null; error: PostgrestError | null }>;
 

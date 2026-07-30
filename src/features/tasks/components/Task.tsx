@@ -9,7 +9,7 @@ import type {
 } from '../types.ts';
 import { Fragment, useState } from 'react';
 import { SubtasksList } from '../../subtasks/components/SubtasksList.tsx';
-import { getCurrentDate } from '../../../utils/getCurrentDate.ts';
+import { getCurrentDate } from '../../../shared/utils/getCurrentDate.ts';
 
 const cell = {
     maxWidth: '300px',

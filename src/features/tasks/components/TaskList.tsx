@@ -3,8 +3,8 @@ import { useState } from 'react';
 import { AddTask } from './AddTask.tsx';
 import { Task } from './Task.tsx';
 import { createTask, readTasks, deleteTask, updateTask } from '../api.ts';
-import { useCrud } from '../../../hooks/useCollection.ts';
 import { useUsers } from '../../users/hooks/useUsers.ts';
+import { useCrud } from '../../../shared/hooks/useCollection.ts';
 
 interface SortConfig {
     field: SortField | null;

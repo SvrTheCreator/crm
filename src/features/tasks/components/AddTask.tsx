@@ -1,6 +1,6 @@
 import { useForm } from 'react-hook-form';
 import type { CreateTaskType, UsersType } from '../types.ts';
-import { getCurrentDate } from '../../../utils/getCurrentDate.ts';
+import { getCurrentDate } from '../../../shared/utils/getCurrentDate.ts';
 
 type Props = {
     handleAddTask: (task: CreateTaskType) => void;

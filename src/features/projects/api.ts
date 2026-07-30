@@ -1,6 +1,6 @@
-import { supabase } from '../../utils/supabase.ts';
 import type { CreateProjectType } from './types.ts';
 import type { UpdateField, UpdateValue } from '../tasks/types.ts';
+import { supabase } from '../../shared/utils/supabase.ts';
 
 export async function readProjects() {
     const { data, error } = await supabase

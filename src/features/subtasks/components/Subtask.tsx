@@ -7,8 +7,8 @@ import type {
     UpdateValue,
     UsersType,
 } from '../../tasks/types.ts';
-import { getCurrentDate } from '../../../utils/getCurrentDate.ts';
 import { useState } from 'react';
+import { getCurrentDate } from '../../../shared/utils/getCurrentDate.ts';
 
 const cell = {
     maxWidth: '300px',

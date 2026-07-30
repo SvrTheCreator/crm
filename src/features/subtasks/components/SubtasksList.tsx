@@ -3,7 +3,7 @@ import { Subtask } from './Subtask.tsx';
 import type { UsersType } from '../../tasks/types.ts';
 import { AddSubtask } from './AddSubtask.tsx';
 import { createSubtask, readSubtasks, deleteSubtask, updateSubtask } from '../api.ts';
-import { useCrud } from '../../../hooks/useCollection.ts';
+import { useCrud } from '../../../shared/hooks/useCollection.ts';
 
 type Props = {
     taskId: string;

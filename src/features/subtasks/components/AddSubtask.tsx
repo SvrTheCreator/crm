@@ -1,7 +1,7 @@
 import type { CreateSubtaskType } from '../types.ts';
 import { useForm } from 'react-hook-form';
 import type { UsersType } from '../../tasks/types.ts';
-import { getCurrentDate } from '../../../utils/getCurrentDate.ts';
+import { getCurrentDate } from '../../../shared/utils/getCurrentDate.ts';
 
 type Props = {
     taskId: string;

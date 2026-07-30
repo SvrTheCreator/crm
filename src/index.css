@@ -19,7 +19,7 @@ ul {
     list-style-type: none;
 }
 
-#root {
-    display: grid;
-    grid-template-columns: 0.2fr 1fr;
-}
+/*#root {*/
+/*    display: grid;*/
+/*    grid-template-columns: 0.2fr 1fr;*/
+/*}*/

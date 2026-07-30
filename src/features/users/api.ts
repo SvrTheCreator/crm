@@ -1,4 +1,4 @@
-import { supabase } from '../../utils/supabase.ts';
+import { supabase } from '../../shared/utils/supabase.ts';
 
 export async function getUsers() {
     const response = await supabase.from('profiles').select();
