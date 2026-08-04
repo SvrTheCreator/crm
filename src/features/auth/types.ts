@@ -3,3 +3,8 @@ export type CreateUserType = {
     password: string;
     confirm_password: string;
 };
+
+export type UserType = {
+    email: string;
+    password: string;
+};

@@ -14,22 +14,31 @@ export function RegisterForm() {
     const { register, reset, handleSubmit } = useForm<CreateUserType>();
     const [error, setError] = useState('');
 
-    const handleRegister = (data: CreateUserType) => {
+    async function handleRegister(user: CreateUserType) {
         setError('');
-        if (data.password !== data.confirm_password) {
+        if (user.password !== user.confirm_password) {
             setError('Passwords do not match');
             return;
         }
         const newUser = {
-            email: data.email,
-            password: data.password,
-            confirm_password: data.confirm_password,
+            email: user.email,
+            password: user.password,
+            confirm_password: user.confirm_password,
         };
 
-        registerUser(newUser);
-
+        const { data, error } = await registerUser(newUser);
+        if (error !== null) {
+            setError(error.message);
+            return;
+        }
+        if (data.user?.identities) {
+            console.log(data.user.identities);
+            setError('Пользователь с таким email уже существует');
+            return;
+        }
         reset();
-    };
+        return;
+    }
 
     return (
         <div style={style}>
@@ -58,14 +67,13 @@ export function RegisterForm() {
                 <div>
                     <label htmlFor="confirm-password">Confirm Password:</label>
                     <input
-                        style={{ border: error ? '1px solid red' : '1px solid white' }}
                         {...register('confirm_password', { required: true })}
                         id="confirm-password"
                         type="password"
                     />
-                    {error}
                 </div>
                 <button type="submit">Register</button>
+                <div>{error}</div>
             </form>
         </div>
     );
