@@ -31,8 +31,9 @@ export function RegisterForm() {
             setError(error.message);
             return;
         }
-        if (data.user?.identities) {
-            console.log(data.user.identities);
+        // отрабатывает если поставить подтверждение email
+        if (data.user?.identities?.length === 0) {
+            // console.log(data.user?.identities);
             setError('Пользователь с таким email уже существует');
             return;
         }
