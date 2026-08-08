@@ -10,7 +10,11 @@ const style = {
     padding: '16px',
 } as const;
 
-export function LoginForm() {
+type Props = {
+    setCurrentUser: (value: string) => void;
+};
+
+export function LoginForm(props: Props) {
     const { register, reset, handleSubmit } = useForm<UserType>();
     const [error, setError] = useState('');
 
@@ -28,6 +32,7 @@ export function LoginForm() {
             return;
         }
         console.log(data);
+        props.setCurrentUser(user.email);
 
         reset();
         return;

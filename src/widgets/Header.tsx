@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { LoginForm } from '../features/auth/components/LoginForm.tsx';
 import { RegisterForm } from '../features/auth/components/RegisterForm.tsx';
+import { signOut } from '../features/auth/api.ts';
 
 const styleForm = {
     position: 'absolute',
@@ -14,7 +15,13 @@ const styleForm = {
     zIndex: '10',
 } as const;
 
-export function Header() {
+type Props = {
+    loading: boolean;
+    currentUser: string | null;
+    setCurrentUser: (value: string | null) => void;
+};
+
+export function Header(props: Props) {
     const [currentForm, setCurrentForm] = useState('');
 
     const loginForm = 'Login Form';
@@ -28,19 +35,39 @@ export function Header() {
             return el;
         });
     };
-    console.log(currentForm);
 
     return (
         <header style={{ display: 'flex', justifyContent: 'space-between' }}>
             <div>header</div>
+
             <div>
-                <button onClick={() => handleVariable(loginForm)}>Войти</button>
-                <button onClick={() => handleVariable(registerForm)}>Регистрация</button>
+                {props.loading ? (
+                    <div>Loading...</div>
+                ) : props.currentUser !== null ? (
+                    <div style={{ display: 'flex', gap: '10px' }}>
+                        <div>{props.currentUser}</div>
+                        <div>
+                            <button
+                                onClick={() => {
+                                    signOut();
+                                    props.setCurrentUser(null);
+                                }}
+                            >
+                                Выйти
+                            </button>
+                        </div>
+                    </div>
+                ) : (
+                    <div>
+                        <button onClick={() => handleVariable(loginForm)}>Войти</button>
+                        <button onClick={() => handleVariable(registerForm)}>Регистрация</button>
+                    </div>
+                )}
             </div>
 
             {currentForm === loginForm && (
                 <div style={styleForm}>
-                    <LoginForm />
+                    <LoginForm setCurrentUser={props.setCurrentUser} />
                 </div>
             )}
             {currentForm === registerForm && (

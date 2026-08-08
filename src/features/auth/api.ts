@@ -14,3 +14,15 @@ export async function loginUser(userData: UserType) {
 
     return { data, error };
 }
+
+export async function signOut() {
+    const { error } = await supabase.auth.signOut({ scope: 'local' });
+
+    return { error };
+}
+
+export async function getUser() {
+    const { data, error } = await supabase.auth.getUser();
+
+    return { data, error };
+}
