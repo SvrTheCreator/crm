@@ -3,11 +3,12 @@ import { Workspace } from './pages/workspace/Workspace.tsx';
 import { Footer } from './widgets/Footer.tsx';
 import { useEffect, useState } from 'react';
 import { getUser } from './features/auth/api.ts';
+import { AuthContext } from './features/auth/hooks/AuthContext.ts';
 
 export function App() {
-    const [currentUser, setCurrentUser] = useState<string | null>('');
+    const [currentUser, setCurrentUser] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
-    console.log(loading, currentUser);
+    // console.log(loading, currentUser);
 
     useEffect(() => {
         async function load() {
@@ -29,12 +30,12 @@ export function App() {
     }, []);
 
     return (
-        <>
-            <Header loading={loading} currentUser={currentUser} setCurrentUser={setCurrentUser} />
+        <AuthContext.Provider value={{ currentUser, setCurrentUser, loading }}>
+            <Header />
             <main>
                 <Workspace />
             </main>
             <Footer />
-        </>
+        </AuthContext.Provider>
     );
 }

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { LoginForm } from '../features/auth/components/LoginForm.tsx';
 import { RegisterForm } from '../features/auth/components/RegisterForm.tsx';
 import { signOut } from '../features/auth/api.ts';
+import { useAuth } from '../features/auth/hooks/AuthContext.ts';
 
 const styleForm = {
     position: 'absolute',
@@ -15,14 +16,15 @@ const styleForm = {
     zIndex: '10',
 } as const;
 
-type Props = {
-    loading: boolean;
-    currentUser: string | null;
-    setCurrentUser: (value: string | null) => void;
-};
+// type Props = {
+//     loading: boolean;
+//     currentUser: string | null;
+//     setCurrentUser: (value: string | null) => void;
+// };
 
-export function Header(props: Props) {
+export function Header() {
     const [currentForm, setCurrentForm] = useState('');
+    const { currentUser, setCurrentUser, loading } = useAuth();
 
     const loginForm = 'Login Form';
     const registerForm = 'Register Form';
@@ -41,16 +43,16 @@ export function Header(props: Props) {
             <div>header</div>
 
             <div>
-                {props.loading ? (
+                {loading ? (
                     <div>Loading...</div>
-                ) : props.currentUser !== null ? (
+                ) : currentUser !== null ? (
                     <div style={{ display: 'flex', gap: '10px' }}>
-                        <div>{props.currentUser}</div>
+                        <div>{currentUser}</div>
                         <div>
                             <button
                                 onClick={() => {
                                     signOut();
-                                    props.setCurrentUser(null);
+                                    setCurrentUser(null);
                                 }}
                             >
                                 Выйти
@@ -67,7 +69,7 @@ export function Header(props: Props) {
 
             {currentForm === loginForm && (
                 <div style={styleForm}>
-                    <LoginForm setCurrentUser={props.setCurrentUser} />
+                    <LoginForm />
                 </div>
             )}
             {currentForm === registerForm && (
