@@ -2,7 +2,6 @@ import { useForm } from 'react-hook-form';
 import type { UserType } from '../types.ts';
 import { useState } from 'react';
 import { loginUser } from '../api.ts';
-import { useAuth } from '../hooks/AuthContext.ts';
 
 const style = {
     display: 'flex',
@@ -14,7 +13,6 @@ const style = {
 export function LoginForm() {
     const { register, reset, handleSubmit } = useForm<UserType>();
     const [error, setError] = useState('');
-    const { setCurrentUser } = useAuth();
 
     async function handleLogin(user: UserType) {
         setError('');
@@ -30,7 +28,6 @@ export function LoginForm() {
             return;
         }
         console.log(data);
-        setCurrentUser(user.email);
 
         reset();
         return;

@@ -24,7 +24,7 @@ const styleForm = {
 
 export function Header() {
     const [currentForm, setCurrentForm] = useState('');
-    const { currentUser, setCurrentUser, loading } = useAuth();
+    const { currentUser, loading } = useAuth();
 
     const loginForm = 'Login Form';
     const registerForm = 'Register Form';
@@ -52,7 +52,6 @@ export function Header() {
                             <button
                                 onClick={() => {
                                     signOut();
-                                    setCurrentUser(null);
                                 }}
                             >
                                 Выйти
