@@ -39,6 +39,7 @@ export function ProjectsList(props: Props) {
         }
         if (data) {
             setProjectsList([data, ...projectsList]);
+            setIsAddProjectOpen(false);
         }
     }
 
