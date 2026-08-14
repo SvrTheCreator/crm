@@ -2,7 +2,6 @@ import { createContext, useContext } from 'react';
 
 type AuthContextType = {
     currentUser: string | null;
-    setCurrentUser: (value: string | null) => void;
     loading: boolean;
 };
 

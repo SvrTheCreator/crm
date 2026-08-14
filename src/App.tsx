@@ -12,17 +12,15 @@ export function App() {
     useEffect(() => {
         const {
             data: { subscription },
-        } = supabase.auth.onAuthStateChange((event, session) => {
+        } = supabase.auth.onAuthStateChange((_, session) => {
             setCurrentUser(session?.user.email ?? null);
             setLoading(false);
-            console.log(session);
-            console.log(event);
         });
         return () => subscription.unsubscribe();
     }, []);
 
     return (
-        <AuthContext.Provider value={{ currentUser, setCurrentUser, loading }}>
+        <AuthContext.Provider value={{ currentUser, loading }}>
             <Header />
             <main>
                 <Workspace />

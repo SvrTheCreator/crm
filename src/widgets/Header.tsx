@@ -16,12 +16,6 @@ const styleForm = {
     zIndex: '10',
 } as const;
 
-// type Props = {
-//     loading: boolean;
-//     currentUser: string | null;
-//     setCurrentUser: (value: string | null) => void;
-// };
-
 export function Header() {
     const [currentForm, setCurrentForm] = useState('');
     const { currentUser, loading } = useAuth();
