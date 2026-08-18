@@ -5,6 +5,13 @@ export async function registerUser(newUser: CreateUserType) {
     const { data, error } = await supabase.auth.signUp({
         email: newUser.email,
         password: newUser.password,
+        options: {
+            data: {
+                first_name: newUser.first_name,
+                last_name: newUser.last_name,
+                user_avatar: newUser.user_avatar,
+            },
+        },
     });
 
     return { data, error };

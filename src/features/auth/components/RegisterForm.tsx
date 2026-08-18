@@ -24,6 +24,9 @@ export function RegisterForm() {
             email: user.email,
             password: user.password,
             confirm_password: user.confirm_password,
+            first_name: user.first_name,
+            last_name: user.last_name,
+            user_avatar: '/user_default_avatar.png',
         };
 
         const { data, error } = await registerUser(newUser);
@@ -45,14 +48,6 @@ export function RegisterForm() {
         <div style={style}>
             <h2>Register form</h2>
             <form onSubmit={handleSubmit(handleRegister)}>
-                {/*<div>*/}
-                {/*    <label htmlFor="first-name">First name:</label>*/}
-                {/*    <input id="first-name" type="text" />*/}
-                {/*</div>*/}
-                {/*<div>*/}
-                {/*    <label htmlFor="second-name">Second name:</label>*/}
-                {/*    <input id='second-name"' type="text" />*/}
-                {/*</div>*/}
                 <div>
                     <label htmlFor="email">User email:</label>
                     <input {...register('email', { required: true })} id="email" type="email" />
@@ -71,6 +66,22 @@ export function RegisterForm() {
                         {...register('confirm_password', { required: true })}
                         id="confirm-password"
                         type="password"
+                    />
+                </div>
+                <div>
+                    <label htmlFor="first-name">First name:</label>
+                    <input
+                        {...register('first_name', { required: true })}
+                        id="first-name"
+                        type="text"
+                    />
+                </div>
+                <div>
+                    <label htmlFor="second-name">Second name:</label>
+                    <input
+                        {...register('last_name', { required: true })}
+                        id='second-name"'
+                        type="text"
                     />
                 </div>
                 <button type="submit">Register</button>

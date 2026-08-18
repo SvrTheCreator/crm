@@ -1,7 +1,8 @@
 import { createContext, useContext } from 'react';
+import type { User } from '@supabase/supabase-js';
 
 type AuthContextType = {
-    currentUser: string | null;
+    currentUser: User | null;
     loading: boolean;
 };
 

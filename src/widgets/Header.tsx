@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { LoginForm } from '../features/auth/components/LoginForm.tsx';
 import { RegisterForm } from '../features/auth/components/RegisterForm.tsx';
-import { signOut } from '../features/auth/api.ts';
 import { useAuth } from '../features/auth/hooks/AuthContext.ts';
+import { UserMenu } from '../features/auth/components/UserMenu.tsx';
 
 const styleForm = {
     position: 'absolute',
@@ -37,22 +37,9 @@ export function Header() {
             <div>header</div>
 
             <div>
-                {loading ? (
-                    <div>Loading...</div>
-                ) : currentUser !== null ? (
-                    <div style={{ display: 'flex', gap: '10px' }}>
-                        <div>{currentUser}</div>
-                        <div>
-                            <button
-                                onClick={() => {
-                                    signOut();
-                                }}
-                            >
-                                Выйти
-                            </button>
-                        </div>
-                    </div>
-                ) : (
+                {loading && 'Loading...'}
+                {currentUser && <UserMenu currentUser={currentUser} />}
+                {!currentUser && !loading && (
                     <div>
                         <button onClick={() => handleVariable(loginForm)}>Войти</button>
                         <button onClick={() => handleVariable(registerForm)}>Регистрация</button>

@@ -4,16 +4,17 @@ import { Footer } from './widgets/Footer.tsx';
 import { useEffect, useState } from 'react';
 import { AuthContext } from './features/auth/hooks/AuthContext.ts';
 import { supabase } from './shared/utils/supabase.ts';
+import type { User } from '@supabase/supabase-js';
 
 export function App() {
-    const [currentUser, setCurrentUser] = useState<string | null>(null);
+    const [currentUser, setCurrentUser] = useState<User | null>(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const {
             data: { subscription },
         } = supabase.auth.onAuthStateChange((_, session) => {
-            setCurrentUser(session?.user.email ?? null);
+            setCurrentUser(session?.user ?? null);
             setLoading(false);
         });
         return () => subscription.unsubscribe();
