@@ -13,7 +13,7 @@ export async function readSubtasks(taskId: string) {
 }
 
 export async function createSubtask(newSubtask: CreateSubtaskType) {
-    const response = await supabase.from('subtassks').insert(newSubtask).select().single();
+    const response = await supabase.from('subtasks').insert(newSubtask).select().single();
 
     return { data: response.data, error: response.error };
 }
