@@ -111,7 +111,7 @@ export function Task(props: Props) {
                         {props.users.map((item: UsersType) => {
                             return (
                                 <option key={item.id} value={item.id}>
-                                    {item.name}
+                                    {`${item.first_name} ${item.last_name}`}
                                 </option>
                             );
                         })}

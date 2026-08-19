@@ -21,7 +21,9 @@ export type CreateTaskType = {
 
 export type UsersType = {
     id: string;
-    name: string;
+    first_name: string;
+    last_name: string;
+    user_avatar: string;
 };
 
 export type EditedFieldType = {
