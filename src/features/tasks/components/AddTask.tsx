@@ -42,10 +42,11 @@ export function AddTask(props: Props) {
                 <label htmlFor="assignee">Assignee</label>
                 <select {...register('assignee')}>
                     <option value="">Select...</option>
-                    {props.users.map((item: UsersType) => {
+                    {props.users.map((user: UsersType) => {
+                        const fullName = `${user.first_name} ${user.last_name}`;
                         return (
-                            <option key={item.id} value={item.id}>
-                                {item.name}
+                            <option key={user.id} value={user.id}>
+                                {fullName}
                             </option>
                         );
                     })}

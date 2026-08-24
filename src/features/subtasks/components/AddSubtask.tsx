@@ -43,9 +43,10 @@ export function AddSubtask(props: Props) {
                 <select {...register('assignee')} name="assignee">
                     <option value="">Не выбран</option>
                     {props.users.map((user: UsersType) => {
+                        const fullName = `${user.first_name} ${user.last_name}`;
                         return (
                             <option key={user.id} value={user.id}>
-                                {user.name}
+                                {fullName}
                             </option>
                         );
                     })}
