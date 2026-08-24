@@ -16,16 +16,17 @@ export async function createProject(newProject: CreateProjectType) {
     return { data, error };
 }
 export async function deleteProject(projectId: string) {
-    const { error } = await supabase.from('projects').delete().eq('id', projectId);
+    const { data, error } = await supabase.from('projects').delete().eq('id', projectId).select();
 
-    return { error };
+    return { data, error };
 }
 
 export async function updateProject(id: string, field: UpdateField, value: UpdateValue) {
-    const { error } = await supabase
+    const { data, error } = await supabase
         .from('projects')
         .update({ [field]: value })
-        .eq('id', id);
+        .eq('id', id)
+        .select();
 
-    return { error };
+    return { data, error };
 }

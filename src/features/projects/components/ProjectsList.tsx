@@ -44,22 +44,31 @@ export function ProjectsList(props: Props) {
     }
 
     async function handleDeleteProject(projectId: string) {
-        const { error } = await deleteProject(projectId);
+        const { data, error } = await deleteProject(projectId);
 
         if (error !== null) {
-            console.log(error.message);
+            alert(error.message);
+            return;
+        }
+        if (data?.length === 0) {
+            alert('Issues with RLS — contact the administrator');
             return;
         }
         setProjectsList(projectsList.filter((item) => item.id !== projectId));
     }
 
     async function handleUpdateProject(id: string, field: UpdateField, value: UpdateValue) {
-        const { error } = await updateProject(id, field, value);
+        const { data, error } = await updateProject(id, field, value);
 
         if (error !== null) {
-            console.error(error.message);
+            alert(error.message);
             return;
         }
+        if (data?.length === 0) {
+            alert('Issues with RLS — contact the administrator');
+            return;
+        }
+
         const updateProjectField = projectsList.map((project) => {
             if (project.id === id) {
                 return {
