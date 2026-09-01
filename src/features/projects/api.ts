@@ -30,3 +30,25 @@ export async function updateProject(id: string, field: UpdateField, value: Updat
 
     return { data, error };
 }
+
+export async function getProjectUser(projectId: string) {
+    const { data, error } = await supabase
+        .from('project_members')
+        .select('*')
+        .eq('project_id', projectId);
+    return { data, error };
+}
+
+export async function addMembership(user_id: string, membership_id: string) {
+    const { data, error } = await supabase
+        .from('project_members')
+        .insert([
+            {
+                project_id: membership_id,
+                user_id: user_id,
+            },
+        ])
+        .select();
+
+    return { data, error };
+}

@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import type { CreateProjectType, ProjectType } from '../types.ts';
 import { createProject, deleteProject, readProjects, updateProject } from '../api.ts';
 import type { UpdateField, UpdateValue } from '../../tasks/types.ts';
+import { useUsers } from '../../users/hooks/useUsers.ts';
 
 type Props = {
     setProjectId: (id: string) => void;
@@ -14,6 +15,8 @@ export function ProjectsList(props: Props) {
     const [projectsList, setProjectsList] = useState<Array<ProjectType>>([]);
     const [isAddProjectOpen, setIsAddProjectOpen] = useState(false);
     const [error, setError] = useState('');
+
+    const { users } = useUsers();
 
     useEffect(() => {
         async function load() {
@@ -111,6 +114,7 @@ export function ProjectsList(props: Props) {
                         projectId={props.projectId}
                         handleDeleteProject={handleDeleteProject}
                         handleUpdateProject={handleUpdateProject}
+                        users={users}
                     />
                 ))}
             </ul>
