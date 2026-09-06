@@ -5,11 +5,11 @@ import type {
     TaskType,
     UpdateField,
     UpdateValue,
-    UsersType,
 } from '../types.ts';
 import { Fragment, useState } from 'react';
 import { SubtasksList } from '../../subtasks/components/SubtasksList.tsx';
 import { getCurrentDate } from '../../../shared/utils/getCurrentDate.ts';
+import type { UsersType } from '../../users/types.ts';
 
 const cell = {
     maxWidth: '300px',
@@ -22,6 +22,7 @@ const cell = {
 type Props = {
     task: TaskType;
     users: UsersType[];
+    projectUsers: UsersType[];
     handleRemoveTask: (id: string) => void;
     handleUpdateTask: (id: string, field: UpdateField, value: UpdateValue) => void;
 };
@@ -108,7 +109,7 @@ export function Task(props: Props) {
                         defaultValue={currentUser ? currentUser.id : ''}
                     >
                         <option value="">Не выбран</option>
-                        {props.users.map((item: UsersType) => {
+                        {props.projectUsers.map((item: UsersType) => {
                             return (
                                 <option key={item.id} value={item.id}>
                                     {`${item.first_name} ${item.last_name}`}

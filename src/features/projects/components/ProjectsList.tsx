@@ -5,16 +5,20 @@ import type { CreateProjectType, ProjectType } from '../types.ts';
 import { createProject, deleteProject, readProjects, updateProject } from '../api.ts';
 import type { UpdateField, UpdateValue } from '../../tasks/types.ts';
 import { useUsers } from '../../users/hooks/useUsers.ts';
+import type { UsersType } from '../../users/types.ts';
 
 type Props = {
     setProjectId: (id: string) => void;
     projectId: string | null;
+    otherUsers: UsersType[];
 };
 
 export function ProjectsList(props: Props) {
     const [projectsList, setProjectsList] = useState<Array<ProjectType>>([]);
     const [isAddProjectOpen, setIsAddProjectOpen] = useState(false);
     const [error, setError] = useState('');
+    const [isAddUser, setIsAddUser] = useState<string | null>(null);
+    const [isEdit, setIsEdit] = useState<string | null>(null);
 
     const { users } = useUsers();
 
@@ -111,10 +115,15 @@ export function ProjectsList(props: Props) {
                         key={project.id}
                         setProjectId={props.setProjectId}
                         project={project}
-                        projectId={props.projectId}
+                        selectedProjectId={props.projectId}
+                        otherUsers={props.otherUsers}
                         handleDeleteProject={handleDeleteProject}
                         handleUpdateProject={handleUpdateProject}
                         users={users}
+                        isAddUser={isAddUser}
+                        setIsAddUser={setIsAddUser}
+                        isEdit={isEdit}
+                        setIsEdit={setIsEdit}
                     />
                 ))}
             </ul>

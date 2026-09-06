@@ -5,6 +5,7 @@ import { Task } from './Task.tsx';
 import { createTask, readTasks, deleteTask, updateTask } from '../api.ts';
 import { useUsers } from '../../users/hooks/useUsers.ts';
 import { useCrud } from '../../../shared/hooks/useCollection.ts';
+import type { UsersType } from '../../users/types.ts';
 
 interface SortConfig {
     field: SortField | null;
@@ -13,6 +14,7 @@ interface SortConfig {
 
 type Props = {
     projectId: string | null;
+    projectUsers: UsersType[];
 };
 
 export function TaskList(props: Props) {
@@ -82,6 +84,7 @@ export function TaskList(props: Props) {
                                 currentProjectId={props.projectId}
                                 handleAddTask={handleAddItem}
                                 users={users}
+                                projectUsers={props.projectUsers}
                             />
                         )}
                     </div>
@@ -113,6 +116,7 @@ export function TaskList(props: Props) {
                                             key={task.id}
                                             users={users}
                                             task={task}
+                                            projectUsers={props.projectUsers}
                                             handleUpdateTask={handleUpdateItem}
                                             handleRemoveTask={handleRemoveItem}
                                         />

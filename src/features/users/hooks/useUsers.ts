@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import type { UsersType } from '../../tasks/types.ts';
 import { getUsers } from '../api.ts';
+import type { UsersType } from '../types.ts';
 
 export function useUsers() {
     const [users, setUsers] = useState<Array<UsersType>>([]);

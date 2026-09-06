@@ -1,11 +1,13 @@
 import { useForm } from 'react-hook-form';
-import type { CreateTaskType, UsersType } from '../types.ts';
+import type { CreateTaskType } from '../types.ts';
 import { getCurrentDate } from '../../../shared/utils/getCurrentDate.ts';
+import type { UsersType } from '../../users/types.ts';
 
 type Props = {
     handleAddTask: (task: CreateTaskType) => void;
     currentProjectId: string;
     users: UsersType[];
+    projectUsers: UsersType[];
 };
 
 export function AddTask(props: Props) {
@@ -42,7 +44,7 @@ export function AddTask(props: Props) {
                 <label htmlFor="assignee">Assignee</label>
                 <select {...register('assignee')}>
                     <option value="">Select...</option>
-                    {props.users.map((user: UsersType) => {
+                    {props.projectUsers.map((user: UsersType) => {
                         const fullName = `${user.first_name} ${user.last_name}`;
                         return (
                             <option key={user.id} value={user.id}>

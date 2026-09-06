@@ -19,13 +19,6 @@ export type CreateTaskType = {
     status: Status;
 };
 
-export type UsersType = {
-    id: string;
-    first_name: string;
-    last_name: string;
-    user_avatar: string;
-};
-
 export type EditedFieldType = {
     title: string;
     description: string | null;

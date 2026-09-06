@@ -1,9 +1,9 @@
 import type { CreateSubtaskType, SubtaskType } from '../types.ts';
 import { Subtask } from './Subtask.tsx';
-import type { UsersType } from '../../tasks/types.ts';
 import { AddSubtask } from './AddSubtask.tsx';
 import { createSubtask, readSubtasks, deleteSubtask, updateSubtask } from '../api.ts';
 import { useCrud } from '../../../shared/hooks/useCollection.ts';
+import type { UsersType } from '../../users/types.ts';
 
 type Props = {
     taskId: string;

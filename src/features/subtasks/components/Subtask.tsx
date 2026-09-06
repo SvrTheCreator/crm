@@ -5,10 +5,10 @@ import type {
     Status,
     UpdateField,
     UpdateValue,
-    UsersType,
 } from '../../tasks/types.ts';
 import { useState } from 'react';
 import { getCurrentDate } from '../../../shared/utils/getCurrentDate.ts';
+import type { UsersType } from '../../users/types.ts';
 
 const cell = {
     maxWidth: '300px',
