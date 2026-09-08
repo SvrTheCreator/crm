@@ -20,6 +20,7 @@ export function Workspace() {
                 projectId={selectedProjectId}
                 setProjectId={setSelectedProjectId}
                 otherUsers={otherUsers}
+                projectUsers={projectUsers}
             />
             <TaskList projectId={selectedProjectId} projectUsers={projectUsers} />
         </div>

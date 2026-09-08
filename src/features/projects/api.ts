@@ -39,15 +39,25 @@ export async function getProjectUser(projectId: string) {
     return { data, error };
 }
 
-export async function addMembership(user_id: string, membership_id: string) {
+export async function addMembership(user_id: string, project_id: string) {
     const { data, error } = await supabase
         .from('project_members')
         .insert([
             {
-                project_id: membership_id,
+                project_id: project_id,
                 user_id: user_id,
             },
         ])
+        .select();
+
+    return { data, error };
+}
+export async function removeMembership(user_id: string, project_id: string) {
+    const { data, error } = await supabase
+        .from('project_members')
+        .delete()
+        .eq('project_id', project_id)
+        .eq('user_id', user_id)
         .select();
 
     return { data, error };

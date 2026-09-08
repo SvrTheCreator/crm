@@ -11,6 +11,7 @@ type Props = {
     setProjectId: (id: string) => void;
     projectId: string | null;
     otherUsers: UsersType[];
+    projectUsers: UsersType[];
 };
 
 export function ProjectsList(props: Props) {
@@ -19,6 +20,7 @@ export function ProjectsList(props: Props) {
     const [error, setError] = useState('');
     const [isAddUser, setIsAddUser] = useState<string | null>(null);
     const [isEdit, setIsEdit] = useState<string | null>(null);
+    const [isRemoveUser, setIsRemoveUser] = useState<string | null>(null);
 
     const { users } = useUsers();
 
@@ -124,6 +126,9 @@ export function ProjectsList(props: Props) {
                         setIsAddUser={setIsAddUser}
                         isEdit={isEdit}
                         setIsEdit={setIsEdit}
+                        isRemoveUser={isRemoveUser}
+                        setIsRemoveUser={setIsRemoveUser}
+                        projectUsers={props.projectUsers}
                     />
                 ))}
             </ul>

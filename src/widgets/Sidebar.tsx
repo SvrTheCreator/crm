@@ -5,6 +5,7 @@ type Props = {
     setProjectId: (id: string) => void;
     projectId: string | null;
     otherUsers: UsersType[];
+    projectUsers: UsersType[];
 };
 
 export function Sidebar(props: Props) {
@@ -14,6 +15,7 @@ export function Sidebar(props: Props) {
                 projectId={props.projectId}
                 setProjectId={props.setProjectId}
                 otherUsers={props.otherUsers}
+                projectUsers={props.projectUsers}
             />
         </aside>
     );
