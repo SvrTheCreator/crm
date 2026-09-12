@@ -18,9 +18,10 @@ export function ProjectsList(props: Props) {
     const [projectsList, setProjectsList] = useState<Array<ProjectType>>([]);
     const [isAddProjectOpen, setIsAddProjectOpen] = useState(false);
     const [error, setError] = useState('');
-    const [isAddUser, setIsAddUser] = useState<string | null>(null);
-    const [isEdit, setIsEdit] = useState<string | null>(null);
-    const [isRemoveUser, setIsRemoveUser] = useState<string | null>(null);
+    const [openPanel, setOpenPanel] = useState<{
+        projectId: string;
+        kind: 'edit' | 'add' | 'remove';
+    } | null>(null);
 
     const { users } = useUsers();
 
@@ -122,12 +123,8 @@ export function ProjectsList(props: Props) {
                         handleDeleteProject={handleDeleteProject}
                         handleUpdateProject={handleUpdateProject}
                         users={users}
-                        isAddUser={isAddUser}
-                        setIsAddUser={setIsAddUser}
-                        isEdit={isEdit}
-                        setIsEdit={setIsEdit}
-                        isRemoveUser={isRemoveUser}
-                        setIsRemoveUser={setIsRemoveUser}
+                        openPanel={openPanel}
+                        setOpenPanel={setOpenPanel}
                         projectUsers={props.projectUsers}
                     />
                 ))}

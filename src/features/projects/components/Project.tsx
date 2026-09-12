@@ -15,13 +15,20 @@ type Props = {
     handleDeleteProject: (projectId: string) => void;
     handleUpdateProject: (id: string, field: UpdateField, value: UpdateValue) => void;
     users: UsersType[];
-    isAddUser: string | null;
-    setIsAddUser: (isAddUser: string | null) => void;
-    isEdit: string | null;
-    setIsEdit: (isEdit: string | null) => void;
-    isRemoveUser: string | null;
-    setIsRemoveUser: (isRemoveUser: string | null) => void;
+    // isAddUser: string | null;
+    // setIsAddUser: (isAddUser: string | null) => void;
+    // isEdit: string | null;
+    // setIsEdit: (isEdit: string | null) => void;
+    // isRemoveUser: string | null;
+    // setIsRemoveUser: (isRemoveUser: string | null) => void;
+    openPanel: OpenPanelType;
+    setOpenPanel: (openPanel: OpenPanelType) => void;
 };
+
+type OpenPanelType = {
+    projectId: string;
+    kind: 'edit' | 'add' | 'remove';
+} | null;
 
 const flex = {
     display: 'flex',
@@ -32,18 +39,21 @@ const flex = {
 export function Project(props: Props) {
     const [newProjectName, setNewProjectName] = useState(props.project.title);
 
-    const currentProjectAddUser = props.isAddUser === props.project.id;
-    const currentProjectRemoveUser = props.isRemoveUser === props.project.id;
-    const currentProjectIsEdit = props.isEdit === props.project.id;
+    const currentProjectAddUser =
+        props.openPanel?.projectId === props.project.id && props.openPanel.kind === 'add';
+    const currentProjectRemoveUser =
+        props.openPanel?.projectId === props.project.id && props.openPanel.kind === 'remove';
+    const currentProjectIsEdit =
+        props.openPanel?.projectId === props.project.id && props.openPanel.kind === 'edit';
 
     const handleFieldChange = () => {
         props.handleUpdateProject(props.project.id, 'title', newProjectName);
-        props.setIsEdit(null);
+        props.setOpenPanel(null);
     };
     async function handleMembership(
         userId: string,
         changeMembership: typeof addMembership,
-        setMenu: (value: string | null) => void,
+        setMenu: (value: OpenPanelType) => void,
     ) {
         const { error } = await changeMembership(userId, props.project.id);
         if (error !== null) {
@@ -53,8 +63,11 @@ export function Project(props: Props) {
         setMenu(null);
     }
 
-    const toggleMenu = (menu: Props['isEdit'], setMenu: Props['setIsEdit'], propsMenu: string) => {
-        return menu ? setMenu(null) : setMenu(propsMenu);
+    const toggleMenu = (propsMenu: { projectId: string; kind: 'edit' | 'add' | 'remove' }) => {
+        return props.openPanel?.kind === propsMenu.kind &&
+            props.openPanel.projectId === propsMenu.projectId
+            ? props.setOpenPanel(null)
+            : props.setOpenPanel(propsMenu);
     };
 
     return (
@@ -79,7 +92,7 @@ export function Project(props: Props) {
                         <button
                             onClick={() => {
                                 setNewProjectName(props.project.title);
-                                props.setIsEdit(null);
+                                props.setOpenPanel(null);
                             }}
                         >
                             ❌
@@ -95,7 +108,17 @@ export function Project(props: Props) {
                     >
                         <h3> {props.project.title}</h3>
                         <div style={flex}>
-                            <div onClick={() => props.setIsEdit(props.project.id)}>✏️</div>️
+                            <div
+                                onClick={() =>
+                                    props.setOpenPanel({
+                                        projectId: props.project.id,
+                                        kind: 'edit',
+                                    })
+                                }
+                            >
+                                ✏️
+                            </div>
+                            ️
                             <div onClick={() => props.handleDeleteProject(props.project.id)}>
                                 🗑️
                             </div>
@@ -109,11 +132,10 @@ export function Project(props: Props) {
                             >
                                 <button
                                     onClick={() => {
-                                        toggleMenu(
-                                            props.isAddUser,
-                                            props.setIsAddUser,
-                                            props.project.id,
-                                        );
+                                        toggleMenu({
+                                            projectId: props.project.id,
+                                            kind: 'add',
+                                        });
                                     }}
                                 >
                                     Add to project
@@ -122,17 +144,16 @@ export function Project(props: Props) {
                                 <ProjectMembers
                                     users={props.otherUsers}
                                     onSelect={(userId) =>
-                                        handleMembership(userId, addMembership, props.setIsAddUser)
+                                        handleMembership(userId, addMembership, props.setOpenPanel)
                                     }
                                     isOpen={currentProjectAddUser}
                                 />
                                 <button
                                     onClick={() => {
-                                        toggleMenu(
-                                            props.isRemoveUser,
-                                            props.setIsRemoveUser,
-                                            props.project.id,
-                                        );
+                                        toggleMenu({
+                                            projectId: props.project.id,
+                                            kind: 'remove',
+                                        });
                                     }}
                                 >
                                     Remove from project
@@ -143,7 +164,7 @@ export function Project(props: Props) {
                                         handleMembership(
                                             userId,
                                             removeMembership,
-                                            props.setIsRemoveUser,
+                                            props.setOpenPanel,
                                         )
                                     }
                                     isOpen={currentProjectRemoveUser}
