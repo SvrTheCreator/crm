@@ -12,6 +12,8 @@ type Props = {
     projectId: string | null;
     otherUsers: UsersType[];
     projectUsers: UsersType[];
+    addMember: (userId: string) => Promise<void>;
+    removeMember: (userId: string) => Promise<void>;
 };
 
 export function ProjectsList(props: Props) {
@@ -126,6 +128,8 @@ export function ProjectsList(props: Props) {
                         openPanel={openPanel}
                         setOpenPanel={setOpenPanel}
                         projectUsers={props.projectUsers}
+                        addMember={props.addMember}
+                        removeMember={props.removeMember}
                     />
                 ))}
             </ul>

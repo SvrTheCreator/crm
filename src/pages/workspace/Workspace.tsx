@@ -9,7 +9,7 @@ export function Workspace() {
 
     const { users } = useUsers();
 
-    const { projectUsers, otherUsers } = useProjectUsers({
+    const { projectUsers, otherUsers, addMember, removeMember } = useProjectUsers({
         projectId: selectedProjectId,
         users: users,
     });
@@ -21,6 +21,8 @@ export function Workspace() {
                 setProjectId={setSelectedProjectId}
                 otherUsers={otherUsers}
                 projectUsers={projectUsers}
+                addMember={addMember}
+                removeMember={removeMember}
             />
             <TaskList projectId={selectedProjectId} projectUsers={projectUsers} />
         </div>

@@ -6,6 +6,8 @@ type Props = {
     projectId: string | null;
     otherUsers: UsersType[];
     projectUsers: UsersType[];
+    addMember: (userId: string) => Promise<void>;
+    removeMember: (userId: string) => Promise<void>;
 };
 
 export function Sidebar(props: Props) {
@@ -16,6 +18,8 @@ export function Sidebar(props: Props) {
                 setProjectId={props.setProjectId}
                 otherUsers={props.otherUsers}
                 projectUsers={props.projectUsers}
+                addMember={props.addMember}
+                removeMember={props.removeMember}
             />
         </aside>
     );

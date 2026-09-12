@@ -2,7 +2,6 @@ import type { ProjectType } from '../types.ts';
 import { useState } from 'react';
 import type { UpdateField, UpdateValue } from '../../tasks/types.ts';
 
-import { addMembership, removeMembership } from '../api.ts';
 import type { UsersType } from '../../users/types.ts';
 import { ProjectMembers } from './ProjectMembers.tsx';
 
@@ -15,17 +14,13 @@ type Props = {
     handleDeleteProject: (projectId: string) => void;
     handleUpdateProject: (id: string, field: UpdateField, value: UpdateValue) => void;
     users: UsersType[];
-    // isAddUser: string | null;
-    // setIsAddUser: (isAddUser: string | null) => void;
-    // isEdit: string | null;
-    // setIsEdit: (isEdit: string | null) => void;
-    // isRemoveUser: string | null;
-    // setIsRemoveUser: (isRemoveUser: string | null) => void;
     openPanel: OpenPanelType;
     setOpenPanel: (openPanel: OpenPanelType) => void;
+    addMember: (userId: string) => Promise<void>;
+    removeMember: (userId: string) => Promise<void>;
 };
 
-type OpenPanelType = {
+export type OpenPanelType = {
     projectId: string;
     kind: 'edit' | 'add' | 'remove';
 } | null;
@@ -50,18 +45,18 @@ export function Project(props: Props) {
         props.handleUpdateProject(props.project.id, 'title', newProjectName);
         props.setOpenPanel(null);
     };
-    async function handleMembership(
-        userId: string,
-        changeMembership: typeof addMembership,
-        setMenu: (value: OpenPanelType) => void,
-    ) {
-        const { error } = await changeMembership(userId, props.project.id);
-        if (error !== null) {
-            alert(error.message);
-            return;
-        }
-        setMenu(null);
-    }
+    // async function handleMembership(
+    //     userId: string,
+    //     changeMembership: typeof addMembership,
+    //     setMenu: (value: OpenPanelType) => void,
+    // ) {
+    //     const { error } = await changeMembership(userId, props.project.id);
+    //     if (error !== null) {
+    //         alert(error.message);
+    //         return;
+    //     }
+    //     setMenu(null);
+    // }
 
     const toggleMenu = (propsMenu: { projectId: string; kind: 'edit' | 'add' | 'remove' }) => {
         return props.openPanel?.kind === propsMenu.kind &&
@@ -143,9 +138,7 @@ export function Project(props: Props) {
 
                                 <ProjectMembers
                                     users={props.otherUsers}
-                                    onSelect={(userId) =>
-                                        handleMembership(userId, addMembership, props.setOpenPanel)
-                                    }
+                                    onSelect={(userId) => props.addMember(userId)}
                                     isOpen={currentProjectAddUser}
                                 />
                                 <button
@@ -160,13 +153,7 @@ export function Project(props: Props) {
                                 </button>
                                 <ProjectMembers
                                     users={props.projectUsers}
-                                    onSelect={(userId) =>
-                                        handleMembership(
-                                            userId,
-                                            removeMembership,
-                                            props.setOpenPanel,
-                                        )
-                                    }
+                                    onSelect={(userId) => props.removeMember(userId)}
                                     isOpen={currentProjectRemoveUser}
                                 />
                             </div>
