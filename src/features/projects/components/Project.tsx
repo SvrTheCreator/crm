@@ -152,8 +152,10 @@ export function Project(props: Props) {
                                     Remove from project
                                 </button>
                                 <ProjectMembers
-                                    users={props.projectUsers}
-                                    onSelect={(userId) => props.removeMember(userId)}
+                                    users={props.projectUsers.filter((user) => {
+                                        return user.id !== props.project.owner_id;
+                                    })}
+                                    onSelect={props.removeMember}
                                     isOpen={currentProjectRemoveUser}
                                 />
                             </div>
