@@ -6,10 +6,9 @@ import { createProject, deleteProject, readProjects, updateProject } from '../ap
 import type { UpdateField, UpdateValue } from '../../tasks/types.ts';
 import { useUsers } from '../../users/hooks/useUsers.ts';
 import type { UsersType } from '../../users/types.ts';
+import { NavLink } from 'react-router';
 
 type Props = {
-    setProjectId: (id: string) => void;
-    projectId: string | null;
     otherUsers: UsersType[];
     projectUsers: UsersType[];
     addMember: (userId: string) => Promise<void>;
@@ -116,21 +115,21 @@ export function ProjectsList(props: Props) {
             )}
             <ul>
                 {projectsList.map((project: ProjectType) => (
-                    <Project
-                        key={project.id}
-                        setProjectId={props.setProjectId}
-                        project={project}
-                        selectedProjectId={props.projectId}
-                        otherUsers={props.otherUsers}
-                        handleDeleteProject={handleDeleteProject}
-                        handleUpdateProject={handleUpdateProject}
-                        users={users}
-                        openPanel={openPanel}
-                        setOpenPanel={setOpenPanel}
-                        projectUsers={props.projectUsers}
-                        addMember={props.addMember}
-                        removeMember={props.removeMember}
-                    />
+                    <NavLink to={`/projects/${project.id}`} key={project.id}>
+                        <Project
+                            key={project.id}
+                            project={project}
+                            otherUsers={props.otherUsers}
+                            handleDeleteProject={handleDeleteProject}
+                            handleUpdateProject={handleUpdateProject}
+                            users={users}
+                            openPanel={openPanel}
+                            setOpenPanel={setOpenPanel}
+                            projectUsers={props.projectUsers}
+                            addMember={props.addMember}
+                            removeMember={props.removeMember}
+                        />
+                    </NavLink>
                 ))}
             </ul>
         </div>

@@ -5,6 +5,10 @@ import { useEffect, useState } from 'react';
 import { AuthContext } from './features/auth/hooks/AuthContext.ts';
 import { supabase } from './shared/utils/supabase.ts';
 import type { User } from '@supabase/supabase-js';
+import { BrowserRouter, Route, Routes } from 'react-router';
+import { RegisterForm } from './features/auth/components/RegisterForm.tsx';
+import { LoginForm } from './features/auth/components/LoginForm.tsx';
+import { TaskList } from './features/tasks/components/TaskList.tsx';
 
 export function App() {
     const [currentUser, setCurrentUser] = useState<User | null>(null);
@@ -21,12 +25,21 @@ export function App() {
     }, []);
 
     return (
-        <AuthContext.Provider value={{ currentUser, loading }}>
-            <Header />
-            <main>
-                <Workspace />
-            </main>
-            <Footer />
-        </AuthContext.Provider>
+        <BrowserRouter>
+            <AuthContext.Provider value={{ currentUser, loading }}>
+                <Header />
+                <main>
+                    <Routes>
+                        <Route path="/projects" element={<Workspace />}>
+                            <Route index element={<div>Выбери проект</div>} />
+                            <Route path=":projectId" element={<TaskList />} />
+                        </Route>
+                        <Route path="/register" element={<RegisterForm />} />
+                        <Route path="/login" element={<LoginForm />} />
+                    </Routes>
+                </main>
+                <Footer />
+            </AuthContext.Provider>
+        </BrowserRouter>
     );
 }

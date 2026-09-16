@@ -4,11 +4,10 @@ import type { UpdateField, UpdateValue } from '../../tasks/types.ts';
 
 import type { UsersType } from '../../users/types.ts';
 import { ProjectMembers } from './ProjectMembers.tsx';
+import { useParams } from 'react-router';
 
 type Props = {
     project: ProjectType;
-    setProjectId: (projectId: string) => void;
-    selectedProjectId: string | null;
     otherUsers: UsersType[];
     projectUsers: UsersType[];
     handleDeleteProject: (projectId: string) => void;
@@ -32,6 +31,7 @@ const flex = {
 };
 
 export function Project(props: Props) {
+    const params = useParams();
     const [newProjectName, setNewProjectName] = useState(props.project.title);
 
     const currentProjectAddUser =
@@ -45,18 +45,6 @@ export function Project(props: Props) {
         props.handleUpdateProject(props.project.id, 'title', newProjectName);
         props.setOpenPanel(null);
     };
-    // async function handleMembership(
-    //     userId: string,
-    //     changeMembership: typeof addMembership,
-    //     setMenu: (value: OpenPanelType) => void,
-    // ) {
-    //     const { error } = await changeMembership(userId, props.project.id);
-    //     if (error !== null) {
-    //         alert(error.message);
-    //         return;
-    //     }
-    //     setMenu(null);
-    // }
 
     const toggleMenu = (propsMenu: { projectId: string; kind: 'edit' | 'add' | 'remove' }) => {
         return props.openPanel?.kind === propsMenu.kind &&
@@ -69,7 +57,7 @@ export function Project(props: Props) {
         <>
             <li
                 style={{
-                    color: props.selectedProjectId === props.project.id ? 'gold' : 'white',
+                    color: params.id === props.project.id ? 'gold' : 'white',
                     cursor: 'pointer',
                     border: '1px solid gray',
                 }}
@@ -95,12 +83,7 @@ export function Project(props: Props) {
                     </div>
                 )}
                 {!currentProjectIsEdit && (
-                    <div
-                        onClick={() => {
-                            props.setProjectId(props.project.id);
-                        }}
-                        style={flex}
-                    >
+                    <div style={flex}>
                         <h3> {props.project.title}</h3>
                         <div style={flex}>
                             <div

@@ -1,30 +1,32 @@
-import { useState } from 'react';
 import { Sidebar } from '../../widgets/Sidebar.tsx';
-import { TaskList } from '../../features/tasks/components/TaskList.tsx';
 import { useProjectUsers } from '../../features/projects/hooks/useProjectUsers.ts';
 import { useUsers } from '../../features/users/hooks/useUsers.ts';
+import { Outlet, useParams } from 'react-router';
+import type { UsersType } from '../../features/users/types.ts';
+
+export type ContextType = {
+    projectUsers: UsersType[];
+};
 
 export function Workspace() {
-    const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null);
+    const params = useParams();
 
     const { users } = useUsers();
 
     const { projectUsers, otherUsers, addMember, removeMember } = useProjectUsers({
-        projectId: selectedProjectId,
+        projectId: params.projectId ?? null,
         users: users,
     });
 
     return (
         <div style={{ display: 'flex' }}>
             <Sidebar
-                projectId={selectedProjectId}
-                setProjectId={setSelectedProjectId}
                 otherUsers={otherUsers}
                 projectUsers={projectUsers}
                 addMember={addMember}
                 removeMember={removeMember}
             />
-            <TaskList projectId={selectedProjectId} projectUsers={projectUsers} />
+            <Outlet context={{ projectUsers } satisfies ContextType} />
         </div>
     );
 }

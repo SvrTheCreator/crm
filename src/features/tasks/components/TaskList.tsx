@@ -5,19 +5,16 @@ import { Task } from './Task.tsx';
 import { createTask, readTasks, deleteTask, updateTask } from '../api.ts';
 import { useUsers } from '../../users/hooks/useUsers.ts';
 import { useCrud } from '../../../shared/hooks/useCollection.ts';
-import type { UsersType } from '../../users/types.ts';
+import { useOutletContext, useParams } from 'react-router';
+import type { ContextType } from '../../../pages/workspace/Workspace.tsx';
 
 interface SortConfig {
     field: SortField | null;
     order: boolean | null;
 }
 
-type Props = {
-    projectId: string | null;
-    projectUsers: UsersType[];
-};
-
-export function TaskList(props: Props) {
+export function TaskList() {
+    const params = useParams();
     const {
         itemsList,
         loading,
@@ -27,14 +24,15 @@ export function TaskList(props: Props) {
         handleAddItem,
         handleRemoveItem,
         handleUpdateItem,
-    } = useCrud<TaskType, Props['projectId'], CreateTaskType>({
+    } = useCrud<TaskType, string | null, CreateTaskType>({
         readItems: readTasks,
-        required_ID: props.projectId,
+        required_ID: params.projectId ?? null,
         createItem: createTask,
         deleteItem: deleteTask,
         updateItem: updateTask,
     });
 
+    const { projectUsers } = useOutletContext<ContextType>();
     const { users } = useUsers();
 
     const [sortConfig, setSortConfig] = useState<SortConfig>({
@@ -69,7 +67,7 @@ export function TaskList(props: Props) {
 
     return (
         <div style={{ padding: '24px' }}>
-            {props.projectId === null ? (
+            {params.projectId === null ? (
                 'Выбери проект'
             ) : error !== '' ? (
                 error
@@ -79,12 +77,12 @@ export function TaskList(props: Props) {
                 <div>
                     <div style={{ marginBottom: '12px' }}>
                         <button onClick={() => setIsAddItemOpen(!isAddItemOpen)}>Add task</button>
-                        {isAddItemOpen && props.projectId && (
+                        {isAddItemOpen && params.projectId && (
                             <AddTask
-                                currentProjectId={props.projectId}
+                                currentProjectId={params.projectId}
                                 handleAddTask={handleAddItem}
                                 users={users}
-                                projectUsers={props.projectUsers}
+                                projectUsers={projectUsers}
                             />
                         )}
                     </div>
@@ -116,7 +114,7 @@ export function TaskList(props: Props) {
                                             key={task.id}
                                             users={users}
                                             task={task}
-                                            projectUsers={props.projectUsers}
+                                            projectUsers={projectUsers}
                                             handleUpdateTask={handleUpdateItem}
                                             handleRemoveTask={handleRemoveItem}
                                         />
