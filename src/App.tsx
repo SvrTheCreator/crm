@@ -9,6 +9,8 @@ import { BrowserRouter, Route, Routes } from 'react-router';
 import { RegisterForm } from './features/auth/components/RegisterForm.tsx';
 import { LoginForm } from './features/auth/components/LoginForm.tsx';
 import { TaskList } from './features/tasks/components/TaskList.tsx';
+import { ProtectedRoute } from './features/auth/components/ProtectedRoute.tsx';
+import { GuestRoute } from './features/auth/components/GuestRoute.tsx';
 
 export function App() {
     const [currentUser, setCurrentUser] = useState<User | null>(null);
@@ -30,12 +32,16 @@ export function App() {
                 <Header />
                 <main>
                     <Routes>
-                        <Route path="/projects" element={<Workspace />}>
-                            <Route index element={<div>Выбери проект</div>} />
-                            <Route path=":projectId" element={<TaskList />} />
+                        <Route element={<ProtectedRoute />}>
+                            <Route path="/projects" element={<Workspace />}>
+                                <Route index element={<div>Выбери проект</div>} />
+                                <Route path=":projectId" element={<TaskList />} />
+                            </Route>
                         </Route>
-                        <Route path="/register" element={<RegisterForm />} />
-                        <Route path="/login" element={<LoginForm />} />
+                        <Route element={<GuestRoute />}>
+                            <Route path="/login" element={<LoginForm />} />
+                            <Route path="/register" element={<RegisterForm />} />
+                        </Route>
                     </Routes>
                 </main>
                 <Footer />
