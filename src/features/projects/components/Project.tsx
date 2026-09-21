@@ -4,7 +4,6 @@ import type { UpdateField, UpdateValue } from '../../tasks/types.ts';
 
 import type { UsersType } from '../../users/types.ts';
 import { ProjectMembers } from './ProjectMembers.tsx';
-import { useParams } from 'react-router';
 
 type Props = {
     project: ProjectType;
@@ -31,7 +30,6 @@ const flex = {
 };
 
 export function Project(props: Props) {
-    const params = useParams();
     const [newProjectName, setNewProjectName] = useState(props.project.title);
 
     const currentProjectAddUser =
@@ -57,7 +55,6 @@ export function Project(props: Props) {
         <>
             <li
                 style={{
-                    color: params.id === props.project.id ? 'gold' : 'white',
                     cursor: 'pointer',
                     border: '1px solid gray',
                 }}

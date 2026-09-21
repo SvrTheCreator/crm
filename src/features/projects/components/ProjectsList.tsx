@@ -115,7 +115,13 @@ export function ProjectsList(props: Props) {
             )}
             <ul>
                 {projectsList.map((project: ProjectType) => (
-                    <NavLink to={`/projects/${project.id}`} key={project.id}>
+                    <NavLink
+                        to={`/projects/${project.id}`}
+                        key={project.id}
+                        className={({ isActive, isPending }) =>
+                            isPending ? 'pending' : isActive ? 'active' : ''
+                        }
+                    >
                         <Project
                             key={project.id}
                             project={project}

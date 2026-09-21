@@ -18,7 +18,15 @@ ul {
     padding: 0;
     list-style-type: none;
 }
-
+a.active {
+    color: gold;
+}
+a.pending {
+    color: white;
+}
+a{
+    color: white;
+}
 /*#root {*/
 /*    display: grid;*/
 /*    grid-template-columns: 0.2fr 1fr;*/
