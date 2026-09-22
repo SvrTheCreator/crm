@@ -11,22 +11,6 @@ type Props = {
 export function Sidebar(props: Props) {
     return (
         <aside style={{ padding: '24px', borderRight: '1px solid gray', minHeight: '100vh' }}>
-            <h2>Ganeral</h2>
-            <ul>
-                <li>
-                    <a href="">My tasks</a>
-                </li>
-                <li>
-                    <a href="">Favorites</a>
-                </li>
-                <li>
-                    <a href="">Dmessages</a>
-                </li>
-                <li>
-                    <a href="">Trash</a>
-                </li>
-            </ul>
-
             <ProjectsList
                 otherUsers={props.otherUsers}
                 projectUsers={props.projectUsers}
