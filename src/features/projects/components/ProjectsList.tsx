@@ -1,14 +1,16 @@
 import { Project } from './Project.tsx';
-import { AddProject } from './AddProject.tsx';
-import { useEffect, useState } from 'react';
-import type { CreateProjectType, ProjectType } from '../types.ts';
-import { createProject, deleteProject, readProjects, updateProject } from '../api.ts';
-import type { UpdateField, UpdateValue } from '../../tasks/types.ts';
+import { useState } from 'react';
+import type { ProjectType } from '../types.ts';
 import { useUsers } from '../../users/hooks/useUsers.ts';
 import type { UsersType } from '../../users/types.ts';
 import { NavLink } from 'react-router';
+import type { UpdateField, UpdateValue } from '@/features/tasks/types.ts';
 
 type Props = {
+    projectsList: ProjectType[];
+    error: string;
+    handleUpdateProject: (d: string, field: UpdateField, value: UpdateValue) => void;
+    handleDeleteProject: (projectId: string) => void;
     otherUsers: UsersType[];
     projectUsers: UsersType[];
     addMember: (userId: string) => Promise<void>;
@@ -16,9 +18,6 @@ type Props = {
 };
 
 export function ProjectsList(props: Props) {
-    const [projectsList, setProjectsList] = useState<Array<ProjectType>>([]);
-    const [isAddProjectOpen, setIsAddProjectOpen] = useState(false);
-    const [error, setError] = useState('');
     const [openPanel, setOpenPanel] = useState<{
         projectId: string;
         kind: 'edit' | 'add' | 'remove';
@@ -26,95 +25,12 @@ export function ProjectsList(props: Props) {
 
     const { users } = useUsers();
 
-    useEffect(() => {
-        async function load() {
-            const { data, error } = await readProjects();
-
-            if (error !== null) {
-                setError(error.message);
-                return;
-            }
-            if (data) {
-                setProjectsList(data);
-            }
-        }
-        load();
-    }, []);
-
-    async function handleCreateProject(project: CreateProjectType) {
-        const { data, error } = await createProject(project);
-
-        if (error !== null) {
-            console.log(error.message);
-            return;
-        }
-        if (data) {
-            setProjectsList([data, ...projectsList]);
-            setIsAddProjectOpen(false);
-        }
-    }
-
-    async function handleDeleteProject(projectId: string) {
-        const { data, error } = await deleteProject(projectId);
-
-        if (error !== null) {
-            alert(error.message);
-            return;
-        }
-        if (data?.length === 0) {
-            alert('Issues with RLS — contact the administrator');
-            return;
-        }
-        setProjectsList(projectsList.filter((item) => item.id !== projectId));
-    }
-
-    async function handleUpdateProject(id: string, field: UpdateField, value: UpdateValue) {
-        const { data, error } = await updateProject(id, field, value);
-
-        if (error !== null) {
-            alert(error.message);
-            return;
-        }
-        if (data?.length === 0) {
-            alert('Issues with RLS — contact the administrator');
-            return;
-        }
-
-        const updateProjectField = projectsList.map((project) => {
-            if (project.id === id) {
-                return {
-                    ...project,
-                    [field]: value,
-                };
-            } else return project;
-        });
-
-        setProjectsList(updateProjectField);
-    }
-
-    return error !== '' ? (
-        error
+    return props.error !== '' ? (
+        props.error
     ) : (
         <div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
-                <h2>Projects</h2>
-                <div>
-                    <button
-                        onClick={() => {
-                            setIsAddProjectOpen(!isAddProjectOpen);
-                        }}
-                    >
-                        Add project
-                    </button>
-                </div>
-            </div>
-            {isAddProjectOpen && (
-                <div style={{ padding: '20px 0' }}>
-                    <AddProject handleCreateProject={handleCreateProject} />
-                </div>
-            )}
             <ul>
-                {projectsList.map((project: ProjectType) => (
+                {props.projectsList.map((project: ProjectType) => (
                     <NavLink
                         to={`/projects/${project.id}`}
                         key={project.id}
@@ -126,8 +42,8 @@ export function ProjectsList(props: Props) {
                             key={project.id}
                             project={project}
                             otherUsers={props.otherUsers}
-                            handleDeleteProject={handleDeleteProject}
-                            handleUpdateProject={handleUpdateProject}
+                            handleDeleteProject={props.handleDeleteProject}
+                            handleUpdateProject={props.handleUpdateProject}
                             users={users}
                             openPanel={openPanel}
                             setOpenPanel={setOpenPanel}

@@ -1,8 +1,9 @@
-import { Sidebar } from '../../widgets/Sidebar.tsx';
-import { useProjectUsers } from '../../features/projects/hooks/useProjectUsers.ts';
-import { useUsers } from '../../features/users/hooks/useUsers.ts';
+import { AppSidebar } from '../../widgets/AppSidebar.tsx';
 import { Outlet, useParams } from 'react-router';
-import type { UsersType } from '../../features/users/types.ts';
+import { SidebarProvider } from '@/components/ui/sidebar.tsx';
+import type { UsersType } from '@/features/users/types.ts';
+import { useUsers } from '@/features/users/hooks/useUsers.ts';
+import { useProjectUsers } from '@/features/projects/hooks/useProjectUsers.ts';
 
 export type ContextType = {
     projectUsers: UsersType[];
@@ -19,14 +20,14 @@ export function Workspace() {
     });
 
     return (
-        <div style={{ display: 'flex' }}>
-            <Sidebar
+        <SidebarProvider style={{ display: 'flex' }}>
+            <AppSidebar
                 otherUsers={otherUsers}
                 projectUsers={projectUsers}
                 addMember={addMember}
                 removeMember={removeMember}
             />
             <Outlet context={{ projectUsers } satisfies ContextType} />
-        </div>
+        </SidebarProvider>
     );
 }
