@@ -3,8 +3,9 @@ import { useState } from 'react';
 import type { ProjectType } from '../types.ts';
 import { useUsers } from '../../users/hooks/useUsers.ts';
 import type { UsersType } from '../../users/types.ts';
-import { NavLink } from 'react-router';
+import { NavLink, useParams } from 'react-router';
 import type { UpdateField, UpdateValue } from '@/features/tasks/types.ts';
+import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar.tsx';
 
 type Props = {
     projectsList: ProjectType[];
@@ -22,6 +23,7 @@ export function ProjectsList(props: Props) {
         projectId: string;
         kind: 'edit' | 'add' | 'remove';
     } | null>(null);
+    const { projectId } = useParams();
 
     const { users } = useUsers();
 
@@ -29,31 +31,28 @@ export function ProjectsList(props: Props) {
         props.error
     ) : (
         <div>
-            <ul>
+            <SidebarMenu>
                 {props.projectsList.map((project: ProjectType) => (
-                    <NavLink
-                        to={`/projects/${project.id}`}
-                        key={project.id}
-                        className={({ isActive, isPending }) =>
-                            isPending ? 'pending' : isActive ? 'active' : ''
-                        }
-                    >
-                        <Project
-                            key={project.id}
-                            project={project}
-                            otherUsers={props.otherUsers}
-                            handleDeleteProject={props.handleDeleteProject}
-                            handleUpdateProject={props.handleUpdateProject}
-                            users={users}
-                            openPanel={openPanel}
-                            setOpenPanel={setOpenPanel}
-                            projectUsers={props.projectUsers}
-                            addMember={props.addMember}
-                            removeMember={props.removeMember}
-                        />
-                    </NavLink>
+                    <SidebarMenuItem key={project.title}>
+                        <SidebarMenuButton isActive={projectId === project.id}>
+                            <NavLink to={`/projects/${project.id}`}>{project.title}</NavLink>
+                            <Project
+                                key={project.id}
+                                project={project}
+                                otherUsers={props.otherUsers}
+                                handleDeleteProject={props.handleDeleteProject}
+                                handleUpdateProject={props.handleUpdateProject}
+                                users={users}
+                                openPanel={openPanel}
+                                setOpenPanel={setOpenPanel}
+                                projectUsers={props.projectUsers}
+                                addMember={props.addMember}
+                                removeMember={props.removeMember}
+                            />
+                        </SidebarMenuButton>
+                    </SidebarMenuItem>
                 ))}
-            </ul>
+            </SidebarMenu>
         </div>
     );
 }

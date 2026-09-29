@@ -32,11 +32,11 @@ export function AddProject(props: Props) {
             <form onSubmit={handleSubmit(addNewProject)}>
                 <DialogHeader>
                     <DialogTitle>Add new project</DialogTitle>
-                    <DialogDescription className="pb-2">
+                    <DialogDescription className="pb-4">
                         Enter the name of the new project here. Click "Add" when you are finished.
                     </DialogDescription>
                 </DialogHeader>
-                <FieldGroup className="pb-2">
+                <FieldGroup className="pb-4">
                     <Field>
                         <Input
                             id="project"

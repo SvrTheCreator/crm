@@ -3,7 +3,26 @@ import { useState } from 'react';
 import type { UpdateField, UpdateValue } from '../../tasks/types.ts';
 
 import type { UsersType } from '../../users/types.ts';
-import { ProjectMembers } from './ProjectMembers.tsx';
+import { ButtonGroup } from '@/components/ui/button-group.tsx';
+import { Button } from '@/components/ui/button.tsx';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuGroup,
+    DropdownMenuItem,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu.tsx';
+import {
+    ArchiveIcon,
+    CalendarPlusIcon,
+    ClockIcon,
+    ListFilterIcon,
+    MailCheckIcon,
+    MoreHorizontalIcon,
+    Trash2Icon,
+} from 'lucide-react';
+import { ProjectMembers } from '@/features/projects/components/ProjectMembers.tsx';
 
 type Props = {
     project: ProjectType;
@@ -53,14 +72,11 @@ export function Project(props: Props) {
 
     return (
         <>
-            <li
-                style={{
-                    cursor: 'pointer',
-                    border: '1px solid gray',
-                }}
-            >
+            <div>
                 {currentProjectIsEdit && (
-                    <div style={{ display: 'flex' }}>
+                    <div
+                        style={{ display: 'flex', position: 'absolute', left: '12px', top: '8px' }}
+                    >
                         <input
                             value={newProjectName}
                             onChange={(event) => {
@@ -68,20 +84,19 @@ export function Project(props: Props) {
                             }}
                             type="text"
                         />
-                        <button onClick={() => handleFieldChange()}>💾</button>
-                        <button
+                        <div onClick={() => handleFieldChange()}>💾</div>
+                        <div
                             onClick={() => {
                                 setNewProjectName(props.project.title);
                                 props.setOpenPanel(null);
                             }}
                         >
                             ❌
-                        </button>
+                        </div>
                     </div>
                 )}
                 {!currentProjectIsEdit && (
                     <div style={flex}>
-                        <h3> {props.project.title}</h3>
                         <div style={flex}>
                             <div
                                 onClick={() =>
@@ -97,7 +112,55 @@ export function Project(props: Props) {
                             <div onClick={() => props.handleDeleteProject(props.project.id)}>
                                 🗑️
                             </div>
-                            ️
+                            <ButtonGroup>
+                                <DropdownMenu>
+                                    <DropdownMenuTrigger
+                                        render={
+                                            <Button
+                                                variant="outline"
+                                                size="icon"
+                                                aria-label="More Options"
+                                            >
+                                                <MoreHorizontalIcon />
+                                            </Button>
+                                        }
+                                    />
+                                    <DropdownMenuContent align="end" className="w-40">
+                                        <DropdownMenuGroup>
+                                            <DropdownMenuItem>
+                                                <MailCheckIcon />
+                                                Mark as Read
+                                            </DropdownMenuItem>
+                                            <DropdownMenuItem>
+                                                <ArchiveIcon />
+                                                Archive
+                                            </DropdownMenuItem>
+                                        </DropdownMenuGroup>
+                                        <DropdownMenuSeparator />
+                                        <DropdownMenuGroup>
+                                            <DropdownMenuItem>
+                                                <ClockIcon />
+                                                Snooze
+                                            </DropdownMenuItem>
+                                            <DropdownMenuItem>
+                                                <CalendarPlusIcon />
+                                                Add to Calendar
+                                            </DropdownMenuItem>
+                                            <DropdownMenuItem>
+                                                <ListFilterIcon />
+                                                Add to List
+                                            </DropdownMenuItem>
+                                        </DropdownMenuGroup>
+                                        <DropdownMenuSeparator />
+                                        <DropdownMenuGroup>
+                                            <DropdownMenuItem variant="destructive">
+                                                <Trash2Icon />
+                                                Trash
+                                            </DropdownMenuItem>
+                                        </DropdownMenuGroup>
+                                    </DropdownMenuContent>
+                                </DropdownMenu>
+                            </ButtonGroup>
                             <div
                                 style={{
                                     display: 'flex',
@@ -115,7 +178,6 @@ export function Project(props: Props) {
                                 >
                                     Add to project
                                 </button>
-
                                 <ProjectMembers
                                     users={props.otherUsers}
                                     onSelect={(userId) => props.addMember(userId)}
@@ -139,11 +201,10 @@ export function Project(props: Props) {
                                     isOpen={currentProjectRemoveUser}
                                 />
                             </div>
-                            ️
                         </div>
                     </div>
                 )}
-            </li>
+            </div>
         </>
     );
 }

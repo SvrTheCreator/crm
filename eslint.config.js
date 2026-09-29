@@ -21,6 +21,9 @@ export default defineConfig([
     },
     {
         files: ['src/components/ui/**', 'src/hooks/use-mobile.ts'],
-        rules: { 'react-refresh/only-export-components': 'off' },
+        rules: {
+            'react-refresh/only-export-components': 'off',
+            'react-hooks/set-state-in-effect': 'off',
+        },
     },
 ]);
