@@ -34,8 +34,17 @@ export function ProjectsList(props: Props) {
             <SidebarMenu>
                 {props.projectsList.map((project: ProjectType) => (
                     <SidebarMenuItem key={project.title}>
-                        <SidebarMenuButton isActive={projectId === project.id}>
-                            <NavLink to={`/projects/${project.id}`}>{project.title}</NavLink>
+                        <SidebarMenuButton
+                            className="pr-0"
+                            render={<div />}
+                            isActive={projectId === project.id}
+                        >
+                            <SidebarMenuButton
+                                render={<NavLink to={`/projects/${project.id}`} />}
+                                isActive={projectId === project.id}
+                            >
+                                {project.title}
+                            </SidebarMenuButton>
                             <Project
                                 key={project.id}
                                 project={project}
