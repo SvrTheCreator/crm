@@ -15,9 +15,8 @@ export function useProjectUsers(props: Props) {
     const addMember = async (userId: string) => {
         if (projectId === null) return;
         const { error } = await addMembership(userId, projectId);
-        if (error !== null) {
-            alert(error.message);
-            return;
+        if (error !== undefined) {
+            return error;
         }
         await load();
     };
@@ -25,10 +24,11 @@ export function useProjectUsers(props: Props) {
         if (projectId === null) return;
         const { error } = await removeMembership(userId, projectId);
         if (error !== null) {
-            alert(error.message);
-            return;
+            return error;
         }
+
         await load();
+        return null;
     };
     //  обернуть load в useCallback и вернуть его в зависимости
     async function load() {

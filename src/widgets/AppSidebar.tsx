@@ -47,10 +47,10 @@ export function AppSidebar(props: Props) {
                 <h2>Sprinta</h2>
             </SidebarHeader>
             <SidebarContent>
-                <Collapsible defaultOpen className="group/collapsible">
+                <Collapsible defaultOpen className="group/collapsible ">
                     <SidebarGroup>
                         <SidebarGroupLabel
-                            className="group/label text-sm text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+                            className="group/label text-sm text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground mb-2"
                             render={<CollapsibleTrigger />}
                         >
                             Projects

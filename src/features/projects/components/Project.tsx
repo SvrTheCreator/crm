@@ -26,6 +26,7 @@ import {
     AlertDialogTrigger,
 } from '@/components/ui/alert-dialog.tsx';
 import { RenameProject } from '@/features/projects/components/RenameProject.tsx';
+import { toast } from '@/components/ui/toast';
 
 type Props = {
     project: ProjectType;
@@ -76,6 +77,14 @@ export function Project(props: Props) {
                             <DropdownMenuGroup>
                                 <DropdownMenuItem
                                     onClick={() => {
+                                        if (props.otherUsers.length === 0) {
+                                            toast.add({
+                                                type: 'info',
+                                                description:
+                                                    'All available users have already been added.',
+                                            });
+                                            return;
+                                        }
                                         toggleMenu({
                                             projectId: props.project.id,
                                             kind: 'add',

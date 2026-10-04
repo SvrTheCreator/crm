@@ -12,6 +12,7 @@ import { TaskList } from './features/tasks/components/TaskList.tsx';
 import { ProtectedRoute } from './features/auth/components/ProtectedRoute.tsx';
 import { GuestRoute } from './features/auth/components/GuestRoute.tsx';
 import { NotFound } from './pages/notFound/NotFound.tsx';
+import { Toaster } from '@/components/ui/toast';
 
 export function App() {
     const [currentUser, setCurrentUser] = useState<User | null>(null);
@@ -47,6 +48,7 @@ export function App() {
                         </Route>
                     </Routes>
                 </main>
+                <Toaster />
                 <Footer />
             </AuthContext.Provider>
         </BrowserRouter>
