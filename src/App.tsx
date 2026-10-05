@@ -13,6 +13,7 @@ import { ProtectedRoute } from './features/auth/components/ProtectedRoute.tsx';
 import { GuestRoute } from './features/auth/components/GuestRoute.tsx';
 import { NotFound } from './pages/notFound/NotFound.tsx';
 import { Toaster } from '@/components/ui/toast';
+import { AuthLayout } from '@/pages/auth/AuthLayout.tsx';
 
 export function App() {
     const [currentUser, setCurrentUser] = useState<User | null>(null);
@@ -43,8 +44,10 @@ export function App() {
                             </Route>
                         </Route>
                         <Route element={<GuestRoute />}>
-                            <Route path="/login" element={<LoginForm />} />
-                            <Route path="/register" element={<RegisterForm />} />
+                            <Route element={<AuthLayout />}>
+                                <Route path="/login" element={<LoginForm />} />
+                                <Route path="/register" element={<RegisterForm />} />
+                            </Route>
                         </Route>
                     </Routes>
                 </main>
