@@ -14,8 +14,10 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button.tsx';
 import { toast } from '@/components/ui/toast.tsx';
 import type { PostgrestError } from '@supabase/supabase-js';
+import type { ProjectType } from '@/features/projects/types.ts';
 
 type Props = {
+    project: ProjectType;
     users: UsersType[];
     openPanel: OpenPanelType;
     onSelect: (userId: string) => Promise<PostgrestError | null | undefined>;
@@ -45,7 +47,10 @@ export function ProjectMembers(props: Props) {
 
         toast.add({
             type: 'success',
-            description: props.openPanel?.kind === 'remove' ? 'User removed' : 'User added',
+            description:
+                props.openPanel?.kind === 'remove'
+                    ? `User removed from the project '${props.project.title}'`
+                    : `User added to the project '${props.project.title}'`,
         });
     };
 
@@ -55,9 +60,9 @@ export function ProjectMembers(props: Props) {
                 {props.isOpen && props.users.length > 0 && (
                     <DialogContent>
                         {props.openPanel?.kind === 'remove' ? (
-                            <h2>Remove user</h2>
+                            <h2>Remove user from the '{props.project.title}'</h2>
                         ) : (
-                            <h2>Add new user</h2>
+                            <h2>Add new user to the '{props.project.title}'</h2>
                         )}
 
                         <Select

@@ -27,6 +27,7 @@ import {
 } from '@/components/ui/alert-dialog.tsx';
 import { RenameProject } from '@/features/projects/components/RenameProject.tsx';
 import { toast } from '@/components/ui/toast';
+import type { PostgrestError } from '@supabase/supabase-js';
 
 type Props = {
     project: ProjectType;
@@ -37,8 +38,8 @@ type Props = {
     users: UsersType[];
     openPanel: OpenPanelType;
     setOpenPanel: (openPanel: OpenPanelType) => void;
-    addMember: (userId: string) => Promise<void>;
-    removeMember: (userId: string) => Promise<void>;
+    addMember: (userId: string) => Promise<PostgrestError | null | undefined>;
+    removeMember: (userId: string) => Promise<PostgrestError | null | undefined>;
 };
 
 export type OpenPanelType = {
@@ -151,6 +152,7 @@ export function Project(props: Props) {
                 </AlertDialogContent>
             </AlertDialog>
             <ProjectMembers
+                project={props.project}
                 users={props.otherUsers}
                 openPanel={props.openPanel}
                 onSelect={(userId) => props.addMember(userId)}
@@ -162,11 +164,12 @@ export function Project(props: Props) {
                 }}
             />
             <ProjectMembers
+                project={props.project}
                 users={props.projectUsers.filter((user) => {
                     return user.id !== props.project.owner_id;
                 })}
                 openPanel={props.openPanel}
-                onSelect={props.removeMember}
+                onSelect={(userId) => props.removeMember(userId)}
                 isOpen={currentProjectRemoveUser}
                 setIsOpen={(nextOpen) => {
                     if (!nextOpen) {

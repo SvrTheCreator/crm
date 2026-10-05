@@ -23,12 +23,13 @@ import { AddProject } from '@/features/projects/components/AddProject.tsx';
 import { useProjects } from '@/features/projects/hooks/useProjects.tsx';
 import { useState } from 'react';
 import type { CreateProjectType } from '@/features/projects/types.ts';
+import type { PostgrestError } from '@supabase/supabase-js';
 
 type Props = {
     otherUsers: UsersType[];
     projectUsers: UsersType[];
-    addMember: (userId: string) => Promise<void>;
-    removeMember: (userId: string) => Promise<void>;
+    addMember: (userId: string) => Promise<PostgrestError | null | undefined>;
+    removeMember: (userId: string) => Promise<PostgrestError | null | undefined>;
 };
 
 export function AppSidebar(props: Props) {
@@ -44,7 +45,7 @@ export function AppSidebar(props: Props) {
     return (
         <Sidebar>
             <SidebarHeader>
-                <h2>Sprinta</h2>
+                <h2>CRM</h2>
             </SidebarHeader>
             <SidebarContent>
                 <Collapsible defaultOpen className="group/collapsible ">

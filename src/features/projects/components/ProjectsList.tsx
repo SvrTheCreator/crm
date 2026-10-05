@@ -6,6 +6,7 @@ import type { UsersType } from '../../users/types.ts';
 import { NavLink, useParams } from 'react-router';
 import type { UpdateField, UpdateValue } from '@/features/tasks/types.ts';
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar.tsx';
+import type { PostgrestError } from '@supabase/supabase-js';
 
 type Props = {
     projectsList: ProjectType[];
@@ -14,8 +15,8 @@ type Props = {
     handleDeleteProject: (projectId: string) => void;
     otherUsers: UsersType[];
     projectUsers: UsersType[];
-    addMember: (userId: string) => Promise<void>;
-    removeMember: (userId: string) => Promise<void>;
+    addMember: (userId: string) => Promise<PostgrestError | null | undefined>;
+    removeMember: (userId: string) => Promise<PostgrestError | null | undefined>;
 };
 
 export function ProjectsList(props: Props) {

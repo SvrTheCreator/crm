@@ -15,10 +15,12 @@ export function useProjectUsers(props: Props) {
     const addMember = async (userId: string) => {
         if (projectId === null) return;
         const { error } = await addMembership(userId, projectId);
-        if (error !== undefined) {
+        if (error !== null) {
             return error;
         }
+
         await load();
+        return null;
     };
     const removeMember = async (userId: string) => {
         if (projectId === null) return;

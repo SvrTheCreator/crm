@@ -33,9 +33,9 @@ export function RenameProject(props: Props) {
         <Dialog open={props.isOpen} onOpenChange={props.setIsOpen}>
             <DialogContent>
                 <DialogHeader>
-                    <DialogTitle>Изменить имя</DialogTitle>
+                    <DialogTitle>Change project name</DialogTitle>
                     <DialogDescription>
-                        Введите новое имя для вашего профиля. Нажмите сохранить, когда закончите.
+                        Enter a new name for your project. Click Save when you are finished.
                     </DialogDescription>
                 </DialogHeader>
                 <div className="grid gap-4 py-4">
