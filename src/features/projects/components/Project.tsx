@@ -3,7 +3,6 @@ import type { UpdateField, UpdateValue } from '../../tasks/types.ts';
 
 import type { UsersType } from '../../users/types.ts';
 import { ButtonGroup } from '@/components/ui/button-group.tsx';
-import { Button } from '@/components/ui/button.tsx';
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -12,7 +11,7 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu.tsx';
-import { MoreHorizontalIcon, Pencil, Trash2Icon, UserMinus, UserPlus } from 'lucide-react';
+import { EllipsisVertical, Pencil, Trash2Icon, UserMinus, UserPlus } from 'lucide-react';
 import { ProjectMembers } from '@/features/projects/components/ProjectMembers.tsx';
 import {
     AlertDialog,
@@ -65,13 +64,13 @@ export function Project(props: Props) {
     return (
         <div>
             <AlertDialog>
-                <ButtonGroup>
+                <ButtonGroup className="p-3">
                     <DropdownMenu>
                         <DropdownMenuTrigger
                             render={
-                                <Button variant="outline" size="icon" aria-label="More Options">
-                                    <MoreHorizontalIcon />
-                                </Button>
+                                <div aria-label="More Options">
+                                    <EllipsisVertical />
+                                </div>
                             }
                         />
                         <DropdownMenuContent align="end" className="w-40">

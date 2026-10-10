@@ -4,9 +4,10 @@ import { AddTask } from './AddTask.tsx';
 import { Task } from './Task.tsx';
 import { createTask, readTasks, deleteTask, updateTask } from '../api.ts';
 import { useUsers } from '../../users/hooks/useUsers.ts';
-import { useCrud } from '../../../shared/hooks/useCollection.ts';
+import { useCrud } from '@/shared/hooks/useCollection.ts';
 import { useOutletContext, useParams } from 'react-router';
-import type { ContextType } from '../../../pages/workspace/Workspace.tsx';
+import { Spinner } from '@/components/ui/spinner.tsx';
+import type { ContextType } from '@/pages/workspace/Workspace.tsx';
 
 interface SortConfig {
     field: SortField | null;
@@ -68,11 +69,11 @@ export function TaskList() {
     return (
         <div style={{ padding: '24px' }}>
             {params.projectId === null ? (
-                'Выбери проект'
+                'Choose a project'
             ) : error !== '' ? (
                 error
             ) : loading ? (
-                'Loading...'
+                <Spinner className="size-8" />
             ) : (
                 <div>
                     <div style={{ marginBottom: '12px' }}>

@@ -20,7 +20,7 @@ export function Workspace() {
     });
 
     return (
-        <SidebarProvider style={{ display: 'flex' }}>
+        <SidebarProvider>
             <AppSidebar
                 otherUsers={otherUsers}
                 projectUsers={projectUsers}

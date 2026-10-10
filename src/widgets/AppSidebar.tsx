@@ -8,6 +8,7 @@ import {
 import {
     Sidebar,
     SidebarContent,
+    SidebarFooter,
     SidebarGroup,
     SidebarGroupAction,
     SidebarGroupContent,
@@ -24,6 +25,8 @@ import { useProjects } from '@/features/projects/hooks/useProjects.tsx';
 import { useState } from 'react';
 import type { CreateProjectType } from '@/features/projects/types.ts';
 import type { PostgrestError } from '@supabase/supabase-js';
+import { UserMenu } from '@/features/auth/components/UserMenu.tsx';
+import { useAuth } from '@/features/auth/hooks/AuthContext.ts';
 
 type Props = {
     otherUsers: UsersType[];
@@ -36,6 +39,7 @@ export function AppSidebar(props: Props) {
     const [isOpen, setIsOpen] = useState(false);
     const { projectsList, error, handleUpdateProject, handleCreateProject, handleDeleteProject } =
         useProjects();
+    const { currentUser, loading } = useAuth();
 
     const onCreate = async (project: CreateProjectType) => {
         const error = await handleCreateProject(project);
@@ -96,6 +100,10 @@ export function AppSidebar(props: Props) {
                     </SidebarGroup>
                 </Collapsible>
             </SidebarContent>
+            <SidebarFooter>
+                {loading && 'Loading...'}
+                {currentUser && <UserMenu currentUser={currentUser} />}
+            </SidebarFooter>
         </Sidebar>
     );
 }
