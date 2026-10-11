@@ -27,6 +27,7 @@ import {
 import { RenameProject } from '@/features/projects/components/RenameProject.tsx';
 import { toast } from '@/components/ui/toast';
 import type { PostgrestError } from '@supabase/supabase-js';
+import { SidebarMenuAction } from '@/components/ui/sidebar.tsx';
 
 type Props = {
     project: ProjectType;
@@ -68,9 +69,9 @@ export function Project(props: Props) {
                     <DropdownMenu>
                         <DropdownMenuTrigger
                             render={
-                                <div aria-label="More Options">
+                                <SidebarMenuAction aria-label="More Options">
                                     <EllipsisVertical />
-                                </div>
+                                </SidebarMenuAction>
                             }
                         />
                         <DropdownMenuContent align="end" className="w-40">

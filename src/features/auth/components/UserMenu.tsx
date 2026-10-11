@@ -14,6 +14,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { EllipsisVertical, LogOut, Moon, Settings, Sun } from 'lucide-react';
 import { useTheme } from '@/hooks/useTheme.ts';
+import { Separator } from '@/components/ui/separator.tsx';
 
 type Props = {
     currentUser: User;
@@ -27,6 +28,7 @@ export function UserMenu({ currentUser }: Props) {
 
     return (
         <SidebarMenuItem>
+            <Separator />
             <DropdownMenu>
                 <DropdownMenuTrigger
                     render={

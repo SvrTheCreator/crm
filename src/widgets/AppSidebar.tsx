@@ -62,7 +62,7 @@ export function AppSidebar(props: Props) {
                             <HugeiconsIcon
                                 icon={ArrowRight01Icon}
                                 strokeWidth={2}
-                                className="ml-auto transition-transform group-data-open/collapsible:rotate-90"
+                                className="ml-auto transition-transform group-data-open/collapsible:rotate-90 cursor-pointer"
                             />
                         </SidebarGroupLabel>
                         <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -70,7 +70,12 @@ export function AppSidebar(props: Props) {
                                 <Tooltip>
                                     <TooltipTrigger
                                         render={
-                                            <HugeiconsIcon icon={Add01Icon}>Hover</HugeiconsIcon>
+                                            <HugeiconsIcon
+                                                className="cursor-pointer"
+                                                icon={Add01Icon}
+                                            >
+                                                Hover
+                                            </HugeiconsIcon>
                                         }
                                     />
                                     <TooltipContent>

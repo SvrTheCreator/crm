@@ -1,6 +1,6 @@
 import { AppSidebar } from '../../widgets/AppSidebar.tsx';
 import { Outlet, useParams } from 'react-router';
-import { SidebarProvider } from '@/components/ui/sidebar.tsx';
+import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar.tsx';
 import type { UsersType } from '@/features/users/types.ts';
 import { useUsers } from '@/features/users/hooks/useUsers.ts';
 import { useProjectUsers } from '@/features/projects/hooks/useProjectUsers.ts';
@@ -27,7 +27,9 @@ export function Workspace() {
                 addMember={addMember}
                 removeMember={removeMember}
             />
-            <Outlet context={{ projectUsers } satisfies ContextType} />
+            <SidebarInset>
+                <Outlet context={{ projectUsers } satisfies ContextType} />
+            </SidebarInset>
         </SidebarProvider>
     );
 }
