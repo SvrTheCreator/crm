@@ -8,16 +8,9 @@ import type {
 } from '../types.ts';
 import { Fragment, useState } from 'react';
 import { SubtasksList } from '../../subtasks/components/SubtasksList.tsx';
-import { getCurrentDate } from '../../../shared/utils/getCurrentDate.ts';
+import { getCurrentDate } from '@/shared/utils/getCurrentDate.ts';
 import type { UsersType } from '../../users/types.ts';
-
-const cell = {
-    maxWidth: '300px',
-    overflow: 'hidden',
-    border: '0.5px solid grey',
-    whiteSpace: 'nowrap',
-    textOverflow: 'ellipsis',
-};
+import { TableCell, TableRow } from '@/components/ui/table.tsx';
 
 type Props = {
     task: TaskType;
@@ -52,11 +45,8 @@ export function Task(props: Props) {
 
     return (
         <Fragment>
-            <tr style={{ position: 'relative' }}>
-                <td style={cell}>
-                    <button onClick={() => props.handleRemoveTask(props.task.id)}>delete</button>
-                </td>
-                <td style={cell}>
+            <TableRow style={{ position: 'relative' }}>
+                <TableCell>
                     {isEdit ? (
                         <input
                             value={editedField.title}
@@ -77,8 +67,8 @@ export function Task(props: Props) {
                             {props.task.title}
                         </button>
                     )}
-                </td>
-                <td style={cell}>
+                </TableCell>
+                <TableCell>
                     {isEdit ? (
                         <input
                             value={editedField.description === null ? '' : editedField.description}
@@ -96,8 +86,8 @@ export function Task(props: Props) {
                     ) : (
                         'Нет описания'
                     )}
-                </td>
-                <td style={cell}>
+                </TableCell>
+                <TableCell>
                     <select
                         onChange={(event) => {
                             props.handleUpdateTask(
@@ -117,8 +107,8 @@ export function Task(props: Props) {
                             );
                         })}
                     </select>
-                </td>
-                <td style={cell}>
+                </TableCell>
+                <TableCell>
                     <select
                         defaultValue={props.task.priority}
                         onChange={(event) =>
@@ -133,8 +123,8 @@ export function Task(props: Props) {
                         <option value="High">High</option>
                         <option value="Low">Low</option>
                     </select>
-                </td>
-                <td style={cell}>
+                </TableCell>
+                <TableCell>
                     <input
                         min={getCurrentDate()}
                         type="date"
@@ -148,8 +138,8 @@ export function Task(props: Props) {
                         }}
                     />
                     {/*{modifiedDate}*/}
-                </td>
-                <td style={cell}>
+                </TableCell>
+                <TableCell>
                     <select
                         defaultValue={props.task.status}
                         onChange={(event) =>
@@ -164,8 +154,8 @@ export function Task(props: Props) {
                         <option value="Done">Done</option>
                         <option value="In progress">In progress</option>
                     </select>
-                </td>
-                <td>
+                </TableCell>
+                <TableCell>
                     {isEdit ? (
                         <div>
                             <button onClick={() => handleFieldChange()}>💾</button>
@@ -184,8 +174,11 @@ export function Task(props: Props) {
                     ) : (
                         <button onClick={() => setIsEdit(true)}>✏️</button>
                     )}
-                </td>
-            </tr>
+                </TableCell>
+                {/*<TableCell >*/}
+                {/*    <button onClick={() => props.handleRemoveTask(props.task.id)}>delete</button>*/}
+                {/*</TableCell>*/}
+            </TableRow>
 
             {openTaskId === props.task.id && (
                 <tr>

@@ -1,13 +1,16 @@
 import { useForm } from 'react-hook-form';
 import type { CreateTaskType } from '../types.ts';
-import { getCurrentDate } from '../../../shared/utils/getCurrentDate.ts';
+import { getCurrentDate } from '@/shared/utils/getCurrentDate.ts';
 import type { UsersType } from '../../users/types.ts';
+import { Dialog, DialogContent } from '@/components/ui/dialog.tsx';
 
 type Props = {
     handleAddTask: (task: CreateTaskType) => void;
     currentProjectId: string;
     users: UsersType[];
     projectUsers: UsersType[];
+    isAddItemOpen: boolean;
+    setIsAddItemOpen: (isAddItemOpen: boolean) => void;
 };
 
 export function AddTask(props: Props) {
@@ -31,52 +34,56 @@ export function AddTask(props: Props) {
     };
 
     return (
-        <form onSubmit={handleSubmit(handleCreateNewTask)}>
-            <div>
-                <label htmlFor="title">Task Name</label>
-                <input {...register('title', { required: true })} />
-            </div>
-            <div>
-                <label htmlFor="description">Description</label>
-                <input {...register('description')} />
-            </div>
-            <div>
-                <label htmlFor="assignee">Assignee</label>
-                <select {...register('assignee')}>
-                    <option value="">Select...</option>
-                    {props.projectUsers.map((user: UsersType) => {
-                        const fullName = `${user.first_name} ${user.last_name}`;
-                        return (
-                            <option key={user.id} value={user.id}>
-                                {fullName}
-                            </option>
-                        );
-                    })}
-                </select>
-            </div>
-            <div>
-                <label htmlFor="priority">priority</label>
-                <select {...register('priority', { required: true })}>
-                    <option value="">Select...</option>
-                    <option value="Low">Low</option>
-                    <option value="Medium">Medium</option>
-                    <option value="High">High</option>
-                </select>
-            </div>
-            <div>
-                <label htmlFor="dueDate">dueDate</label>
-                <input min={getCurrentDate()} type="date" {...register('due_date')} />
-            </div>
-            <div>
-                <label htmlFor="status">status</label>
-                <select {...register('status', { required: true })}>
-                    <option value="">Select...</option>
-                    <option value="To Do">To Do</option>
-                    <option value="Done">Done</option>
-                    <option value="In progress">In progress</option>
-                </select>
-            </div>
-            <button type="submit">Add New Project</button>
-        </form>
+        <Dialog open={props.isAddItemOpen} onOpenChange={props.setIsAddItemOpen}>
+            <DialogContent>
+                <form onSubmit={handleSubmit(handleCreateNewTask)}>
+                    <div>
+                        <label htmlFor="title">Task Name</label>
+                        <input {...register('title', { required: true })} />
+                    </div>
+                    <div>
+                        <label htmlFor="description">Description</label>
+                        <input {...register('description')} />
+                    </div>
+                    <div>
+                        <label htmlFor="assignee">Assignee</label>
+                        <select {...register('assignee')}>
+                            <option value="">Select...</option>
+                            {props.projectUsers.map((user: UsersType) => {
+                                const fullName = `${user.first_name} ${user.last_name}`;
+                                return (
+                                    <option key={user.id} value={user.id}>
+                                        {fullName}
+                                    </option>
+                                );
+                            })}
+                        </select>
+                    </div>
+                    <div>
+                        <label htmlFor="priority">priority</label>
+                        <select {...register('priority', { required: true })}>
+                            <option value="">Select...</option>
+                            <option value="Low">Low</option>
+                            <option value="Medium">Medium</option>
+                            <option value="High">High</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label htmlFor="dueDate">dueDate</label>
+                        <input min={getCurrentDate()} type="date" {...register('due_date')} />
+                    </div>
+                    <div>
+                        <label htmlFor="status">status</label>
+                        <select {...register('status', { required: true })}>
+                            <option value="">Select...</option>
+                            <option value="To Do">To Do</option>
+                            <option value="Done">Done</option>
+                            <option value="In progress">In progress</option>
+                        </select>
+                    </div>
+                    <button type="submit">Add New Project</button>
+                </form>
+            </DialogContent>
+        </Dialog>
     );
 }

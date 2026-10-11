@@ -8,6 +8,8 @@ import { useCrud } from '@/shared/hooks/useCollection.ts';
 import { useOutletContext, useParams } from 'react-router';
 import { Spinner } from '@/components/ui/spinner.tsx';
 import type { ContextType } from '@/pages/workspace/Workspace.tsx';
+import { Table, TableBody, TableHead, TableHeader, TableRow } from '@/components/ui/table.tsx';
+import { Button } from '@/components/ui/button.tsx';
 
 interface SortConfig {
     field: SortField | null;
@@ -73,43 +75,57 @@ export function TaskList() {
             ) : error !== '' ? (
                 error
             ) : loading ? (
-                <Spinner className="size-8" />
+                <div style={{ position: 'absolute', top: '50%', left: '50%' }}>
+                    <Spinner className="size-10" />
+                </div>
             ) : (
                 <div>
-                    <div style={{ marginBottom: '12px' }}>
-                        <button onClick={() => setIsAddItemOpen(!isAddItemOpen)}>Add task</button>
-                        {isAddItemOpen && params.projectId && (
-                            <AddTask
-                                currentProjectId={params.projectId}
-                                handleAddTask={handleAddItem}
-                                users={users}
-                                projectUsers={projectUsers}
-                            />
-                        )}
+                    <div className="flex justify-end items-center mb-5 ">
+                        <Button
+                            type="button"
+                            size="lg"
+                            className="cursor-pointer"
+                            onClick={() => setIsAddItemOpen(!isAddItemOpen)}
+                        >
+                            Add task
+                        </Button>
                     </div>
+                    {isAddItemOpen && params.projectId && (
+                        <AddTask
+                            currentProjectId={params.projectId}
+                            handleAddTask={handleAddItem}
+                            users={users}
+                            projectUsers={projectUsers}
+                            isAddItemOpen={isAddItemOpen}
+                            setIsAddItemOpen={setIsAddItemOpen}
+                        />
+                    )}
                     {!itemsList.length && 'Добавь новую задачу для этого проекта'}
                     {itemsList.length > 0 && (
                         <>
-                            <h2>Tasks</h2>
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th></th>
-                                        <th
+                            <Table>
+                                <TableHeader>
+                                    <TableRow>
+                                        <TableHead
                                             onClick={() => {
                                                 handleConfig('title');
                                             }}
                                         >
                                             Task Name
-                                        </th>
-                                        <th>Description</th>
-                                        <th>Assignee</th>
-                                        <th onClick={() => handleConfig('priority')}>Priority</th>
-                                        <th>Due Date</th>
-                                        <th onClick={() => handleConfig('status')}>Status</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
+                                        </TableHead>
+                                        <TableHead>Description</TableHead>
+                                        <TableHead>Assignee</TableHead>
+                                        <TableHead onClick={() => handleConfig('priority')}>
+                                            Priority
+                                        </TableHead>
+                                        <TableHead>Due Date</TableHead>
+                                        <TableHead onClick={() => handleConfig('status')}>
+                                            Status
+                                        </TableHead>
+                                        <TableHead>Actions</TableHead>
+                                    </TableRow>
+                                </TableHeader>
+                                <TableBody>
                                     {sortedTaskList.map((task: TaskType) => (
                                         <Task
                                             key={task.id}
@@ -120,8 +136,8 @@ export function TaskList() {
                                             handleRemoveTask={handleRemoveItem}
                                         />
                                     ))}
-                                </tbody>
-                            </table>
+                                </TableBody>
+                            </Table>
                         </>
                     )}
                 </div>
