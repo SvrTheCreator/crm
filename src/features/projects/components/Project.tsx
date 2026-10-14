@@ -1,5 +1,4 @@
 import type { ProjectType } from '../types.ts';
-import type { UpdateField, UpdateValue } from '../../tasks/types.ts';
 
 import type { UsersType } from '../../users/types.ts';
 import { ButtonGroup } from '@/components/ui/button-group.tsx';
@@ -28,6 +27,7 @@ import { RenameProject } from '@/features/projects/components/RenameProject.tsx'
 import { toast } from '@/components/ui/toast';
 import type { PostgrestError } from '@supabase/supabase-js';
 import { SidebarMenuAction } from '@/components/ui/sidebar.tsx';
+import type { UpdateField, UpdateValue } from '@/shared/types.ts';
 
 type Props = {
     project: ProjectType;

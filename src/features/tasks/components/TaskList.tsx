@@ -1,4 +1,4 @@
-import { type CreateTaskType, type SortField, type TaskType } from '../types.ts';
+import { type CreateTaskType, type TaskType } from '../types.ts';
 import { useState } from 'react';
 import { AddTask } from './AddTask.tsx';
 import { Task } from './Task.tsx';
@@ -10,6 +10,7 @@ import { Spinner } from '@/components/ui/spinner.tsx';
 import type { ContextType } from '@/pages/workspace/Workspace.tsx';
 import { Table, TableBody, TableHead, TableHeader, TableRow } from '@/components/ui/table.tsx';
 import { Button } from '@/components/ui/button.tsx';
+import type { SortField } from '@/shared/types.ts';
 
 interface SortConfig {
     field: SortField | null;

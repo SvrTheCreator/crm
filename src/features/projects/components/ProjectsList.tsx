@@ -4,9 +4,9 @@ import type { ProjectType } from '../types.ts';
 import { useUsers } from '../../users/hooks/useUsers.ts';
 import type { UsersType } from '../../users/types.ts';
 import { NavLink, useParams } from 'react-router';
-import type { UpdateField, UpdateValue } from '@/features/tasks/types.ts';
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar.tsx';
 import type { PostgrestError } from '@supabase/supabase-js';
+import type { UpdateField, UpdateValue } from '@/shared/types.ts';
 
 type Props = {
     projectsList: ProjectType[];

@@ -1,4 +1,4 @@
-import type { Priority, Status } from '../tasks/types.ts';
+import type { Priority, Status } from '@/shared/types.ts';
 
 export type SubtaskType = {
     id: string;

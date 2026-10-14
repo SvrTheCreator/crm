@@ -6,7 +6,7 @@ import {
     updateProject,
 } from '@/features/projects/api.ts';
 import type { CreateProjectType, ProjectType } from '@/features/projects/types.ts';
-import type { UpdateField, UpdateValue } from '@/features/tasks/types.ts';
+import type { UpdateField, UpdateValue } from '@/shared/types.ts';
 
 export function useProjects() {
     const [projectsList, setProjectsList] = useState<Array<ProjectType>>([]);

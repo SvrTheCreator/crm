@@ -10,9 +10,9 @@ import { Input } from '@/components/ui/input.tsx';
 import { Label } from '@/components/ui/label.tsx';
 import { Button } from '@/components/ui/button.tsx';
 import { useState } from 'react';
-import type { UpdateField, UpdateValue } from '@/features/tasks/types.ts';
 import type { OpenPanelType } from '@/features/projects/components/Project.tsx';
 import type { ProjectType } from '@/features/projects/types.ts';
+import type { UpdateField, UpdateValue } from '@/shared/types.ts';
 
 type Props = {
     project: ProjectType;

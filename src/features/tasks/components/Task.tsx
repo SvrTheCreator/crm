@@ -1,16 +1,10 @@
-import type {
-    EditedFieldType,
-    Priority,
-    Status,
-    TaskType,
-    UpdateField,
-    UpdateValue,
-} from '../types.ts';
+import type { EditedFieldType, TaskType } from '../types.ts';
 import { Fragment, useState } from 'react';
 import { SubtasksList } from '../../subtasks/components/SubtasksList.tsx';
 import { getCurrentDate } from '@/shared/utils/getCurrentDate.ts';
 import type { UsersType } from '../../users/types.ts';
 import { TableCell, TableRow } from '@/components/ui/table.tsx';
+import type { Priority, Status, UpdateField, UpdateValue } from '@/shared/types.ts';
 
 type Props = {
     task: TaskType;

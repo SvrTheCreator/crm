@@ -1,14 +1,9 @@
 import type { SubtaskType } from '../types.ts';
-import type {
-    EditedFieldType,
-    Priority,
-    Status,
-    UpdateField,
-    UpdateValue,
-} from '../../tasks/types.ts';
+import type { EditedFieldType } from '../../tasks/types.ts';
 import { useState } from 'react';
-import { getCurrentDate } from '../../../shared/utils/getCurrentDate.ts';
+import { getCurrentDate } from '@/shared/utils/getCurrentDate.ts';
 import type { UsersType } from '../../users/types.ts';
+import type { Priority, Status, UpdateField, UpdateValue } from '@/shared/types.ts';
 
 const cell = {
     maxWidth: '300px',

@@ -1,5 +1,6 @@
-import type { CreateTaskType, UpdateField, UpdateValue } from './types.ts';
-import { supabase } from '../../shared/utils/supabase.ts';
+import type { CreateTaskType } from './types.ts';
+import { supabase } from '@/shared/utils/supabase.ts';
+import type { UpdateField, UpdateValue } from '@/shared/types.ts';
 
 export async function readTasks(projectId: string | null) {
     const response = await supabase
