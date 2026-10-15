@@ -78,7 +78,7 @@ export function Task(props: Props) {
                     ) : props.task.description ? (
                         props.task.description
                     ) : (
-                        'Нет описания'
+                        'Add a description'
                     )}
                 </TableCell>
                 <TableCell>

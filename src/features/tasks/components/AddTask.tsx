@@ -1,6 +1,5 @@
 import { Controller, useForm } from 'react-hook-form';
-import type { CreateTaskType } from '../types.ts';
-import { getCurrentDate } from '@/shared/utils/getCurrentDate.ts';
+import type { CreateTaskType, TaskFormValues } from '../types.ts';
 import type { UsersType } from '../../users/types.ts';
 import {
     Dialog,
@@ -27,6 +26,11 @@ import { priorityColor, statusColor } from '@/shared/constants.ts';
 import { StatusBadge } from '@/shared/components/StatusBadge.tsx';
 import type { Priority, Status } from '@/shared/types.ts';
 import { PriorityBadge } from '@/shared/components/PriorityBadge.tsx';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover.tsx';
+import { ChevronDownIcon } from 'lucide-react';
+import { Calendar } from '@/components/ui/calendar.tsx';
+import { format } from 'date-fns';
+import { toast } from '@/components/ui/toast.tsx';
 
 type Props = {
     handleAddTask: (task: CreateTaskType) => void;
@@ -38,7 +42,7 @@ type Props = {
 };
 
 export function AddTask(props: Props) {
-    const { register, handleSubmit, reset, control } = useForm<CreateTaskType>({
+    const { register, handleSubmit, reset, control } = useForm<TaskFormValues>({
         defaultValues: {
             assignee: null,
             priority: 'Low',
@@ -46,21 +50,24 @@ export function AddTask(props: Props) {
         },
     });
 
-    const handleCreateNewTask = (data: CreateTaskType) => {
+    const handleCreateNewTask = (data: TaskFormValues) => {
         const task: CreateTaskType = {
             project_id: props.currentProjectId,
             title: data.title,
-            description: data.description,
+            description: data.description || null,
             assignee: data.assignee || null,
             priority: data.priority,
-            due_date: data.due_date === '' ? null : data.due_date,
+            due_date: data.due_date ? format(data.due_date, 'yyyy-MM-dd') : null,
             status: data.status,
         };
 
         props.handleAddTask(task);
-
-        console.log(task);
+        toast.add({
+            type: 'info',
+            description: `Task '${data.title}' added successfully.`,
+        });
         reset();
+        props.setIsAddItemOpen(false);
     };
 
     const usersItems = props.projectUsers.map((user: UsersType) => {
@@ -71,8 +78,8 @@ export function AddTask(props: Props) {
 
     return (
         <Dialog open={props.isAddItemOpen} onOpenChange={props.setIsAddItemOpen}>
-            <form onSubmit={handleSubmit(handleCreateNewTask)}>
-                <DialogContent>
+            <DialogContent>
+                <form onSubmit={handleSubmit(handleCreateNewTask)} className="grid gap-6">
                     <DialogHeader>
                         <DialogTitle>Add Task</DialogTitle>
                     </DialogHeader>
@@ -84,18 +91,12 @@ export function AddTask(props: Props) {
                             />
                         </Field>
                         <Field>
-                            <Input
-                                {...register('description', { required: true })}
-                                placeholder="Description"
-                            />
+                            <Input {...register('description')} placeholder="Description" />
                         </Field>
                         <Field>
                             <Controller
                                 control={control}
                                 name="assignee"
-                                rules={{
-                                    required: true,
-                                }}
                                 render={({ field }) => (
                                     <Select
                                         value={field.value}
@@ -197,39 +198,43 @@ export function AddTask(props: Props) {
                                 )}
                             />
                         </Field>
-                        <Field>
-                            <div>
-                                <label htmlFor="dueDate">dueDate</label>
-                                <input
-                                    min={getCurrentDate()}
-                                    type="date"
-                                    {...register('due_date')}
-                                />
-                            </div>
-                        </Field>
+                        <Controller
+                            control={control}
+                            name="due_date"
+                            render={({ field }) => {
+                                console.log(field);
+
+                                return (
+                                    <Popover>
+                                        <PopoverTrigger
+                                            render={
+                                                <Button
+                                                    variant={'outline'}
+                                                    data-empty={!field.value}
+                                                    className="w-40 justify-between text-left font-normal data-[empty=true]:text-muted-foreground"
+                                                >
+                                                    {field.value ? (
+                                                        format(field.value, 'PPP')
+                                                    ) : (
+                                                        <span>Pick a date</span>
+                                                    )}
+                                                    <ChevronDownIcon data-icon="inline-end" />
+                                                </Button>
+                                            }
+                                        />
+                                        <PopoverContent className="w-auto p-0" align="start">
+                                            <Calendar
+                                                mode="single"
+                                                selected={field.value}
+                                                onSelect={field.onChange}
+                                                defaultMonth={field.value}
+                                            />
+                                        </PopoverContent>
+                                    </Popover>
+                                );
+                            }}
+                        />
                     </FieldGroup>
-                    {/*<div>*/}
-                    {/*    <label htmlFor="priority">priority</label>*/}
-                    {/*    <select {...register('priority', { required: true })}>*/}
-                    {/*        <option value="">Select...</option>*/}
-                    {/*        <option value="Low">Low</option>*/}
-                    {/*        <option value="Medium">Medium</option>*/}
-                    {/*        <option value="High">High</option>*/}
-                    {/*    </select>*/}
-                    {/*</div>*/}
-                    {/*<div>*/}
-                    {/*    <label htmlFor="dueDate">dueDate</label>*/}
-                    {/*    <input min={getCurrentDate()} type="date" {...register('due_date')} />*/}
-                    {/*</div>*/}
-                    {/*<div>*/}
-                    {/*    <label htmlFor="status">status</label>*/}
-                    {/*    <select {...register('status', { required: true })}>*/}
-                    {/*        <option value="">Select...</option>*/}
-                    {/*        <option value="To Do">To Do</option>*/}
-                    {/*        <option value="Done">Done</option>*/}
-                    {/*        <option value="In progress">In progress</option>*/}
-                    {/*    </select>*/}
-                    {/*</div>*/}
                     <DialogFooter>
                         <DialogClose
                             render={<Button variant="outline">Cancel</Button>}
@@ -238,8 +243,8 @@ export function AddTask(props: Props) {
                             Add New Task
                         </Button>
                     </DialogFooter>
-                </DialogContent>
-            </form>
+                </form>
+            </DialogContent>
         </Dialog>
     );
 }

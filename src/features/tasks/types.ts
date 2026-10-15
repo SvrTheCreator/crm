@@ -25,3 +25,12 @@ export type EditedFieldType = {
     title: string;
     description: string | null;
 };
+
+export type TaskFormValues = {
+    title: string;
+    description: string | null;
+    assignee: string | null;
+    priority: Priority;
+    status: Status;
+    due_date: Date | undefined;
+};

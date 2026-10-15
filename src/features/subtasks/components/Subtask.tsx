@@ -77,7 +77,7 @@ export function Subtask(props: Props) {
                 ) : props.subtask.description ? (
                     props.subtask.description
                 ) : (
-                    'Нет описания'
+                    'Add a description'
                 )}
                 {/*{props.subtask.description ? props.subtask.description : 'Нет описания'}*/}
             </td>
