@@ -73,7 +73,7 @@ export function TaskList() {
             handleUpdateItem(openDialog.task.id, 'title', data.title);
         }
         if (openDialog?.task.description !== data.description) {
-            handleUpdateItem(openDialog.task.id, 'description', data.description);
+            handleUpdateItem(openDialog.task.id, 'description', data.description || null);
         }
         setOpenDialog(null);
     };
