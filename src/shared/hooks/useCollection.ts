@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react';
 import type { PostgrestError } from '@supabase/supabase-js';
 import type { UpdateField, UpdateValue } from '@/shared/types.ts';
+import { toast } from '@/components/ui/toast.tsx';
 
 type PromiseType<ItemsType> = Promise<{ data: ItemsType | null; error: PostgrestError | null }>;
 
 type CrudPropsType<ItemsType, IdType, CreateItemType> = {
+    itemName: string;
     readItems: (required_ID: IdType) => PromiseType<ItemsType[]>;
     required_ID: IdType;
     createItem: (item: CreateItemType) => PromiseType<ItemsType>;
@@ -13,6 +15,7 @@ type CrudPropsType<ItemsType, IdType, CreateItemType> = {
 };
 
 export const useCrud = <ItemsType extends { id: string }, IdType, CreateItemType>({
+    itemName,
     required_ID,
     readItems,
     createItem,
@@ -45,31 +48,48 @@ export const useCrud = <ItemsType extends { id: string }, IdType, CreateItemType
         load();
     }, [required_ID, readItems]);
 
-    async function handleAddItem(item: CreateItemType) {
+    async function handleCreateItem(item: CreateItemType) {
         const { data, error } = await createItem(item);
 
         if (error !== null) {
-            console.log(error.message);
+            toast.add({
+                type: 'error',
+                description: `Failed to create ${itemName.toLowerCase()}`,
+            });
             return;
         }
         if (data) {
             setItemsList([data, ...itemsList]);
             setIsAddItemOpen(false);
+            toast.add({
+                type: 'success',
+                description: `${itemName} created`,
+            });
         }
     }
 
     async function handleRemoveItem(id: string) {
         const { error } = await deleteItem(id);
         if (error !== null) {
-            console.log(error.message);
+            toast.add({
+                type: 'error',
+                description: `Failed to delete ${itemName.toLowerCase()}`,
+            });
             return;
         }
         setItemsList(itemsList.filter((item) => item.id !== id));
+        toast.add({
+            type: 'success',
+            description: ` ${itemName} deleted`,
+        });
     }
     async function handleUpdateItem(id: string, field: UpdateField, value: UpdateValue) {
         const { error } = await updateItem(id, field, value);
         if (error !== null) {
-            console.log(error.message);
+            toast.add({
+                type: 'error',
+                description: `Failed to save changes`,
+            });
             return;
         }
         const updatedItem = itemsList.map((el) => {
@@ -81,6 +101,10 @@ export const useCrud = <ItemsType extends { id: string }, IdType, CreateItemType
             } else return el;
         });
         setItemsList(updatedItem);
+        toast.add({
+            type: 'success',
+            description: `Changes saved`,
+        });
     }
 
     return {
@@ -90,7 +114,7 @@ export const useCrud = <ItemsType extends { id: string }, IdType, CreateItemType
         error,
         isAddItemOpen,
         setIsAddItemOpen,
-        handleAddItem,
+        handleCreateItem,
         handleRemoveItem,
         handleUpdateItem,
     };

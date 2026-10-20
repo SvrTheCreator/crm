@@ -7,6 +7,7 @@ import {
 } from '@/features/projects/api.ts';
 import type { CreateProjectType, ProjectType } from '@/features/projects/types.ts';
 import type { UpdateField, UpdateValue } from '@/shared/types.ts';
+import { toast } from '@/components/ui/toast.tsx';
 
 export function useProjects() {
     const [projectsList, setProjectsList] = useState<Array<ProjectType>>([]);
@@ -30,10 +31,18 @@ export function useProjects() {
         const { data, error } = await createProject(project);
 
         if (error !== null) {
+            toast.add({
+                type: 'error',
+                description: `Failed to create project`,
+            });
             return error;
         }
         if (data) {
             setProjectsList([data, ...projectsList]);
+            toast.add({
+                type: 'success',
+                description: `Project created`,
+            });
         }
     }
 
@@ -41,25 +50,37 @@ export function useProjects() {
         const { data, error } = await deleteProject(projectId);
 
         if (error !== null) {
-            alert(error.message);
             return;
         }
         if (data?.length === 0) {
-            alert('Issues with RLS — contact the administrator');
+            toast.add({
+                type: 'error',
+                description: `Failed to delete project`,
+            });
             return;
         }
         setProjectsList(projectsList.filter((item) => item.id !== projectId));
+        toast.add({
+            type: 'success',
+            description: `Project deleted`,
+        });
     }
 
     async function handleUpdateProject(id: string, field: UpdateField, value: UpdateValue) {
         const { data, error } = await updateProject(id, field, value);
 
         if (error !== null) {
-            alert(error.message);
+            toast.add({
+                type: 'error',
+                description: `Failed to update project`,
+            });
             return;
         }
         if (data?.length === 0) {
-            alert('Issues with RLS — contact the administrator');
+            toast.add({
+                type: 'error',
+                description: `You don't have permission to do this`,
+            });
             return;
         }
 
@@ -73,6 +94,10 @@ export function useProjects() {
         });
 
         setProjectsList(updateProjectField);
+        toast.add({
+            type: 'success',
+            description: `Project updated`,
+        });
     }
 
     return { projectsList, error, handleUpdateProject, handleCreateProject, handleDeleteProject };
