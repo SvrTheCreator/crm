@@ -2,7 +2,7 @@ import type { CreateSubtaskType, SubtaskType } from '../types.ts';
 import { Subtask } from './Subtask.tsx';
 import { AddSubtask } from './AddSubtask.tsx';
 import { createSubtask, readSubtasks, deleteSubtask, updateSubtask } from '../api.ts';
-import { useCrud } from '../../../shared/hooks/useCollection.ts';
+import { useCrud } from '@/shared/hooks/useCollection.ts';
 import type { UsersType } from '../../users/types.ts';
 
 type Props = {
@@ -17,10 +17,11 @@ export function SubtasksList(props: Props) {
         error,
         isAddItemOpen,
         setIsAddItemOpen,
-        handleAddItem,
+        handleCreateItem,
         handleRemoveItem,
         handleUpdateItem,
     } = useCrud<SubtaskType, Props['taskId'], CreateSubtaskType>({
+        itemName: 'Subtask',
         readItems: readSubtasks,
         required_ID: props.taskId,
         createItem: createSubtask,
@@ -41,7 +42,7 @@ export function SubtasksList(props: Props) {
                 <AddSubtask
                     taskId={props.taskId}
                     users={props.users}
-                    handleAddSubtask={handleAddItem}
+                    handleAddSubtask={handleCreateItem}
                 />
             )}
             {itemsList.length === 0 ? (

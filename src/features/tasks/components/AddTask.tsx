@@ -30,7 +30,6 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { ChevronDownIcon } from 'lucide-react';
 import { Calendar } from '@/components/ui/calendar.tsx';
 import { format } from 'date-fns';
-import { toast } from '@/components/ui/toast.tsx';
 
 type Props = {
     handleAddTask: (task: CreateTaskType) => void;
@@ -62,10 +61,6 @@ export function AddTask(props: Props) {
         };
 
         props.handleAddTask(task);
-        toast.add({
-            type: 'info',
-            description: `Task '${data.title}' added successfully.`,
-        });
         reset();
         props.setIsAddItemOpen(false);
     };

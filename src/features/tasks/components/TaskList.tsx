@@ -1,4 +1,4 @@
-import { type CreateTaskType, type TaskType } from '../types.ts';
+import { type CreateTaskType, type EditedFieldType, type TaskType } from '../types.ts';
 import { useState } from 'react';
 import { AddTask } from './AddTask.tsx';
 import { Task } from './Task.tsx';
@@ -11,6 +11,29 @@ import type { ContextType } from '@/pages/workspace/Workspace.tsx';
 import { Table, TableBody, TableHead, TableHeader, TableRow } from '@/components/ui/table.tsx';
 import { Button } from '@/components/ui/button.tsx';
 import type { SortField } from '@/shared/types.ts';
+import {
+    Dialog,
+    DialogClose,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+} from '@/components/ui/dialog.tsx';
+import { Field, FieldGroup } from '@/components/ui/field.tsx';
+import { Input } from '@/components/ui/input.tsx';
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+} from '@/components/ui/alert-dialog.tsx';
+import { useForm } from 'react-hook-form';
+import { Textarea } from '@/components/ui/textarea.tsx';
 
 interface SortConfig {
     field: SortField | null;
@@ -25,16 +48,35 @@ export function TaskList() {
         error,
         isAddItemOpen,
         setIsAddItemOpen,
-        handleAddItem,
+        handleCreateItem,
         handleRemoveItem,
         handleUpdateItem,
     } = useCrud<TaskType, string | null, CreateTaskType>({
+        itemName: 'Task',
         readItems: readTasks,
         required_ID: params.projectId ?? null,
         createItem: createTask,
         deleteItem: deleteTask,
         updateItem: updateTask,
     });
+
+    const [openDialog, setOpenDialog] = useState<{
+        kind: 'delete' | 'edit';
+        task: TaskType;
+    } | null>(null);
+
+    const { register, handleSubmit } = useForm<EditedFieldType>();
+
+    const handleEditTask = (data: EditedFieldType) => {
+        if (openDialog === null) return;
+        if (openDialog?.task.title !== data.title) {
+            handleUpdateItem(openDialog.task.id, 'title', data.title);
+        }
+        if (openDialog?.task.description !== data.description) {
+            handleUpdateItem(openDialog.task.id, 'description', data.description);
+        }
+        setOpenDialog(null);
+    };
 
     const { projectUsers } = useOutletContext<ContextType>();
     const { users } = useUsers();
@@ -43,6 +85,12 @@ export function TaskList() {
         field: null,
         order: null,
     });
+
+    const handleRemoveTask = () => {
+        if (openDialog === null) return;
+        handleRemoveItem(openDialog?.task?.id);
+        setOpenDialog(null);
+    };
 
     const handleConfig = (arg: SortField) => {
         setSortConfig((prev) => ({
@@ -94,7 +142,7 @@ export function TaskList() {
                     {isAddItemOpen && params.projectId && (
                         <AddTask
                             currentProjectId={params.projectId}
-                            handleAddTask={handleAddItem}
+                            handleAddTask={handleCreateItem}
                             users={users}
                             projectUsers={projectUsers}
                             isAddItemOpen={isAddItemOpen}
@@ -104,10 +152,11 @@ export function TaskList() {
                     {!itemsList.length && 'Добавь новую задачу для этого проекта'}
                     {itemsList.length > 0 && (
                         <>
-                            <Table>
+                            <Table className="table-fixed">
                                 <TableHeader>
                                     <TableRow>
                                         <TableHead
+                                            className="cursor-pointer"
                                             onClick={() => {
                                                 handleConfig('title');
                                             }}
@@ -116,11 +165,17 @@ export function TaskList() {
                                         </TableHead>
                                         <TableHead>Description</TableHead>
                                         <TableHead>Assignee</TableHead>
-                                        <TableHead onClick={() => handleConfig('priority')}>
+                                        <TableHead
+                                            className="cursor-pointer"
+                                            onClick={() => handleConfig('priority')}
+                                        >
                                             Priority
                                         </TableHead>
                                         <TableHead>Due Date</TableHead>
-                                        <TableHead onClick={() => handleConfig('status')}>
+                                        <TableHead
+                                            className="cursor-pointer"
+                                            onClick={() => handleConfig('status')}
+                                        >
                                             Status
                                         </TableHead>
                                         <TableHead>Actions</TableHead>
@@ -129,12 +184,13 @@ export function TaskList() {
                                 <TableBody>
                                     {sortedTaskList.map((task: TaskType) => (
                                         <Task
+                                            setOpenDialog={setOpenDialog}
                                             key={task.id}
                                             users={users}
                                             task={task}
                                             projectUsers={projectUsers}
                                             handleUpdateTask={handleUpdateItem}
-                                            handleRemoveTask={handleRemoveItem}
+                                            // handleRemoveTask={handleRemoveItem}
                                         />
                                     ))}
                                 </TableBody>
@@ -143,6 +199,73 @@ export function TaskList() {
                     )}
                 </div>
             )}
+            <Dialog open={openDialog?.kind == 'edit'} onOpenChange={() => setOpenDialog(null)}>
+                <DialogContent className="sm:max-w-sm">
+                    <form
+                        key={openDialog?.task.id}
+                        onSubmit={handleSubmit(handleEditTask)}
+                        className="grid gap-6"
+                    >
+                        <DialogHeader>
+                            <DialogTitle>Edit task</DialogTitle>
+                            <DialogDescription>Change the title or description</DialogDescription>
+                        </DialogHeader>
+                        <FieldGroup>
+                            <Field>
+                                <Input
+                                    {...register('title', { required: true })}
+                                    id="title"
+                                    name="title"
+                                    placeholder={openDialog?.task.title}
+                                    defaultValue={openDialog?.task.title}
+                                />
+                            </Field>
+                            <Field>
+                                <Textarea
+                                    className="max-h-30"
+                                    {...register('description')}
+                                    id="description"
+                                    name="description"
+                                    placeholder={
+                                        openDialog?.task.description === null
+                                            ? 'add new description'
+                                            : openDialog?.task.description
+                                    }
+                                    // defaultValue={openDialog?.task.description ?? 'Description'}
+                                />
+                            </Field>
+                        </FieldGroup>
+                        <DialogFooter>
+                            <DialogClose render={<Button variant="outline">Cancel</Button>} />
+                            <Button onClick={() => handleEditTask} type="submit">
+                                Save changes
+                            </Button>
+                        </DialogFooter>
+                    </form>
+                </DialogContent>
+            </Dialog>
+            <AlertDialog
+                open={openDialog?.kind == 'delete'}
+                onOpenChange={() => setOpenDialog(null)}
+            >
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>
+                            Are you sure you want to delete the task ?
+                        </AlertDialogTitle>
+                        <AlertDialogDescription>
+                            This action cannot be undone. This will permanently delete task and
+                            subtask this task.
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction onClick={() => handleRemoveTask()}>
+                            Continue
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
         </div>
     );
 }

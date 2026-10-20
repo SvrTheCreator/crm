@@ -1,7 +1,6 @@
 import type { ProjectType } from '../types.ts';
 
 import type { UsersType } from '../../users/types.ts';
-import { ButtonGroup } from '@/components/ui/button-group.tsx';
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -65,72 +64,70 @@ export function Project(props: Props) {
     return (
         <div>
             <AlertDialog>
-                <ButtonGroup className="p-3">
-                    <DropdownMenu>
-                        <DropdownMenuTrigger
-                            render={
-                                <SidebarMenuAction aria-label="More Options">
-                                    <EllipsisVertical />
-                                </SidebarMenuAction>
-                            }
-                        />
-                        <DropdownMenuContent align="end" className="w-40">
-                            <DropdownMenuGroup>
-                                <DropdownMenuItem
-                                    onClick={() => {
-                                        if (props.otherUsers.length === 0) {
-                                            toast.add({
-                                                type: 'info',
-                                                description:
-                                                    'All available users have already been added.',
-                                            });
-                                            return;
-                                        }
-                                        toggleMenu({
-                                            projectId: props.project.id,
-                                            kind: 'add',
+                <DropdownMenu>
+                    <DropdownMenuTrigger
+                        render={
+                            <SidebarMenuAction aria-label="More Options">
+                                <EllipsisVertical />
+                            </SidebarMenuAction>
+                        }
+                    />
+                    <DropdownMenuContent align="end" className="w-40">
+                        <DropdownMenuGroup>
+                            <DropdownMenuItem
+                                onClick={() => {
+                                    if (props.otherUsers.length === 0) {
+                                        toast.add({
+                                            type: 'info',
+                                            description:
+                                                'All available users have already been added.',
                                         });
-                                    }}
-                                >
-                                    <UserPlus />
-                                    Add to project
-                                </DropdownMenuItem>
-                                <DropdownMenuItem
-                                    onClick={() => {
-                                        toggleMenu({
-                                            projectId: props.project.id,
-                                            kind: 'remove',
-                                        });
-                                    }}
-                                >
-                                    <UserMinus />
-                                    Delete into project
-                                </DropdownMenuItem>
-                                <DropdownMenuItem
-                                    onClick={() => {
-                                        toggleMenu({
-                                            projectId: props.project.id,
-                                            kind: 'edit',
-                                        });
-                                    }}
-                                >
-                                    <Pencil />
-                                    Rename
-                                </DropdownMenuItem>
-                                <DropdownMenuSeparator />
-                                <AlertDialogTrigger
-                                    nativeButton={false}
-                                    render={
-                                        <DropdownMenuItem variant="destructive">
-                                            <Trash2Icon />
-                                            Trash
-                                        </DropdownMenuItem>
+                                        return;
                                     }
-                                />
-                            </DropdownMenuGroup>
-                        </DropdownMenuContent>
-                    </DropdownMenu>
-                </ButtonGroup>
+                                    toggleMenu({
+                                        projectId: props.project.id,
+                                        kind: 'add',
+                                    });
+                                }}
+                            >
+                                <UserPlus />
+                                Add to project
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                                onClick={() => {
+                                    toggleMenu({
+                                        projectId: props.project.id,
+                                        kind: 'remove',
+                                    });
+                                }}
+                            >
+                                <UserMinus />
+                                Delete into project
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                                onClick={() => {
+                                    toggleMenu({
+                                        projectId: props.project.id,
+                                        kind: 'edit',
+                                    });
+                                }}
+                            >
+                                <Pencil />
+                                Rename
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                            <AlertDialogTrigger
+                                nativeButton={false}
+                                render={
+                                    <DropdownMenuItem variant="destructive">
+                                        <Trash2Icon />
+                                        Trash
+                                    </DropdownMenuItem>
+                                }
+                            />
+                        </DropdownMenuGroup>
+                    </DropdownMenuContent>
+                </DropdownMenu>
                 <AlertDialogContent>
                     <AlertDialogHeader>
                         <AlertDialogTitle>
