@@ -20,7 +20,6 @@ type Props = {
     task: TaskType;
     users: UsersType[];
     projectUsers: UsersType[];
-    // handleRemoveTask: (id: string) => void;
     handleUpdateTask: (id: string, field: UpdateField, value: UpdateValue) => void;
     setOpenDialog: (value: { kind: 'delete' | 'edit'; task: TaskType } | null) => void;
 };
@@ -34,33 +33,10 @@ export function Task(props: Props) {
 
     const currentUser = props.users.find((user) => user.id === props.task.assignee);
 
-    // const handleFieldChange = () => {
-    //     if (props.task.title !== editedField.title) {
-    //         props.handleUpdateTask(props.task.id, 'title', editedField.title);
-    //     }
-    //     if (props.task.description !== editedField.description) {
-    //         props.handleUpdateTask(props.task.id, 'description', editedField.description);
-    //     }
-    //     props.setIsEdit(false);
-    // };
-
     return (
         <Fragment>
             <TableRow style={{ position: 'relative' }}>
                 <TableCell>
-                    {/*{isEdit ? (*/}
-                    {/*    <input*/}
-                    {/*        value={editedField.title}*/}
-                    {/*        name="title"*/}
-                    {/*        onBlur={handleFieldChange}*/}
-                    {/*        onChange={(event) => {*/}
-                    {/*            setEditedField({*/}
-                    {/*                ...editedField,*/}
-                    {/*                [event.target.name]: event.target.value,*/}
-                    {/*            });*/}
-                    {/*        }}*/}
-                    {/*    />*/}
-                    {/*) : (*/}
                     <button
                         onClick={() => handleCurrentTask(props.task.id)}
                         style={{ textDecoration: 'underline', cursor: 'pointer' }}
@@ -70,25 +46,6 @@ export function Task(props: Props) {
                     {/*)}*/}
                 </TableCell>
                 <TableCell className="truncate max-w-50">
-                    {/*{isEdit ? (*/}
-                    {/*    <input*/}
-                    {/*        value={*/}
-                    {/*            editedField.description === null ? '' : editedField.description*/}
-                    {/*        }*/}
-                    {/*        name="description"*/}
-                    {/*        onBlur={handleFieldChange}*/}
-                    {/*        onChange={(event) => {*/}
-                    {/*            setEditedField({*/}
-                    {/*                ...editedField,*/}
-                    {/*                [event.target.name]: event.target.value,*/}
-                    {/*            });*/}
-                    {/*        }}*/}
-                    {/*    />*/}
-                    {/*) : props.task.description ? (*/}
-                    {/*    props.task.description*/}
-                    {/*) : (*/}
-                    {/*    'Add a description'*/}
-                    {/*)}*/}
                     {props.task.description ? props.task.description : 'Add a description'}
                 </TableCell>
                 <TableCell>
@@ -141,7 +98,6 @@ export function Task(props: Props) {
                             );
                         }}
                     />
-                    {/*{modifiedDate}*/}
                 </TableCell>
                 <TableCell>
                     <select
@@ -174,13 +130,6 @@ export function Task(props: Props) {
                         <DropdownMenuContent>
                             <DropdownMenuGroup>
                                 <DropdownMenuItem
-                                    // onClick={() => {
-                                    //     toggleMenu({
-                                    //         projectId: props.project.id,
-                                    //         kind: 'edit',
-                                    //     });
-                                    // }}
-
                                     onClick={() => {
                                         props.setOpenDialog({ kind: 'edit', task: props.task });
                                     }}
@@ -201,25 +150,6 @@ export function Task(props: Props) {
                             </DropdownMenuGroup>
                         </DropdownMenuContent>
                     </DropdownMenu>
-
-                    {/*{isEdit ? (*/}
-                    {/*    <div>*/}
-                    {/*        <button onClick={() => handleFieldChange()}>💾</button>*/}
-                    {/*        <button*/}
-                    {/*            onClick={() => {*/}
-                    {/*                setEditedField({*/}
-                    {/*                    title: props.task.title,*/}
-                    {/*                    description: props.task.description,*/}
-                    {/*                });*/}
-                    {/*                setIsEdit(false);*/}
-                    {/*            }}*/}
-                    {/*        >*/}
-                    {/*            ❌*/}
-                    {/*        </button>*/}
-                    {/*    </div>*/}
-                    {/*) : (*/}
-                    {/*    <button onClick={() => setIsEdit(true)}>✏️</button>*/}
-                    {/*)}*/}
                 </TableCell>
             </TableRow>
 
