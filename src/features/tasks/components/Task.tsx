@@ -1,7 +1,6 @@
 import type { TaskType } from '../types.ts';
 import { Fragment, useState } from 'react';
 import { SubtasksList } from '../../subtasks/components/SubtasksList.tsx';
-import { getCurrentDate } from '@/shared/utils/getCurrentDate.ts';
 import type { UsersType } from '../../users/types.ts';
 import { TableCell, TableRow } from '@/components/ui/table.tsx';
 import type { Priority, Status, UpdateField, UpdateValue } from '@/shared/types.ts';
@@ -14,7 +13,24 @@ import {
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu.tsx';
 import { SidebarMenuAction } from '@/components/ui/sidebar.tsx';
-import { EllipsisVertical, Pencil, Trash2Icon } from 'lucide-react';
+import { ChevronDownIcon, EllipsisVertical, Pencil, Trash2Icon } from 'lucide-react';
+import {
+    Select,
+    SelectContent,
+    SelectGroup,
+    SelectItem,
+    SelectLabel,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select.tsx';
+import { PriorityBadge } from '@/shared/components/PriorityBadge.tsx';
+import { priorityColor, statusColor } from '@/shared/constants.ts';
+import { cn } from '@/lib/utils.ts';
+import { StatusBadge } from '@/shared/components/StatusBadge.tsx';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover.tsx';
+import { Button } from '@/components/ui/button.tsx';
+import { format } from 'date-fns';
+import { Calendar } from '@/components/ui/calendar.tsx';
 
 type Props = {
     task: TaskType;
@@ -31,91 +47,146 @@ export function Task(props: Props) {
         return openTaskId === taskId ? setOpenTaskId(null) : setOpenTaskId(taskId);
     };
 
-    const currentUser = props.users.find((user) => user.id === props.task.assignee);
+    const dueDate = props.task.due_date ? new Date(props.task.due_date) : undefined;
+
+    const usersItems = props.users.map((user: UsersType) => {
+        const fullName = `${user.first_name} ${user.last_name}`;
+
+        return { label: fullName, value: user.id };
+    });
 
     return (
         <Fragment>
             <TableRow style={{ position: 'relative' }}>
-                <TableCell>
-                    <button
-                        onClick={() => handleCurrentTask(props.task.id)}
-                        style={{ textDecoration: 'underline', cursor: 'pointer' }}
-                    >
-                        {props.task.title}
-                    </button>
-                    {/*)}*/}
+                <TableCell
+                    className="cursor-pointer"
+                    onClick={() => handleCurrentTask(props.task.id)}
+                >
+                    <Button variant="link">{props.task.title}</Button>
                 </TableCell>
                 <TableCell className="truncate max-w-50">
-                    {props.task.description ? props.task.description : 'Add a description'}
+                    {props.task.description ? (
+                        <p>props.task.description</p>
+                    ) : (
+                        <p className="text-muted-foreground">Add a description</p>
+                    )}
                 </TableCell>
                 <TableCell>
-                    <select
-                        onChange={(event) => {
-                            props.handleUpdateTask(
-                                props.task.id,
-                                'assignee',
-                                event.target.value === '' ? null : event.target.value,
-                            );
-                        }}
-                        defaultValue={currentUser ? currentUser.id : ''}
+                    <Select
+                        value={props.task.assignee ?? ''}
+                        onValueChange={(value) =>
+                            props.handleUpdateTask(props.task.id, 'assignee', value || null)
+                        }
+                        items={usersItems}
                     >
-                        <option value="">Не выбран</option>
-                        {props.projectUsers.map((item: UsersType) => {
-                            return (
-                                <option key={item.id} value={item.id}>
-                                    {`${item.first_name} ${item.last_name}`}
-                                </option>
-                            );
-                        })}
-                    </select>
+                        <SelectTrigger className="w-full max-w-100">
+                            <SelectValue placeholder="Assignee" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectGroup>
+                                <SelectLabel>Assignee</SelectLabel>
+                                <SelectItem className="text-muted-foreground" value="">
+                                    Unassigned
+                                </SelectItem>
+                                {props.projectUsers.map((item: UsersType) => {
+                                    return (
+                                        <SelectItem key={item.id} value={item.id}>
+                                            {`${item.first_name} ${item.last_name}`}
+                                        </SelectItem>
+                                    );
+                                })}
+                            </SelectGroup>
+                        </SelectContent>
+                    </Select>
                 </TableCell>
                 <TableCell>
-                    <select
-                        defaultValue={props.task.priority}
-                        onChange={(event) =>
-                            props.handleUpdateTask(
-                                props.task.id,
-                                'priority',
-                                event.target.value as Priority,
-                            )
+                    <Select
+                        value={props.task.priority}
+                        onValueChange={(event) =>
+                            props.handleUpdateTask(props.task.id, 'priority', event as Priority)
                         }
                     >
-                        <option value="Medium">Medium</option>
-                        <option value="High">High</option>
-                        <option value="Low">Low</option>
-                    </select>
+                        <SelectTrigger className="w-full max-w-100">
+                            <SelectValue placeholder="Priority">
+                                {(value: Priority | null) => {
+                                    if (!value) return null;
+                                    return <PriorityBadge value={value} />;
+                                }}
+                            </SelectValue>
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectGroup>
+                                <SelectLabel> Priority</SelectLabel>
+                                {Object.entries(priorityColor).map(([value, color]) => (
+                                    <SelectItem key={value} value={value}>
+                                        <span className={cn('size-2 rounded-full', color)} />
+                                        {value}
+                                    </SelectItem>
+                                ))}
+                            </SelectGroup>
+                        </SelectContent>
+                    </Select>
                 </TableCell>
                 <TableCell>
-                    <input
-                        min={getCurrentDate()}
-                        type="date"
-                        defaultValue={props.task.due_date === null ? '' : props.task.due_date}
-                        onChange={(event) => {
-                            props.handleUpdateTask(
-                                props.task.id,
-                                'due_date',
-                                event.target.value === '' ? null : event.target.value,
-                            );
-                        }}
-                    />
+                    <Popover>
+                        <PopoverTrigger
+                            render={
+                                <Button
+                                    variant="outline"
+                                    data-empty={dueDate}
+                                    className="w-45 justify-between text-left font-normal data-[empty=true]:text-muted-foreground bg-input/30"
+                                >
+                                    {dueDate ? format(dueDate, 'PPP') : <span>Pick a date</span>}
+                                    <ChevronDownIcon data-icon="inline-end" />
+                                </Button>
+                            }
+                        />
+                        <PopoverContent className="w-auto p-0" align="start">
+                            <Calendar
+                                mode="single"
+                                selected={dueDate}
+                                onSelect={(date) =>
+                                    props.handleUpdateTask(
+                                        props.task.id,
+                                        'due_date',
+                                        date ? format(date, 'yyyy-MM-dd') : null,
+                                    )
+                                }
+                            />
+                        </PopoverContent>
+                    </Popover>
                 </TableCell>
                 <TableCell>
-                    <select
-                        defaultValue={props.task.status}
-                        onChange={(event) =>
-                            props.handleUpdateTask(
-                                props.task.id,
-                                'status',
-                                event.target.value as Status,
-                            )
+                    <Select
+                        value={props.task.status}
+                        onValueChange={(event) =>
+                            props.handleUpdateTask(props.task.id, 'status', event as Status)
                         }
                     >
-                        <option value="To Do">To Do</option>
-                        <option value="Done">Done</option>
-                        <option value="In progress">In progress</option>
-                    </select>
+                        <SelectTrigger className="w-full max-w-100">
+                            <SelectValue placeholder="Status">
+                                {(value: Status | null) => {
+                                    if (!value) return null;
+                                    return <StatusBadge value={value} />;
+                                }}
+                            </SelectValue>
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectGroup>
+                                <SelectLabel> Priority</SelectLabel>
+                                {Object.entries(statusColor).map(([value, { Icon, color }]) => (
+                                    <SelectItem key={value} value={value}>
+                                        <span>
+                                            <Icon className={cn('size-4', color)} />
+                                        </span>
+                                        {value}
+                                    </SelectItem>
+                                ))}
+                            </SelectGroup>
+                        </SelectContent>
+                    </Select>
                 </TableCell>
-                <TableCell className="flex justify-start items-start">
+                <TableCell>
                     <DropdownMenu>
                         <DropdownMenuTrigger
                             render={

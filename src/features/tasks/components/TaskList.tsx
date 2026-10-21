@@ -231,7 +231,6 @@ export function TaskList() {
                                             ? 'add new description'
                                             : openDialog?.task.description
                                     }
-                                    // defaultValue={openDialog?.task.description ?? 'Description'}
                                 />
                             </Field>
                         </FieldGroup>

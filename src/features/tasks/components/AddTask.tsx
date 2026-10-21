@@ -197,8 +197,6 @@ export function AddTask(props: Props) {
                             control={control}
                             name="due_date"
                             render={({ field }) => {
-                                console.log(field);
-
                                 return (
                                     <Popover>
                                         <PopoverTrigger
