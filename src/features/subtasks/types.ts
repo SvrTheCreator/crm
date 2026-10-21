@@ -19,3 +19,12 @@ export type CreateSubtaskType = {
     due_date: string | null;
     status: Status;
 };
+
+export type SubtaskFormValues = {
+    title: string;
+    description: string | null;
+    assignee: string | null;
+    priority: Priority;
+    status: Status;
+    due_date: Date | undefined;
+};

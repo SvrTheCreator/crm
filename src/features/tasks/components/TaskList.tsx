@@ -124,7 +124,7 @@ export function TaskList() {
             ) : error !== '' ? (
                 error
             ) : loading ? (
-                <div style={{ position: 'absolute', top: '50%', left: '50%' }}>
+                <div className=" absolute top-1/2 left-1/2">
                     <Spinner className="size-10" />
                 </div>
             ) : (
@@ -149,7 +149,7 @@ export function TaskList() {
                             setIsAddItemOpen={setIsAddItemOpen}
                         />
                     )}
-                    {!itemsList.length && 'Добавь новую задачу для этого проекта'}
+                    {!itemsList.length && 'Add a new task for this project'}
                     {itemsList.length > 0 && (
                         <>
                             <Table className="table-fixed">
@@ -190,7 +190,6 @@ export function TaskList() {
                                             task={task}
                                             projectUsers={projectUsers}
                                             handleUpdateTask={handleUpdateItem}
-                                            // handleRemoveTask={handleRemoveItem}
                                         />
                                     ))}
                                 </TableBody>
@@ -238,7 +237,80 @@ export function TaskList() {
                             <DialogClose render={<Button variant="outline">Cancel</Button>} />
                             <Button onClick={() => handleEditTask} type="submit">
                                 Save changes
-                            </Button>
+                            </Button>{' '}
+                            <Dialog
+                                open={openDialog?.kind == 'edit'}
+                                onOpenChange={() => setOpenDialog(null)}
+                            >
+                                <DialogContent className="sm:max-w-sm">
+                                    <form
+                                        key={openDialog?.task.id}
+                                        onSubmit={handleSubmit(handleEditTask)}
+                                        className="grid gap-6"
+                                    >
+                                        <DialogHeader>
+                                            <DialogTitle>Edit task</DialogTitle>
+                                            <DialogDescription>
+                                                Change the title or description
+                                            </DialogDescription>
+                                        </DialogHeader>
+                                        <FieldGroup>
+                                            <Field>
+                                                <Input
+                                                    {...register('title', { required: true })}
+                                                    id="title"
+                                                    name="title"
+                                                    placeholder={openDialog?.task.title}
+                                                    defaultValue={openDialog?.task.title}
+                                                />
+                                            </Field>
+                                            <Field>
+                                                <Textarea
+                                                    className="max-h-30"
+                                                    {...register('description')}
+                                                    id="description"
+                                                    name="description"
+                                                    placeholder={
+                                                        openDialog?.task.description === null
+                                                            ? 'add new description'
+                                                            : openDialog?.task.description
+                                                    }
+                                                />
+                                            </Field>
+                                        </FieldGroup>
+                                        <DialogFooter>
+                                            <DialogClose
+                                                render={<Button variant="outline">Cancel</Button>}
+                                            />
+                                            <Button onClick={() => handleEditTask} type="submit">
+                                                Save changes
+                                            </Button>
+                                        </DialogFooter>
+                                    </form>
+                                </DialogContent>
+                            </Dialog>
+                            <AlertDialog
+                                open={openDialog?.kind == 'delete'}
+                                onOpenChange={() => setOpenDialog(null)}
+                            >
+                                <AlertDialogContent>
+                                    <AlertDialogHeader>
+                                        <AlertDialogTitle>
+                                            Are you sure you want to delete the task ?
+                                        </AlertDialogTitle>
+                                        <AlertDialogDescription>
+                                            This action cannot be undone. This will permanently
+                                            delete task and subtask this task.
+                                        </AlertDialogDescription>
+                                    </AlertDialogHeader>
+                                    <AlertDialogFooter>
+                                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                        <AlertDialogAction onClick={() => handleRemoveTask()}>
+                                            Continue
+                                        </AlertDialogAction>
+                                    </AlertDialogFooter>
+                                </AlertDialogContent>
+                            </AlertDialog>
                         </DialogFooter>
                     </form>
                 </DialogContent>

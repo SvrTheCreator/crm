@@ -66,7 +66,7 @@ export function Task(props: Props) {
                 </TableCell>
                 <TableCell className="truncate max-w-50">
                     {props.task.description ? (
-                        <p>props.task.description</p>
+                        <p>{props.task.description}</p>
                     ) : (
                         <p className="text-muted-foreground">Add a description</p>
                     )}
@@ -227,7 +227,11 @@ export function Task(props: Props) {
             {openTaskId === props.task.id && (
                 <tr>
                     <td colSpan={7}>
-                        <SubtasksList users={props.users} taskId={props.task.id} />
+                        <SubtasksList
+                            users={props.users}
+                            projectUsers={props.projectUsers}
+                            taskId={props.task.id}
+                        />
                     </td>
                 </tr>
             )}
