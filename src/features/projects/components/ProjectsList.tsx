@@ -41,6 +41,7 @@ export function ProjectsList(props: Props) {
                             isActive={projectId === project.id}
                         >
                             <SidebarMenuButton
+                                className="truncate"
                                 render={<NavLink to={`/projects/${project.id}`} />}
                                 isActive={projectId === project.id}
                             >

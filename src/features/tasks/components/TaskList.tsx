@@ -5,7 +5,7 @@ import { Task } from './Task.tsx';
 import { createTask, readTasks, deleteTask, updateTask } from '../api.ts';
 import { useUsers } from '../../users/hooks/useUsers.ts';
 import { useCrud } from '@/shared/hooks/useCollection.ts';
-import { useOutletContext, useParams } from 'react-router';
+import { Outlet, useOutletContext, useParams } from 'react-router';
 import { Spinner } from '@/components/ui/spinner.tsx';
 import type { ContextType } from '@/pages/workspace/Workspace.tsx';
 import { Table, TableBody, TableHead, TableHeader, TableRow } from '@/components/ui/table.tsx';
@@ -152,18 +152,20 @@ export function TaskList() {
                     {!itemsList.length && 'Add a new task for this project'}
                     {itemsList.length > 0 && (
                         <>
-                            <Table className="table-fixed">
+                            <Table className="table-fixed ">
                                 <TableHeader>
                                     <TableRow>
                                         <TableHead
-                                            className="cursor-pointer"
+                                            className="cursor-pointer w-[16%]"
                                             onClick={() => {
                                                 handleConfig('title');
                                             }}
                                         >
                                             Task Name
                                         </TableHead>
-                                        <TableHead>Description</TableHead>
+                                        <TableHead className="hidden 2xl:table-cell">
+                                            Description
+                                        </TableHead>
                                         <TableHead>Assignee</TableHead>
                                         <TableHead
                                             className="cursor-pointer"
@@ -178,7 +180,8 @@ export function TaskList() {
                                         >
                                             Status
                                         </TableHead>
-                                        <TableHead>Actions</TableHead>
+                                        <TableHead className="w-20">Subtasks</TableHead>
+                                        <TableHead className="w-17">Actions</TableHead>
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
@@ -194,6 +197,7 @@ export function TaskList() {
                                     ))}
                                 </TableBody>
                             </Table>
+                            <Outlet context={{ itemsList, projectUsers, handleUpdateItem }} />
                         </>
                     )}
                 </div>

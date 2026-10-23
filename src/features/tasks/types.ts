@@ -9,6 +9,7 @@ export type TaskType = {
     priority: Priority;
     due_date: string | null;
     status: Status;
+    subtasks: { count: number }[];
 };
 
 export type CreateTaskType = {

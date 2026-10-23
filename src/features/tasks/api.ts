@@ -5,7 +5,7 @@ import type { UpdateField, UpdateValue } from '@/shared/types.ts';
 export async function readTasks(projectId: string | null) {
     const response = await supabase
         .from('tasks')
-        .select()
+        .select('*, subtasks(count)')
         .order('created_at', { ascending: false })
         .eq('project_id', projectId);
 
@@ -21,11 +21,6 @@ export async function createTask(task: CreateTaskType) {
 export async function deleteTask(id: string) {
     const response = await supabase.from('tasks').delete().eq('id', id);
 
-    if (response.error) {
-        console.log(response.error);
-    }
-    console.log('response:', response);
-
     return { error: response.error };
 }
 
@@ -34,10 +29,6 @@ export async function updateTask(id: string, field: UpdateField, value: UpdateVa
         .from('tasks')
         .update({ [field]: value })
         .eq('id', id);
-
-    if (response.error) {
-        console.log(response.error);
-    }
 
     return { data: response.data, error: response.error };
 }

@@ -64,8 +64,8 @@ export function SubtasksList(props: Props) {
         kind: 'delete' | 'edit';
         subtask: SubtaskType;
     } | null>(null);
-    const { projectUsers } = useOutletContext<ContextType>();
 
+    const { projectUsers } = useOutletContext<ContextType>();
     const { register, handleSubmit } = useForm<EditedFieldType>();
 
     const handleEditSubtask = (data: EditedFieldType) => {
@@ -88,12 +88,12 @@ export function SubtasksList(props: Props) {
     return error !== '' ? (
         error
     ) : loading ? (
-        <div className="absolute w-full h-64 bg-gray-100 rounded-lg overflow-hidden flex items-center justify-center">
+        <div className="relative top-1/2 left-1/2">
             <Spinner className="size-10" />
         </div>
     ) : (
-        <div style={{ marginLeft: '50px', padding: '20px' }}>
-            <div className="flex justify-end items-center mb-5 ">
+        <div>
+            <div className="flex justify-start items-center mb-5 ">
                 <Button
                     type="button"
                     size="lg"
@@ -114,36 +114,38 @@ export function SubtasksList(props: Props) {
                 />
             )}
             {itemsList.length === 0 ? (
-                'No active subtasks'
+                <h2>No active subtasks</h2>
             ) : (
-                <Table style={{ minWidth: '100%' }}>
-                    <TableHeader>
-                        <TableRow>
-                            <TableHead>Subtask Name</TableHead>
-                            <TableHead>Description</TableHead>
-                            <TableHead>Assignee</TableHead>
-                            <TableHead>Priority</TableHead>
-                            <TableHead>Due date</TableHead>
-                            <TableHead>Status</TableHead>
-                            <TableHead>Actions</TableHead>
-                        </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                        {itemsList.map((subtask: SubtaskType) => (
-                            <Subtask
-                                key={subtask.id}
-                                subtask={subtask}
-                                projectUsers={props.projectUsers}
-                                users={props.users}
-                                handleUpdateSubtask={handleUpdateItem}
-                                setOpenDialog={setOpenDialog}
-                            />
-                        ))}
-                    </TableBody>
-                </Table>
+                <div className="overflow-x-auto">
+                    <Table style={{ minWidth: '100%' }}>
+                        <TableHeader>
+                            <TableRow>
+                                <TableHead>Subtask Name</TableHead>
+                                <TableHead>Description</TableHead>
+                                <TableHead>Assignee</TableHead>
+                                <TableHead>Priority</TableHead>
+                                <TableHead>Due date</TableHead>
+                                <TableHead>Status</TableHead>
+                                <TableHead>Actions</TableHead>
+                            </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                            {itemsList.map((subtask: SubtaskType) => (
+                                <Subtask
+                                    key={subtask.id}
+                                    subtask={subtask}
+                                    projectUsers={props.projectUsers}
+                                    users={props.users}
+                                    handleUpdateSubtask={handleUpdateItem}
+                                    setOpenDialog={setOpenDialog}
+                                />
+                            ))}
+                        </TableBody>
+                    </Table>
+                </div>
             )}
             <Dialog open={openDialog?.kind == 'edit'} onOpenChange={() => setOpenDialog(null)}>
-                <DialogContent className="sm:max-w-sm">
+                <DialogContent className="sm:max-w-5xl max-h-[85vh] overflow-y-auto">
                     <form
                         key={openDialog?.subtask.id}
                         onSubmit={handleSubmit(handleEditSubtask)}

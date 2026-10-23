@@ -1,6 +1,6 @@
 import type { TaskType } from '../types.ts';
-import { Fragment, useState } from 'react';
-import { SubtasksList } from '../../subtasks/components/SubtasksList.tsx';
+import { Fragment } from 'react';
+// import { SubtasksList } from '../../subtasks/components/SubtasksList.tsx';
 import type { UsersType } from '../../users/types.ts';
 import { TableCell, TableRow } from '@/components/ui/table.tsx';
 import type { Priority, Status, UpdateField, UpdateValue } from '@/shared/types.ts';
@@ -28,9 +28,10 @@ import { priorityColor, statusColor } from '@/shared/constants.ts';
 import { cn } from '@/lib/utils.ts';
 import { StatusBadge } from '@/shared/components/StatusBadge.tsx';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover.tsx';
-import { Button } from '@/components/ui/button.tsx';
+import { Button, buttonVariants } from '@/components/ui/button.tsx';
 import { format } from 'date-fns';
 import { Calendar } from '@/components/ui/calendar.tsx';
+import { Link } from 'react-router';
 
 type Props = {
     task: TaskType;
@@ -41,14 +42,7 @@ type Props = {
 };
 
 export function Task(props: Props) {
-    const [openTaskId, setOpenTaskId] = useState<string | null>(null);
-
-    const handleCurrentTask = (taskId: string) => {
-        return openTaskId === taskId ? setOpenTaskId(null) : setOpenTaskId(taskId);
-    };
-
     const dueDate = props.task.due_date ? new Date(props.task.due_date) : undefined;
-
     const usersItems = props.users.map((user: UsersType) => {
         const fullName = `${user.first_name} ${user.last_name}`;
 
@@ -58,15 +52,17 @@ export function Task(props: Props) {
     return (
         <Fragment>
             <TableRow style={{ position: 'relative' }}>
-                <TableCell
-                    className="cursor-pointer"
-                    onClick={() => handleCurrentTask(props.task.id)}
-                >
-                    <Button variant="link">{props.task.title}</Button>
+                <TableCell className="cursor-pointer truncate w-[16%]">
+                    <Link
+                        className={cn(buttonVariants({ variant: 'link' }), 'text-white')}
+                        to={`tasks/${props.task.id}`}
+                    >
+                        {props.task.title}
+                    </Link>
                 </TableCell>
-                <TableCell className="truncate max-w-50">
+                <TableCell className="hidden 2xl:table-cell">
                     {props.task.description ? (
-                        <p>{props.task.description}</p>
+                        <p className="truncate">{props.task.description}</p>
                     ) : (
                         <p className="text-muted-foreground">Add a description</p>
                     )}
@@ -186,6 +182,7 @@ export function Task(props: Props) {
                         </SelectContent>
                     </Select>
                 </TableCell>
+                <TableCell>{props.task.subtasks[0]?.count ?? 0}</TableCell>
                 <TableCell>
                     <DropdownMenu>
                         <DropdownMenuTrigger
@@ -223,18 +220,6 @@ export function Task(props: Props) {
                     </DropdownMenu>
                 </TableCell>
             </TableRow>
-
-            {openTaskId === props.task.id && (
-                <tr>
-                    <td colSpan={7}>
-                        <SubtasksList
-                            users={props.users}
-                            projectUsers={props.projectUsers}
-                            taskId={props.task.id}
-                        />
-                    </td>
-                </tr>
-            )}
         </Fragment>
     );
 }

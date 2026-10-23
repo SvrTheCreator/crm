@@ -13,6 +13,7 @@ import { NotFound } from './pages/notFound/NotFound.tsx';
 import { Toaster } from '@/components/ui/toast';
 import { AuthLayout } from '@/pages/auth/AuthLayout.tsx';
 import { ThemeProvider } from '@/components/theme-provider.tsx';
+import { SubtasksDialog } from '@/features/subtasks/components/SubtasksDialog.tsx';
 
 export function App() {
     const [currentUser, setCurrentUser] = useState<User | null>(null);
@@ -46,7 +47,9 @@ export function App() {
                                             </div>
                                         }
                                     />
-                                    <Route path=":projectId" element={<TaskList />} />
+                                    <Route path=":projectId" element={<TaskList />}>
+                                        <Route path="tasks/:taskId" element={<SubtasksDialog />} />
+                                    </Route>
                                 </Route>
                             </Route>
                             <Route element={<GuestRoute />}>

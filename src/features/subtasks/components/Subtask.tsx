@@ -51,7 +51,7 @@ export function Subtask(props: Props) {
     return (
         <Fragment>
             <TableRow>
-                <TableCell>{props.subtask.title}</TableCell>
+                <TableCell className="truncate max-w-40">{props.subtask.title}</TableCell>
                 <TableCell className="truncate max-w-50">
                     {props.subtask.description ? (
                         <p>{props.subtask.description}</p>
