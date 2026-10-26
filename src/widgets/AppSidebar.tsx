@@ -14,7 +14,12 @@ import {
     SidebarGroupContent,
     SidebarGroupLabel,
     SidebarHeader,
+    SidebarMenu,
+    SidebarMenuButton,
+    SidebarMenuItem,
 } from '@/components/ui/sidebar.tsx';
+import { SquareKanban } from 'lucide-react';
+import { Link } from 'react-router';
 import { HugeiconsIcon } from '@hugeicons/react';
 import { ArrowRight01Icon } from '@hugeicons/core-free-icons';
 import Add01Icon from '@hugeicons/core-free-icons/Add01Icon';
@@ -49,7 +54,21 @@ export function AppSidebar(props: Props) {
     return (
         <Sidebar>
             <SidebarHeader>
-                <h2>CRM</h2>
+                <SidebarMenu>
+                    <SidebarMenuItem>
+                        <SidebarMenuButton size="lg" render={<Link to="/projects" />}>
+                            <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
+                                <SquareKanban className="size-4" />
+                            </div>
+                            <div className="grid flex-1 text-left leading-tight">
+                                <span className="truncate font-medium">Taskflow</span>
+                                <span className="truncate text-xs text-muted-foreground">
+                                    Pet project
+                                </span>
+                            </div>
+                        </SidebarMenuButton>
+                    </SidebarMenuItem>
+                </SidebarMenu>
             </SidebarHeader>
             <SidebarContent>
                 <Collapsible defaultOpen className="group/collapsible ">
