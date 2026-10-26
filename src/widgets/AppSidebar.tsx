@@ -19,7 +19,7 @@ import { HugeiconsIcon } from '@hugeicons/react';
 import { ArrowRight01Icon } from '@hugeicons/core-free-icons';
 import Add01Icon from '@hugeicons/core-free-icons/Add01Icon';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip.tsx';
-import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog.tsx';
+import { Dialog, DialogTrigger } from '@/components/ui/dialog.tsx';
 import { AddProject } from '@/features/projects/components/AddProject.tsx';
 import { useProjects } from '@/features/projects/hooks/useProjects.tsx';
 import { useState } from 'react';
@@ -83,9 +83,7 @@ export function AppSidebar(props: Props) {
                                     </TooltipContent>
                                 </Tooltip>
                             </DialogTrigger>
-                            <DialogContent>
-                                <AddProject handleCreateProject={onCreate} />
-                            </DialogContent>
+                            <AddProject handleCreateProject={onCreate} />
                         </Dialog>
                         <CollapsibleContent>
                             <SidebarGroupContent>
