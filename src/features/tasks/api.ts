@@ -13,7 +13,11 @@ export async function readTasks(projectId: string | null) {
 }
 
 export async function createTask(task: CreateTaskType) {
-    const response = await supabase.from('tasks').insert(task).select().single();
+    const response = await supabase
+        .from('tasks')
+        .insert(task)
+        .select('*, subtasks(count)')
+        .single();
 
     return { data: response.data, error: response.error };
 }
