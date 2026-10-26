@@ -44,7 +44,7 @@ export function AppSidebar(props: Props) {
     const [isOpen, setIsOpen] = useState(false);
     const { projectsList, error, handleUpdateProject, handleCreateProject, handleDeleteProject } =
         props;
-    const { currentUser, loading } = useAuth();
+    const { currentUser } = useAuth();
 
     const onCreate = async (project: CreateProjectType) => {
         const error = await handleCreateProject(project);
@@ -122,10 +122,7 @@ export function AppSidebar(props: Props) {
                     </SidebarGroup>
                 </Collapsible>
             </SidebarContent>
-            <SidebarFooter>
-                {loading && 'Loading...'}
-                {currentUser && <UserMenu currentUser={currentUser} />}
-            </SidebarFooter>
+            <SidebarFooter>{currentUser && <UserMenu currentUser={currentUser} />}</SidebarFooter>
         </Sidebar>
     );
 }
