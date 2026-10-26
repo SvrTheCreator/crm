@@ -57,7 +57,6 @@ export function Project(props: Props) {
     const currentProjectIsDelete =
         props.openPanel?.projectId === props.project.id && props.openPanel.kind === 'delete';
 
-    // владельца из проекта убрать нельзя, поэтому его в список не берём
     const removableUsers = props.projectUsers.filter((user) => user.id !== props.project.owner_id);
 
     const toggleMenu = (propsMenu: { projectId: string; kind: OpenPanelKind }) => {

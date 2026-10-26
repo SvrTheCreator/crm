@@ -4,7 +4,6 @@ import type { UsersType } from '@/features/users/types.ts';
 
 type Props = {
     user?: UsersType;
-    // в таблице место ограничено — показываем только аватарку, имя видно в выпадающем списке
     compact?: boolean;
 };
 

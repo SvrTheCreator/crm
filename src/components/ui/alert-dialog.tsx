@@ -45,7 +45,6 @@ function AlertDialogContent({
 }) {
   return (
     <AlertDialogPortal>
-      {/* forceRender — иначе вложенный диалог открывается без затемнения */}
       <AlertDialogOverlay forceRender />
       <AlertDialogPrimitive.Popup
         data-slot="alert-dialog-content"

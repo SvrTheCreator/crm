@@ -107,7 +107,6 @@ export const useCrud = <ItemsType extends { id: string }, IdType, CreateItemType
         });
     }
 
-    // одно действие пользователя — один тост, даже если полей изменилось несколько
     async function handleUpdateFields(id: string, fields: Partial<ItemsType>) {
         const changes = Object.entries(fields) as [UpdateField, UpdateValue][];
         if (changes.length === 0) return;

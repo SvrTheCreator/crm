@@ -74,17 +74,23 @@ export function TaskList() {
         task: TaskType;
     } | null>(null);
 
-    const { register, handleSubmit } = useForm<EditedFieldType>();
+    const { register, handleSubmit } = useForm<EditedFieldType>({
+        values: {
+            title: openDialog?.task.title ?? '',
+            description: openDialog?.task.description ?? '',
+        },
+    });
 
     const handleEditTask = (data: EditedFieldType) => {
         if (openDialog === null) return;
 
+        const description = data.description || null;
         const changes: Partial<TaskType> = {};
         if (openDialog.task.title !== data.title) {
             changes.title = data.title;
         }
-        if (openDialog.task.description !== data.description) {
-            changes.description = data.description || null;
+        if (openDialog.task.description !== description) {
+            changes.description = description;
         }
 
         handleUpdateFields(openDialog.task.id, changes);
@@ -247,9 +253,7 @@ export function TaskList() {
                                 <Input
                                     {...register('title', { required: true })}
                                     id="title"
-                                    name="title"
-                                    placeholder={openDialog?.task.title}
-                                    defaultValue={openDialog?.task.title}
+                                    placeholder="Task name"
                                 />
                             </Field>
                             <Field>
@@ -257,12 +261,7 @@ export function TaskList() {
                                     className="max-h-30"
                                     {...register('description')}
                                     id="description"
-                                    name="description"
-                                    placeholder={
-                                        openDialog?.task.description === null
-                                            ? 'add new description'
-                                            : openDialog?.task.description
-                                    }
+                                    placeholder="Add a description"
                                 />
                             </Field>
                         </FieldGroup>

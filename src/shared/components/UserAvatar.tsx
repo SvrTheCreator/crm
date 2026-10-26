@@ -1,7 +1,6 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { cn } from '@/lib/utils.ts';
 
-// картинка-заглушка, которую проставляет регистрация — считаем её за «аватарки нет»
 const DEFAULT_AVATAR = '/user_default_avatar.png';
 
 type Props = {

@@ -48,7 +48,6 @@ function DialogContent({
 }) {
   return (
     <DialogPortal>
-      {/* forceRender — иначе вложенный диалог открывается без затемнения */}
       <DialogOverlay forceRender />
       <DialogPrimitive.Popup
         data-slot="dialog-content"

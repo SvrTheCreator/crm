@@ -39,7 +39,6 @@ type Props = {
     taskId: string;
     users: UsersType[];
     projectUsers: UsersType[];
-    // шапка задачи — рисуем её вместе со списком, чтобы во время загрузки был только спиннер
     children?: ReactNode;
 };
 
@@ -69,17 +68,23 @@ export function SubtasksList(props: Props) {
     } | null>(null);
 
     const { projectUsers } = useOutletContext<ContextType>();
-    const { register, handleSubmit } = useForm<EditedFieldType>();
+    const { register, handleSubmit } = useForm<EditedFieldType>({
+        values: {
+            title: openDialog?.subtask.title ?? '',
+            description: openDialog?.subtask.description ?? '',
+        },
+    });
 
     const handleEditSubtask = (data: EditedFieldType) => {
         if (openDialog === null) return;
 
+        const description = data.description || null;
         const changes: Partial<SubtaskType> = {};
         if (openDialog.subtask.title !== data.title) {
             changes.title = data.title;
         }
-        if (openDialog.subtask.description !== data.description) {
-            changes.description = data.description || null;
+        if (openDialog.subtask.description !== description) {
+            changes.description = description;
         }
 
         handleUpdateFields(openDialog.subtask.id, changes);
@@ -168,9 +173,7 @@ export function SubtasksList(props: Props) {
                                 <Input
                                     {...register('title', { required: true })}
                                     id="title"
-                                    name="title"
-                                    placeholder={openDialog?.subtask.title}
-                                    defaultValue={openDialog?.subtask.title}
+                                    placeholder="Subtask name"
                                 />
                             </Field>
                             <Field>
@@ -178,20 +181,13 @@ export function SubtasksList(props: Props) {
                                     className="max-h-30"
                                     {...register('description')}
                                     id="description"
-                                    name="description"
-                                    placeholder={
-                                        openDialog?.subtask.description === null
-                                            ? 'add new description'
-                                            : openDialog?.subtask.description
-                                    }
+                                    placeholder="Add a description"
                                 />
                             </Field>
                         </FieldGroup>
                         <DialogFooter>
                             <DialogClose render={<Button variant="outline">Cancel</Button>} />
-                            <Button onClick={() => handleEditSubtask} type="submit">
-                                Save changes
-                            </Button>
+                            <Button type="submit">Save changes</Button>
                         </DialogFooter>
                     </form>
                 </DialogContent>
