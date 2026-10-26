@@ -34,7 +34,7 @@ export function ProjectsList(props: Props) {
         <div>
             <SidebarMenu>
                 {props.projectsList.map((project: ProjectType) => (
-                    <SidebarMenuItem key={project.title}>
+                    <SidebarMenuItem key={project.id}>
                         <SidebarMenuButton
                             className="pr-0"
                             render={<div />}

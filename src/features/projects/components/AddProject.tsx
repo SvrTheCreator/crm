@@ -41,8 +41,9 @@ export function AddProject(props: Props) {
                         <Input
                             id="project"
                             type="text"
-                            {...register('title')}
+                            {...register('title', { required: true })}
                             placeholder="New project"
+                            required
                         />
                     </Field>
                 </FieldGroup>
