@@ -2,13 +2,11 @@ import { useForm } from 'react-hook-form';
 import type { CreateUserType } from '../types.ts';
 import { registerUser } from '../api.ts';
 import { useState } from 'react';
-
-const style = {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '10px',
-    padding: '16px',
-} as const;
+import { Card, CardContent } from '@/components/ui/card.tsx';
+import { Field, FieldDescription, FieldGroup, FieldLabel } from '@/components/ui/field.tsx';
+import { Input } from '@/components/ui/input.tsx';
+import { Button } from '@/components/ui/button.tsx';
+import { Link } from 'react-router';
 
 export function RegisterForm() {
     const { register, reset, handleSubmit } = useForm<CreateUserType>();
@@ -36,7 +34,6 @@ export function RegisterForm() {
         }
         // отрабатывает если поставить подтверждение email
         if (data.user?.identities?.length === 0) {
-            // console.log(data.user?.identities);
             setError('Пользователь с таким email уже существует');
             return;
         }
@@ -45,48 +42,70 @@ export function RegisterForm() {
     }
 
     return (
-        <div style={style}>
-            <h2>Register form</h2>
-            <form onSubmit={handleSubmit(handleRegister)}>
-                <div>
-                    <label htmlFor="email">User email:</label>
-                    <input {...register('email', { required: true })} id="email" type="email" />
-                </div>
-                <div>
-                    <label htmlFor="password">Password:</label>
-                    <input
-                        {...register('password', { required: true })}
-                        id="password"
-                        type="password"
-                    />
-                </div>
-                <div>
-                    <label htmlFor="confirm-password">Confirm Password:</label>
-                    <input
-                        {...register('confirm_password', { required: true })}
-                        id="confirm-password"
-                        type="password"
-                    />
-                </div>
-                <div>
-                    <label htmlFor="first-name">First name:</label>
-                    <input
-                        {...register('first_name', { required: true })}
-                        id="first-name"
-                        type="text"
-                    />
-                </div>
-                <div>
-                    <label htmlFor="second-name">Second name:</label>
-                    <input
-                        {...register('last_name', { required: true })}
-                        id='second-name"'
-                        type="text"
-                    />
-                </div>
-                <button type="submit">Register</button>
-                <div>{error}</div>
-            </form>
-        </div>
+        <Card>
+            <CardContent>
+                <form onSubmit={handleSubmit(handleRegister)}>
+                    <FieldGroup>
+                        <Field>
+                            <FieldLabel htmlFor="email">Email</FieldLabel>
+                            <Input
+                                {...register('email', { required: true })}
+                                id="email"
+                                type="email"
+                                placeholder="m@example.com"
+                                required
+                            />
+                        </Field>
+                        <Field>
+                            <FieldLabel htmlFor="password">Password</FieldLabel>
+                            <Input
+                                {...register('password', { required: true })}
+                                id="password"
+                                type="password"
+                                required
+                            />
+                        </Field>
+                        <Field>
+                            <FieldLabel htmlFor="confirm-password">Confirm password</FieldLabel>
+                            <Input
+                                {...register('confirm_password', { required: true })}
+                                id="confirm-password"
+                                type="password"
+                                required
+                            />
+                        </Field>
+                        <Field>
+                            <FieldLabel htmlFor="first-name">First name</FieldLabel>
+                            <Input
+                                {...register('first_name', { required: true })}
+                                id="first-name"
+                                type="text"
+                                required
+                            />
+                        </Field>
+                        <Field>
+                            <FieldLabel htmlFor="second-name">Second name</FieldLabel>
+                            <Input
+                                {...register('last_name', { required: true })}
+                                id="second-name"
+                                type="text"
+                                required
+                            />
+                        </Field>
+                        <Field>
+                            <Button type="submit">Register</Button>
+                            {error && (
+                                <FieldDescription className="caret-pink-900">
+                                    {error}
+                                </FieldDescription>
+                            )}
+                            <FieldDescription className="text-center">
+                                Already have an account? <Link to="/login">Login</Link>
+                            </FieldDescription>
+                        </Field>
+                    </FieldGroup>
+                </form>
+            </CardContent>
+        </Card>
     );
 }
