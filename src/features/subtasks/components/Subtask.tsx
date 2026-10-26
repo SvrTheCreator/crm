@@ -1,3 +1,4 @@
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip.tsx';
 import { AssigneeValue } from '@/shared/components/AssigneeValue.tsx';
 import type { SubtaskType } from '../types.ts';
 import { Fragment } from 'react';
@@ -52,12 +53,24 @@ export function Subtask(props: Props) {
     return (
         <Fragment>
             <TableRow>
-                <TableCell className="truncate max-w-40">{props.subtask.title}</TableCell>
-                <TableCell className="truncate max-w-50">
+                <TableCell>
+                    <Tooltip>
+                        <TooltipTrigger render={<span className="block truncate" />}>
+                            {props.subtask.title}
+                        </TooltipTrigger>
+                        <TooltipContent>{props.subtask.title}</TooltipContent>
+                    </Tooltip>
+                </TableCell>
+                <TableCell>
                     {props.subtask.description ? (
-                        <p>{props.subtask.description}</p>
+                        <Tooltip>
+                            <TooltipTrigger render={<p className="truncate" />}>
+                                {props.subtask.description}
+                            </TooltipTrigger>
+                            <TooltipContent>{props.subtask.description}</TooltipContent>
+                        </Tooltip>
                     ) : (
-                        <p className="text-muted-foreground">Add a description</p>
+                        <p className="truncate text-muted-foreground">Add a description</p>
                     )}
                 </TableCell>
                 <TableCell>
@@ -72,6 +85,7 @@ export function Subtask(props: Props) {
                             <SelectValue placeholder="Assignee">
                                 {(value: string | null) => (
                                     <AssigneeValue
+                                        compact
                                         user={props.users.find((item) => item.id === value)}
                                     />
                                 )}
@@ -130,8 +144,8 @@ export function Subtask(props: Props) {
                             render={
                                 <Button
                                     variant="outline"
-                                    data-empty={dueDate}
-                                    className="w-45 justify-between text-left font-normal data-[empty=true]:text-muted-foreground bg-input/30"
+                                    data-empty={!dueDate}
+                                    className="w-full justify-between text-left font-normal data-[empty=true]:text-muted-foreground bg-input/30"
                                 >
                                     <span className="truncate">
                                         {dueDate ? format(dueDate, 'PP') : 'Pick a date'}

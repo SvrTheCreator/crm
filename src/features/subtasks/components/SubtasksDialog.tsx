@@ -56,7 +56,7 @@ export function SubtasksDialog() {
 
     return (
         <Dialog open onOpenChange={() => navigate('..')}>
-            <DialogContent className="sm:max-w-5xl max-h-[85vh] overflow-y-auto overflow-x-hidden">
+            <DialogContent className="sm:max-w-6xl max-h-[85vh] overflow-y-auto overflow-x-hidden">
                 <SubtasksList taskId={taskId} users={users} projectUsers={projectUsers}>
                     <DialogHeader>
                         <DialogTitle className="text-lg flex items-center gap-2">

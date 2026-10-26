@@ -183,26 +183,26 @@ export function TaskList() {
                                 <TableHeader>
                                     <TableRow>
                                         <TableHead
-                                            className="cursor-pointer w-[16%]"
+                                            className="cursor-pointer w-[20%]"
                                             onClick={() => {
                                                 handleConfig('title');
                                             }}
                                         >
                                             Task Name
                                         </TableHead>
-                                        <TableHead className="hidden 2xl:table-cell">
+                                        <TableHead className="hidden w-[22%] 2xl:table-cell">
                                             Description
                                         </TableHead>
-                                        <TableHead>Assignee</TableHead>
+                                        <TableHead className="w-28">Assignee</TableHead>
                                         <TableHead
-                                            className="cursor-pointer"
+                                            className="cursor-pointer w-32"
                                             onClick={() => handleConfig('priority')}
                                         >
                                             Priority
                                         </TableHead>
-                                        <TableHead>Due Date</TableHead>
+                                        <TableHead className="w-36">Due Date</TableHead>
                                         <TableHead
-                                            className="cursor-pointer"
+                                            className="cursor-pointer w-44"
                                             onClick={() => handleConfig('status')}
                                         >
                                             Status

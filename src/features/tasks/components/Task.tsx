@@ -81,6 +81,7 @@ export function Task(props: Props) {
                             <SelectValue placeholder="Assignee">
                                 {(value: string | null) => (
                                     <AssigneeValue
+                                        compact
                                         user={props.users.find((item) => item.id === value)}
                                     />
                                 )}

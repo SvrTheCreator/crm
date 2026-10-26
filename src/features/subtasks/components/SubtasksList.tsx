@@ -124,17 +124,17 @@ export function SubtasksList(props: Props) {
             {itemsList.length === 0 ? (
                 <h2>No active subtasks</h2>
             ) : (
-                <div className="overflow-x-auto">
-                    <Table style={{ minWidth: '100%' }}>
+                <div>
+                    <Table className="table-fixed">
                         <TableHeader>
                             <TableRow>
-                                <TableHead>Subtask Name</TableHead>
-                                <TableHead>Description</TableHead>
-                                <TableHead>Assignee</TableHead>
-                                <TableHead>Priority</TableHead>
-                                <TableHead>Due date</TableHead>
-                                <TableHead>Status</TableHead>
-                                <TableHead>Actions</TableHead>
+                                <TableHead className="w-[20%]">Subtask Name</TableHead>
+                                <TableHead className="w-[22%]">Description</TableHead>
+                                <TableHead className="w-28">Assignee</TableHead>
+                                <TableHead className="w-32">Priority</TableHead>
+                                <TableHead className="w-36">Due date</TableHead>
+                                <TableHead className="w-44">Status</TableHead>
+                                <TableHead className="w-17">Actions</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
