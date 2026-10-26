@@ -14,6 +14,7 @@ import { Toaster } from '@/components/ui/toast';
 import { AuthLayout } from '@/pages/auth/AuthLayout.tsx';
 import { ThemeProvider } from '@/components/theme-provider.tsx';
 import { SubtasksDialog } from '@/features/subtasks/components/SubtasksDialog.tsx';
+import { NoProject } from '@/pages/workspace/NoProject.tsx';
 
 export function App() {
     const [currentUser, setCurrentUser] = useState<User | null>(null);
@@ -39,14 +40,7 @@ export function App() {
                             <Route path="*" element={<NotFound />} />
                             <Route element={<ProtectedRoute />}>
                                 <Route path="/projects" element={<Workspace />}>
-                                    <Route
-                                        index
-                                        element={
-                                            <div className="flex min-w-100">
-                                                <h2>Select Project</h2>
-                                            </div>
-                                        }
-                                    />
+                                    <Route index element={<NoProject />} />
                                     <Route path=":projectId" element={<TaskList />}>
                                         <Route path="tasks/:taskId" element={<SubtasksDialog />} />
                                     </Route>

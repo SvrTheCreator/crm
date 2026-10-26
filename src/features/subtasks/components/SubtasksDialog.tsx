@@ -29,7 +29,7 @@ import { ChevronDownIcon, Paperclip } from 'lucide-react';
 import { Calendar } from '@/components/ui/calendar.tsx';
 import { StatusBadge } from '@/shared/components/StatusBadge.tsx';
 import { Field, FieldLabel } from '@/components/ui/field.tsx';
-import { toast } from '@/components/ui/toast.tsx';
+import { copyCurrentUrl } from '@/shared/utils/copyCurrentUrl.ts';
 
 export function SubtasksDialog() {
     const navigate = useNavigate();
@@ -46,15 +46,6 @@ export function SubtasksDialog() {
     if (!taskId || !currentTask) return null;
 
     const dueDate = currentTask.due_date ? new Date(currentTask.due_date) : undefined;
-
-    const handleCopyLink = async () => {
-        try {
-            await navigator.clipboard.writeText(window.location.href);
-            toast.add({ type: 'success', description: 'Link copied' });
-        } catch {
-            toast.add({ type: 'error', description: 'Failed to copy link' });
-        }
-    };
 
     const usersItems = users.map((user: UsersType) => {
         const fullName = `${user.first_name} ${user.last_name}`;
@@ -74,7 +65,7 @@ export function SubtasksDialog() {
                                 variant="ghost"
                                 size="icon-sm"
                                 aria-label="Copy link to task"
-                                onClick={handleCopyLink}
+                                onClick={copyCurrentUrl}
                             >
                                 <Paperclip />
                             </Button>

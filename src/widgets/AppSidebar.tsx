@@ -33,12 +33,12 @@ type Props = {
     projectUsers: UsersType[];
     addMember: (userId: string) => Promise<PostgrestError | null | undefined>;
     removeMember: (userId: string) => Promise<PostgrestError | null | undefined>;
-};
+} & ReturnType<typeof useProjects>;
 
 export function AppSidebar(props: Props) {
     const [isOpen, setIsOpen] = useState(false);
     const { projectsList, error, handleUpdateProject, handleCreateProject, handleDeleteProject } =
-        useProjects();
+        props;
     const { currentUser, loading } = useAuth();
 
     const onCreate = async (project: CreateProjectType) => {
