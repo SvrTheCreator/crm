@@ -20,7 +20,6 @@ import {
     AlertDialogFooter,
     AlertDialogHeader,
     AlertDialogTitle,
-    AlertDialogTrigger,
 } from '@/components/ui/alert-dialog.tsx';
 import { RenameProject } from '@/features/projects/components/RenameProject.tsx';
 import { toast } from '@/components/ui/toast';
@@ -41,9 +40,11 @@ type Props = {
     removeMember: (userId: string) => Promise<PostgrestError | null | undefined>;
 };
 
+export type OpenPanelKind = 'edit' | 'add' | 'remove' | 'delete';
+
 export type OpenPanelType = {
     projectId: string;
-    kind: 'edit' | 'add' | 'remove';
+    kind: OpenPanelKind;
 } | null;
 
 export function Project(props: Props) {
@@ -53,8 +54,13 @@ export function Project(props: Props) {
         props.openPanel?.projectId === props.project.id && props.openPanel.kind === 'remove';
     const currentProjectIsEdit =
         props.openPanel?.projectId === props.project.id && props.openPanel.kind === 'edit';
+    const currentProjectIsDelete =
+        props.openPanel?.projectId === props.project.id && props.openPanel.kind === 'delete';
 
-    const toggleMenu = (propsMenu: { projectId: string; kind: 'edit' | 'add' | 'remove' }) => {
+    // владельца из проекта убрать нельзя, поэтому его в список не берём
+    const removableUsers = props.projectUsers.filter((user) => user.id !== props.project.owner_id);
+
+    const toggleMenu = (propsMenu: { projectId: string; kind: OpenPanelKind }) => {
         return props.openPanel?.kind === propsMenu.kind &&
             props.openPanel.projectId === propsMenu.projectId
             ? props.setOpenPanel(null)
@@ -63,7 +69,10 @@ export function Project(props: Props) {
 
     return (
         <div>
-            <AlertDialog>
+            <AlertDialog
+                open={currentProjectIsDelete}
+                onOpenChange={() => props.setOpenPanel(null)}
+            >
                 <DropdownMenu>
                     <DropdownMenuTrigger
                         render={
@@ -95,6 +104,14 @@ export function Project(props: Props) {
                             </DropdownMenuItem>
                             <DropdownMenuItem
                                 onClick={() => {
+                                    if (removableUsers.length === 0) {
+                                        toast.add({
+                                            type: 'info',
+                                            description:
+                                                'There is no one to remove, you are the only member.',
+                                        });
+                                        return;
+                                    }
                                     toggleMenu({
                                         projectId: props.project.id,
                                         kind: 'remove',
@@ -102,7 +119,7 @@ export function Project(props: Props) {
                                 }}
                             >
                                 <UserMinus />
-                                Delete into project
+                                Remove from project
                             </DropdownMenuItem>
                             <DropdownMenuItem
                                 onClick={() => {
@@ -116,15 +133,18 @@ export function Project(props: Props) {
                                 Rename
                             </DropdownMenuItem>
                             <DropdownMenuSeparator />
-                            <AlertDialogTrigger
-                                nativeButton={false}
-                                render={
-                                    <DropdownMenuItem variant="destructive">
-                                        <Trash2Icon />
-                                        Trash
-                                    </DropdownMenuItem>
-                                }
-                            />
+                            <DropdownMenuItem
+                                variant="destructive"
+                                onClick={() => {
+                                    toggleMenu({
+                                        projectId: props.project.id,
+                                        kind: 'delete',
+                                    });
+                                }}
+                            >
+                                <Trash2Icon />
+                                Trash
+                            </DropdownMenuItem>
                         </DropdownMenuGroup>
                     </DropdownMenuContent>
                 </DropdownMenu>
@@ -162,9 +182,7 @@ export function Project(props: Props) {
             />
             <ProjectMembers
                 project={props.project}
-                users={props.projectUsers.filter((user) => {
-                    return user.id !== props.project.owner_id;
-                })}
+                users={removableUsers}
                 openPanel={props.openPanel}
                 onSelect={(userId) => props.removeMember(userId)}
                 isOpen={currentProjectRemoveUser}

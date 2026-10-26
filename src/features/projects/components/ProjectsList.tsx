@@ -1,4 +1,4 @@
-import { Project } from './Project.tsx';
+import { Project, type OpenPanelType } from './Project.tsx';
 import { useState } from 'react';
 import type { ProjectType } from '../types.ts';
 import { useUsers } from '../../users/hooks/useUsers.ts';
@@ -7,6 +7,7 @@ import { NavLink, useParams } from 'react-router';
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar.tsx';
 import type { PostgrestError } from '@supabase/supabase-js';
 import type { UpdateField, UpdateValue } from '@/shared/types.ts';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip.tsx';
 
 type Props = {
     projectsList: ProjectType[];
@@ -20,10 +21,7 @@ type Props = {
 };
 
 export function ProjectsList(props: Props) {
-    const [openPanel, setOpenPanel] = useState<{
-        projectId: string;
-        kind: 'edit' | 'add' | 'remove';
-    } | null>(null);
+    const [openPanel, setOpenPanel] = useState<OpenPanelType>(null);
     const { projectId } = useParams();
 
     const { users } = useUsers();
@@ -40,13 +38,20 @@ export function ProjectsList(props: Props) {
                             render={<div />}
                             isActive={projectId === project.id}
                         >
-                            <SidebarMenuButton
-                                className="truncate"
-                                render={<NavLink to={`/projects/${project.id}`} />}
-                                isActive={projectId === project.id}
-                            >
-                                {project.title}
-                            </SidebarMenuButton>
+                            <Tooltip>
+                                <TooltipTrigger
+                                    render={
+                                        <SidebarMenuButton
+                                            className="truncate"
+                                            render={<NavLink to={`/projects/${project.id}`} />}
+                                            isActive={projectId === project.id}
+                                        />
+                                    }
+                                >
+                                    {project.title}
+                                </TooltipTrigger>
+                                <TooltipContent>{project.title}</TooltipContent>
+                            </Tooltip>
                             <Project
                                 key={project.id}
                                 project={project}

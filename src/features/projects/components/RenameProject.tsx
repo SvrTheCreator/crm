@@ -53,6 +53,7 @@ export function RenameProject(props: Props) {
                 </div>
                 <DialogFooter>
                     <Button
+                        variant="outline"
                         onClick={() => {
                             setNewProjectName(props.project.title);
                             props.setOpenPanel(null);
