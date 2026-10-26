@@ -6,7 +6,7 @@ import { useCrud } from '@/shared/hooks/useCollection.ts';
 import type { UsersType } from '../../users/types.ts';
 import { Spinner } from '@/components/ui/spinner.tsx';
 import { Table, TableBody, TableHead, TableHeader, TableRow } from '@/components/ui/table.tsx';
-import { useState } from 'react';
+import { type ReactNode, useState } from 'react';
 import type { EditedFieldType } from '@/features/tasks/types.ts';
 import { useForm } from 'react-hook-form';
 import {
@@ -39,6 +39,8 @@ type Props = {
     taskId: string;
     users: UsersType[];
     projectUsers: UsersType[];
+    // шапка задачи — рисуем её вместе со списком, чтобы во время загрузки был только спиннер
+    children?: ReactNode;
 };
 
 export function SubtasksList(props: Props) {
@@ -51,6 +53,7 @@ export function SubtasksList(props: Props) {
         handleCreateItem,
         handleRemoveItem,
         handleUpdateItem,
+        handleUpdateFields,
     } = useCrud<SubtaskType, Props['taskId'], CreateSubtaskType>({
         itemName: 'Subtask',
         readItems: readSubtasks,
@@ -70,12 +73,16 @@ export function SubtasksList(props: Props) {
 
     const handleEditSubtask = (data: EditedFieldType) => {
         if (openDialog === null) return;
-        if (openDialog?.subtask.title !== data.title) {
-            handleUpdateItem(openDialog.subtask.id, 'title', data.title);
+
+        const changes: Partial<SubtaskType> = {};
+        if (openDialog.subtask.title !== data.title) {
+            changes.title = data.title;
         }
-        if (openDialog?.subtask.description !== data.description) {
-            handleUpdateItem(openDialog.subtask.id, 'description', data.description || null);
+        if (openDialog.subtask.description !== data.description) {
+            changes.description = data.description || null;
         }
+
+        handleUpdateFields(openDialog.subtask.id, changes);
         setOpenDialog(null);
     };
 
@@ -88,12 +95,13 @@ export function SubtasksList(props: Props) {
     return error !== '' ? (
         error
     ) : loading ? (
-        <div className="relative top-1/2 left-1/2">
-            <Spinner className="size-10" />
+        <div className="flex justify-center py-20">
+            <Spinner className="size-8 text-muted-foreground" />
         </div>
     ) : (
-        <div>
-            <div className="flex justify-start items-center mb-5 ">
+        <div className="grid gap-5">
+            {props.children}
+            <div className="flex justify-start items-center">
                 <Button
                     type="button"
                     size="lg"
@@ -145,7 +153,7 @@ export function SubtasksList(props: Props) {
                 </div>
             )}
             <Dialog open={openDialog?.kind == 'edit'} onOpenChange={() => setOpenDialog(null)}>
-                <DialogContent className="sm:max-w-5xl max-h-[85vh] overflow-y-auto">
+                <DialogContent className="sm:max-w-sm max-h-[85vh] overflow-y-auto">
                     <form
                         key={openDialog?.subtask.id}
                         onSubmit={handleSubmit(handleEditSubtask)}

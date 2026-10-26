@@ -1,7 +1,7 @@
 import type { CreateSubtaskType, SubtaskFormValues } from '../types.ts';
 import { Controller, useForm } from 'react-hook-form';
 import type { UsersType } from '../../users/types.ts';
-import { Field, FieldGroup } from '@/components/ui/field.tsx';
+import { Field, FieldGroup, FieldLabel } from '@/components/ui/field.tsx';
 import { Input } from '@/components/ui/input.tsx';
 import {
     Select,
@@ -66,21 +66,31 @@ export function AddSubtask(props: Props) {
 
     return (
         props.isAddItemOpen && (
-            <Card className="mb-5 ">
+            <Card>
                 <CardContent>
                     <form onSubmit={handleSubmit(handleCreateSubtask)} className="grid gap-6">
                         <FieldGroup>
-                            <div className="flex gap-5">
+                            <div className="grid gap-x-4 gap-y-3 sm:grid-cols-2 lg:grid-cols-3">
                                 <Field>
+                                    <FieldLabel className="text-xs text-muted-foreground">
+                                        Subtask name
+                                    </FieldLabel>
                                     <Input
                                         {...register('title', { required: true })}
                                         placeholder="Subtask Name"
+                                        required
                                     />
                                 </Field>
                                 <Field>
+                                    <FieldLabel className="text-xs text-muted-foreground">
+                                        Description
+                                    </FieldLabel>
                                     <Input {...register('description')} placeholder="Description" />
                                 </Field>
-                                <Field className="max-w-1/3">
+                                <Field>
+                                    <FieldLabel className="text-xs text-muted-foreground">
+                                        Assignee
+                                    </FieldLabel>
                                     <Controller
                                         control={control}
                                         name="assignee"
@@ -111,9 +121,10 @@ export function AddSubtask(props: Props) {
                                         )}
                                     />
                                 </Field>
-                            </div>
-                            <div className="flex gap-5">
-                                <Field className="max-w-1/3">
+                                <Field>
+                                    <FieldLabel className="text-xs text-muted-foreground">
+                                        Priority
+                                    </FieldLabel>
                                     <Controller
                                         control={control}
                                         name="priority"
@@ -158,7 +169,10 @@ export function AddSubtask(props: Props) {
                                         )}
                                     />
                                 </Field>
-                                <Field className="max-w-1/3">
+                                <Field>
+                                    <FieldLabel className="text-xs text-muted-foreground">
+                                        Status
+                                    </FieldLabel>
                                     <Controller
                                         control={control}
                                         name="status"
@@ -205,7 +219,10 @@ export function AddSubtask(props: Props) {
                                         )}
                                     />
                                 </Field>
-                                <Field className="max-w-1/3">
+                                <Field>
+                                    <FieldLabel className="text-xs text-muted-foreground">
+                                        Due date
+                                    </FieldLabel>
                                     <Controller
                                         control={control}
                                         name="due_date"
@@ -217,10 +234,10 @@ export function AddSubtask(props: Props) {
                                                             <Button
                                                                 variant={'outline'}
                                                                 data-empty={!field.value}
-                                                                className="w-45 justify-between text-left font-normal data-[empty=true]:text-muted-foreground bg-input/30"
+                                                                className="w-full justify-between text-left font-normal data-[empty=true]:text-muted-foreground bg-input/30"
                                                             >
                                                                 {field.value ? (
-                                                                    format(field.value, 'PPP')
+                                                                    format(field.value, 'PP')
                                                                 ) : (
                                                                     <span>Pick a date</span>
                                                                 )}
@@ -247,7 +264,11 @@ export function AddSubtask(props: Props) {
                             </div>
                         </FieldGroup>
                         <CardFooter className="flex gap-4 justify-end p-0">
-                            <Button variant="outline" onClick={() => props.setIsAddItemOpen(false)}>
+                            <Button
+                                type="button"
+                                variant="outline"
+                                onClick={() => props.setIsAddItemOpen(false)}
+                            >
                                 Cancel
                             </Button>
                             <Button className="cursor-pointer" variant="default" type="submit">

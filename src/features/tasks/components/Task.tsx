@@ -28,10 +28,11 @@ import { priorityColor, statusColor } from '@/shared/constants.ts';
 import { cn } from '@/lib/utils.ts';
 import { StatusBadge } from '@/shared/components/StatusBadge.tsx';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover.tsx';
-import { Button, buttonVariants } from '@/components/ui/button.tsx';
+import { Button } from '@/components/ui/button.tsx';
 import { format } from 'date-fns';
 import { Calendar } from '@/components/ui/calendar.tsx';
 import { Link } from 'react-router';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip.tsx';
 
 type Props = {
     task: TaskType;
@@ -53,12 +54,12 @@ export function Task(props: Props) {
         <Fragment>
             <TableRow style={{ position: 'relative' }}>
                 <TableCell className="cursor-pointer truncate w-[16%]">
-                    <Link
-                        className={cn(buttonVariants({ variant: 'link' }), 'text-white')}
-                        to={`tasks/${props.task.id}`}
-                    >
-                        {props.task.title}
-                    </Link>
+                    <Tooltip>
+                        <TooltipTrigger render={<Link to={`tasks/${props.task.id}`} />}>
+                            {props.task.title}
+                        </TooltipTrigger>
+                        <TooltipContent>{props.task.title}</TooltipContent>
+                    </Tooltip>
                 </TableCell>
                 <TableCell className="hidden 2xl:table-cell">
                     {props.task.description ? (
@@ -129,10 +130,10 @@ export function Task(props: Props) {
                             render={
                                 <Button
                                     variant="outline"
-                                    data-empty={dueDate}
-                                    className="w-45 justify-between text-left font-normal data-[empty=true]:text-muted-foreground bg-input/30"
+                                    data-empty={!dueDate}
+                                    className="w-full justify-between text-left font-normal data-[empty=true]:text-muted-foreground bg-input/30"
                                 >
-                                    {dueDate ? format(dueDate, 'PPP') : <span>Pick a date</span>}
+                                    {dueDate ? format(dueDate, 'PP') : <span>Pick a date</span>}
                                     <ChevronDownIcon data-icon="inline-end" />
                                 </Button>
                             }
@@ -169,7 +170,7 @@ export function Task(props: Props) {
                         </SelectTrigger>
                         <SelectContent>
                             <SelectGroup>
-                                <SelectLabel> Priority</SelectLabel>
+                                <SelectLabel>Status</SelectLabel>
                                 {Object.entries(statusColor).map(([value, { Icon, color }]) => (
                                     <SelectItem key={value} value={value}>
                                         <span>

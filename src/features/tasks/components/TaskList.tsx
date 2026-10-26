@@ -51,6 +51,7 @@ export function TaskList() {
         handleCreateItem,
         handleRemoveItem,
         handleUpdateItem,
+        handleUpdateFields,
     } = useCrud<TaskType, string | null, CreateTaskType>({
         itemName: 'Task',
         readItems: readTasks,
@@ -69,17 +70,21 @@ export function TaskList() {
 
     const handleEditTask = (data: EditedFieldType) => {
         if (openDialog === null) return;
-        if (openDialog?.task.title !== data.title) {
-            handleUpdateItem(openDialog.task.id, 'title', data.title);
+
+        const changes: Partial<TaskType> = {};
+        if (openDialog.task.title !== data.title) {
+            changes.title = data.title;
         }
-        if (openDialog?.task.description !== data.description) {
-            handleUpdateItem(openDialog.task.id, 'description', data.description || null);
+        if (openDialog.task.description !== data.description) {
+            changes.description = data.description || null;
         }
+
+        handleUpdateFields(openDialog.task.id, changes);
         setOpenDialog(null);
     };
 
     const { projectUsers } = useOutletContext<ContextType>();
-    const { users } = useUsers();
+    const { users, loading: usersLoading } = useUsers();
 
     const [sortConfig, setSortConfig] = useState<SortConfig>({
         field: null,
@@ -123,9 +128,9 @@ export function TaskList() {
                 'Choose a project'
             ) : error !== '' ? (
                 error
-            ) : loading ? (
-                <div className=" absolute top-1/2 left-1/2">
-                    <Spinner className="size-10" />
+            ) : loading || usersLoading ? (
+                <div className="flex justify-center py-20">
+                    <Spinner className="size-8 text-muted-foreground" />
                 </div>
             ) : (
                 <div>
@@ -197,7 +202,7 @@ export function TaskList() {
                                     ))}
                                 </TableBody>
                             </Table>
-                            <Outlet context={{ itemsList, projectUsers, handleUpdateItem }} />
+                            <Outlet context={{ itemsList, projectUsers, users, handleUpdateItem }} />
                         </>
                     )}
                 </div>
@@ -239,82 +244,7 @@ export function TaskList() {
                         </FieldGroup>
                         <DialogFooter>
                             <DialogClose render={<Button variant="outline">Cancel</Button>} />
-                            <Button onClick={() => handleEditTask} type="submit">
-                                Save changes
-                            </Button>{' '}
-                            <Dialog
-                                open={openDialog?.kind == 'edit'}
-                                onOpenChange={() => setOpenDialog(null)}
-                            >
-                                <DialogContent className="sm:max-w-sm">
-                                    <form
-                                        key={openDialog?.task.id}
-                                        onSubmit={handleSubmit(handleEditTask)}
-                                        className="grid gap-6"
-                                    >
-                                        <DialogHeader>
-                                            <DialogTitle>Edit task</DialogTitle>
-                                            <DialogDescription>
-                                                Change the title or description
-                                            </DialogDescription>
-                                        </DialogHeader>
-                                        <FieldGroup>
-                                            <Field>
-                                                <Input
-                                                    {...register('title', { required: true })}
-                                                    id="title"
-                                                    name="title"
-                                                    placeholder={openDialog?.task.title}
-                                                    defaultValue={openDialog?.task.title}
-                                                />
-                                            </Field>
-                                            <Field>
-                                                <Textarea
-                                                    className="max-h-30"
-                                                    {...register('description')}
-                                                    id="description"
-                                                    name="description"
-                                                    placeholder={
-                                                        openDialog?.task.description === null
-                                                            ? 'add new description'
-                                                            : openDialog?.task.description
-                                                    }
-                                                />
-                                            </Field>
-                                        </FieldGroup>
-                                        <DialogFooter>
-                                            <DialogClose
-                                                render={<Button variant="outline">Cancel</Button>}
-                                            />
-                                            <Button onClick={() => handleEditTask} type="submit">
-                                                Save changes
-                                            </Button>
-                                        </DialogFooter>
-                                    </form>
-                                </DialogContent>
-                            </Dialog>
-                            <AlertDialog
-                                open={openDialog?.kind == 'delete'}
-                                onOpenChange={() => setOpenDialog(null)}
-                            >
-                                <AlertDialogContent>
-                                    <AlertDialogHeader>
-                                        <AlertDialogTitle>
-                                            Are you sure you want to delete the task ?
-                                        </AlertDialogTitle>
-                                        <AlertDialogDescription>
-                                            This action cannot be undone. This will permanently
-                                            delete task and subtask this task.
-                                        </AlertDialogDescription>
-                                    </AlertDialogHeader>
-                                    <AlertDialogFooter>
-                                        <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                        <AlertDialogAction onClick={() => handleRemoveTask()}>
-                                            Continue
-                                        </AlertDialogAction>
-                                    </AlertDialogFooter>
-                                </AlertDialogContent>
-                            </AlertDialog>
+                            <Button type="submit">Save changes</Button>
                         </DialogFooter>
                     </form>
                 </DialogContent>

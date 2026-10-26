@@ -107,6 +107,30 @@ export const useCrud = <ItemsType extends { id: string }, IdType, CreateItemType
         });
     }
 
+    // одно действие пользователя — один тост, даже если полей изменилось несколько
+    async function handleUpdateFields(id: string, fields: Partial<ItemsType>) {
+        const changes = Object.entries(fields) as [UpdateField, UpdateValue][];
+        if (changes.length === 0) return;
+
+        const results = await Promise.all(
+            changes.map(([field, value]) => updateItem(id, field, value)),
+        );
+
+        if (results.some((result) => result.error !== null)) {
+            toast.add({
+                type: 'error',
+                description: `Failed to save changes`,
+            });
+            return;
+        }
+
+        setItemsList(itemsList.map((el) => (el.id === id ? { ...el, ...fields } : el)));
+        toast.add({
+            type: 'success',
+            description: `Changes saved`,
+        });
+    }
+
     return {
         itemsList,
         setItemsList,
@@ -117,5 +141,6 @@ export const useCrud = <ItemsType extends { id: string }, IdType, CreateItemType
         handleCreateItem,
         handleRemoveItem,
         handleUpdateItem,
+        handleUpdateFields,
     };
 };
