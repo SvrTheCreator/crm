@@ -4,16 +4,18 @@ import type { UsersType } from '@/features/users/types.ts';
 
 type Props = {
     user?: UsersType;
+    // в таблице место ограничено — показываем только аватарку, имя видно в выпадающем списке
+    compact?: boolean;
 };
 
-export function AssigneeValue({ user }: Props) {
+export function AssigneeValue({ user, compact = false }: Props) {
     if (!user) {
         return (
             <span className="flex items-center gap-2 text-muted-foreground">
                 <span className="flex size-6 shrink-0 items-center justify-center rounded-lg border border-dashed">
                     <UserRound className="size-3" />
                 </span>
-                Unassigned
+                {!compact && 'Unassigned'}
             </span>
         );
     }
@@ -25,7 +27,7 @@ export function AssigneeValue({ user }: Props) {
                 lastName={user.last_name}
                 avatarUrl={user.user_avatar}
             />
-            {`${user.first_name} ${user.last_name}`}
+            {!compact && `${user.first_name} ${user.last_name}`}
         </span>
     );
 }
