@@ -6,6 +6,14 @@ import { createTask, readTasks, deleteTask, updateTask } from '../api.ts';
 import { useUsers } from '../../users/hooks/useUsers.ts';
 import { useCrud } from '@/shared/hooks/useCollection.ts';
 import { Outlet, useOutletContext, useParams } from 'react-router';
+import {
+    Empty,
+    EmptyDescription,
+    EmptyHeader,
+    EmptyMedia,
+    EmptyTitle,
+} from '@/components/ui/empty.tsx';
+import { ArrowUpRight, ListTodo } from 'lucide-react';
 import { Spinner } from '@/components/ui/spinner.tsx';
 import type { ContextType } from '@/pages/workspace/Workspace.tsx';
 import { Table, TableBody, TableHead, TableHeader, TableRow } from '@/components/ui/table.tsx';
@@ -154,7 +162,21 @@ export function TaskList() {
                             setIsAddItemOpen={setIsAddItemOpen}
                         />
                     )}
-                    {!itemsList.length && 'Add a new task for this project'}
+                    {!itemsList.length && (
+                        <Empty>
+                            <EmptyHeader>
+                                <EmptyMedia variant="icon">
+                                    <ListTodo />
+                                </EmptyMedia>
+                                <EmptyTitle>No tasks yet</EmptyTitle>
+                                <EmptyDescription className="flex items-center gap-1">
+                                    Create the first one with
+                                    <span className="text-foreground">Add task</span>
+                                    <ArrowUpRight className="size-4" />
+                                </EmptyDescription>
+                            </EmptyHeader>
+                        </Empty>
+                    )}
                     {itemsList.length > 0 && (
                         <>
                             <Table className="table-fixed ">
