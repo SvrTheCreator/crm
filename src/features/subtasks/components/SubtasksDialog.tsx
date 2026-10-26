@@ -1,3 +1,4 @@
+import { AssigneeValue } from '@/shared/components/AssigneeValue.tsx';
 import {
     Dialog,
     DialogContent,
@@ -89,21 +90,25 @@ export function SubtasksDialog() {
                                 items={usersItems}
                             >
                                 <SelectTrigger className="w-full">
-                                    <SelectValue placeholder="Assignee" />
+                                    <SelectValue placeholder="Assignee">
+                                        {(value: string | null) => (
+                                            <AssigneeValue
+                                                user={users.find((item) => item.id === value)}
+                                            />
+                                        )}
+                                    </SelectValue>
                                 </SelectTrigger>
-                                <SelectContent>
+                                <SelectContent className="w-auto min-w-(--anchor-width)">
                                     <SelectGroup>
                                         <SelectLabel>Assignee</SelectLabel>
-                                        <SelectItem className="text-muted-foreground" value="">
-                                            Unassigned
+                                        <SelectItem value="">
+                                            <AssigneeValue />
                                         </SelectItem>
-                                        {projectUsers.map((item: UsersType) => {
-                                            return (
-                                                <SelectItem key={item.id} value={item.id}>
-                                                    {`${item.first_name} ${item.last_name}`}
-                                                </SelectItem>
-                                            );
-                                        })}
+                                        {projectUsers.map((item: UsersType) => (
+                                            <SelectItem key={item.id} value={item.id}>
+                                                <AssigneeValue user={item} />
+                                            </SelectItem>
+                                        ))}
                                     </SelectGroup>
                                 </SelectContent>
                             </Select>
@@ -153,12 +158,13 @@ export function SubtasksDialog() {
                                             data-empty={!dueDate}
                                             className="w-full justify-between text-left font-normal data-[empty=true]:text-muted-foreground bg-input/30"
                                         >
-                                            {dueDate ? (
-                                                format(dueDate, 'PP')
-                                            ) : (
-                                                <span>Pick a date</span>
-                                            )}
-                                            <ChevronDownIcon data-icon="inline-end" />
+                                            <span className="truncate">
+                                                {dueDate ? format(dueDate, 'PP') : 'Pick a date'}
+                                            </span>
+                                            <ChevronDownIcon
+                                                data-icon="inline-end"
+                                                className="shrink-0"
+                                            />
                                         </Button>
                                     }
                                 />

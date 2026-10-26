@@ -1,3 +1,4 @@
+import { AssigneeValue } from '@/shared/components/AssigneeValue.tsx';
 import type { CreateSubtaskType, SubtaskFormValues } from '../types.ts';
 import { Controller, useForm } from 'react-hook-form';
 import type { UsersType } from '../../users/types.ts';
@@ -101,18 +102,28 @@ export function AddSubtask(props: Props) {
                                                 items={usersItems}
                                             >
                                                 <SelectTrigger>
-                                                    <SelectValue placeholder="Assignee" />
+                                                    <SelectValue placeholder="Assignee">
+                                                        {(value: string | null) => (
+                                                            <AssigneeValue
+                                                                user={props.projectUsers.find(
+                                                                    (item) => item.id === value,
+                                                                )}
+                                                            />
+                                                        )}
+                                                    </SelectValue>
                                                 </SelectTrigger>
-                                                <SelectContent>
+                                                <SelectContent className="w-auto min-w-(--anchor-width)">
                                                     <SelectGroup>
                                                         <SelectLabel>Assignee</SelectLabel>
-                                                        <SelectItem value="">Unassigned</SelectItem>
-                                                        {usersItems.map((item) => (
+                                                        <SelectItem value="">
+                                                            <AssigneeValue />
+                                                        </SelectItem>
+                                                        {props.projectUsers.map((user) => (
                                                             <SelectItem
-                                                                key={item.value}
-                                                                value={item.value}
+                                                                key={user.id}
+                                                                value={user.id}
                                                             >
-                                                                {item.label}
+                                                                <AssigneeValue user={user} />
                                                             </SelectItem>
                                                         ))}
                                                     </SelectGroup>
@@ -236,12 +247,15 @@ export function AddSubtask(props: Props) {
                                                                 data-empty={!field.value}
                                                                 className="w-full justify-between text-left font-normal data-[empty=true]:text-muted-foreground bg-input/30"
                                                             >
-                                                                {field.value ? (
-                                                                    format(field.value, 'PP')
-                                                                ) : (
-                                                                    <span>Pick a date</span>
-                                                                )}
-                                                                <ChevronDownIcon data-icon="inline-end" />
+                                                                <span className="truncate">
+                                                                    {field.value
+                                                                        ? format(field.value, 'PP')
+                                                                        : 'Pick a date'}
+                                                                </span>
+                                                                <ChevronDownIcon
+                                                                    data-icon="inline-end"
+                                                                    className="shrink-0"
+                                                                />
                                                             </Button>
                                                         }
                                                     />

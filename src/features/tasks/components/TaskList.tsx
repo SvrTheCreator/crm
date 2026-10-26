@@ -202,7 +202,9 @@ export function TaskList() {
                                     ))}
                                 </TableBody>
                             </Table>
-                            <Outlet context={{ itemsList, projectUsers, users, handleUpdateItem }} />
+                            <Outlet
+                                context={{ itemsList, projectUsers, users, handleUpdateItem }}
+                            />
                         </>
                     )}
                 </div>

@@ -1,3 +1,4 @@
+import { AssigneeValue } from '@/shared/components/AssigneeValue.tsx';
 import { Controller, useForm } from 'react-hook-form';
 import type { CreateTaskType, TaskFormValues } from '../types.ts';
 import type { UsersType } from '../../users/types.ts';
@@ -99,15 +100,25 @@ export function AddTask(props: Props) {
                                         items={usersItems}
                                     >
                                         <SelectTrigger className="w-full max-w-100">
-                                            <SelectValue placeholder="Assignee" />
+                                            <SelectValue placeholder="Assignee">
+                                                {(value: string | null) => (
+                                                    <AssigneeValue
+                                                        user={props.projectUsers.find(
+                                                            (item) => item.id === value,
+                                                        )}
+                                                    />
+                                                )}
+                                            </SelectValue>
                                         </SelectTrigger>
-                                        <SelectContent>
+                                        <SelectContent className="w-auto min-w-(--anchor-width)">
                                             <SelectGroup>
                                                 <SelectLabel>Assignee</SelectLabel>
-                                                <SelectItem value="">Select a assignee</SelectItem>
-                                                {usersItems.map((item) => (
-                                                    <SelectItem key={item.value} value={item.value}>
-                                                        {item.label}
+                                                <SelectItem value="">
+                                                    <AssigneeValue />
+                                                </SelectItem>
+                                                {props.projectUsers.map((user) => (
+                                                    <SelectItem key={user.id} value={user.id}>
+                                                        <AssigneeValue user={user} />
                                                     </SelectItem>
                                                 ))}
                                             </SelectGroup>
@@ -204,14 +215,17 @@ export function AddTask(props: Props) {
                                                 <Button
                                                     variant={'outline'}
                                                     data-empty={!field.value}
-                                                    className="w-40 justify-between text-left font-normal data-[empty=true]:text-muted-foreground"
+                                                    className="w-full justify-between text-left font-normal data-[empty=true]:text-muted-foreground"
                                                 >
-                                                    {field.value ? (
-                                                        format(field.value, 'PPP')
-                                                    ) : (
-                                                        <span>Pick a date</span>
-                                                    )}
-                                                    <ChevronDownIcon data-icon="inline-end" />
+                                                    <span className="truncate">
+                                                        {field.value
+                                                            ? format(field.value, 'PP')
+                                                            : 'Pick a date'}
+                                                    </span>
+                                                    <ChevronDownIcon
+                                                        data-icon="inline-end"
+                                                        className="shrink-0"
+                                                    />
                                                 </Button>
                                             }
                                         />

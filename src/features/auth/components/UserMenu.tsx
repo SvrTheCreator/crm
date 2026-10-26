@@ -11,7 +11,7 @@ import {
     DropdownMenuSubTrigger,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu.tsx';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { UserAvatar } from '@/shared/components/UserAvatar.tsx';
 import { EllipsisVertical, LogOut, Moon, Settings, Sun } from 'lucide-react';
 import { useTheme } from '@/hooks/useTheme.ts';
 import { Separator } from '@/components/ui/separator.tsx';
@@ -38,10 +38,12 @@ export function UserMenu({ currentUser }: Props) {
                         />
                     }
                 >
-                    <Avatar className="h-8 w-8 rounded-lg">
-                        <AvatarImage src={metadata.user_avatar} alt={fullName} />
-                        <AvatarFallback className="rounded-lg">CN</AvatarFallback>
-                    </Avatar>
+                    <UserAvatar
+                        firstName={metadata.first_name}
+                        lastName={metadata.last_name}
+                        avatarUrl={metadata.user_avatar}
+                        className="size-8"
+                    />
                     <div className="grid flex-1 text-left text-sm leading-tight">
                         <span className="truncate font-semibold">{fullName}</span>
                         <span className="truncate text-xs">{metadata.email}</span>

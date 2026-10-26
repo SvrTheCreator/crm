@@ -1,3 +1,4 @@
+import { AssigneeValue } from '@/shared/components/AssigneeValue.tsx';
 import type { UsersType } from '../../users/types.ts';
 import { Dialog, DialogClose, DialogContent, DialogFooter } from '@/components/ui/dialog.tsx';
 import {
@@ -77,14 +78,11 @@ export function ProjectMembers(props: Props) {
                             <SelectContent>
                                 <SelectGroup>
                                     <SelectLabel>Users</SelectLabel>
-                                    {props.users.map((user: UsersType) => {
-                                        const fullName = `${user.first_name} ${user.last_name}`;
-                                        return (
-                                            <SelectItem key={user.id} value={user.id}>
-                                                {fullName}
-                                            </SelectItem>
-                                        );
-                                    })}
+                                    {props.users.map((user: UsersType) => (
+                                        <SelectItem key={user.id} value={user.id}>
+                                            <AssigneeValue user={user} />
+                                        </SelectItem>
+                                    ))}
                                 </SelectGroup>
                             </SelectContent>
                         </Select>

@@ -34,9 +34,7 @@ export function Workspace() {
         users: users,
     });
 
-    const currentProject = projects.projectsList.find(
-        (project) => project.id === params.projectId,
-    );
+    const currentProject = projects.projectsList.find((project) => project.id === params.projectId);
 
     return (
         <SidebarProvider>
