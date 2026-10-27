@@ -8,6 +8,7 @@ import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui
 import type { PostgrestError } from '@supabase/supabase-js';
 import type { UpdateField, UpdateValue } from '@/shared/types.ts';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip.tsx';
+import { ErrorMessage } from '@/shared/components/ErrorMessage.tsx';
 
 type Props = {
     projectsList: ProjectType[];
@@ -27,7 +28,7 @@ export function ProjectsList(props: Props) {
     const { users } = useUsers();
 
     return props.error !== '' ? (
-        props.error
+        <ErrorMessage message={props.error} />
     ) : (
         <div>
             <SidebarMenu>

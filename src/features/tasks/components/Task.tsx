@@ -1,6 +1,6 @@
 import { AssigneeValue } from '@/shared/components/AssigneeValue.tsx';
 import type { TaskType } from '../types.ts';
-import { Fragment } from 'react';
+import { Fragment, type MouseEvent } from 'react';
 // import { SubtasksList } from '../../subtasks/components/SubtasksList.tsx';
 import type { UsersType } from '../../users/types.ts';
 import { TableCell, TableRow } from '@/components/ui/table.tsx';
@@ -32,7 +32,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Button } from '@/components/ui/button.tsx';
 import { format } from 'date-fns';
 import { Calendar } from '@/components/ui/calendar.tsx';
-import { Link } from 'react-router';
+import { Link, useNavigate } from 'react-router';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip.tsx';
 
 type Props = {
@@ -44,6 +44,7 @@ type Props = {
 };
 
 export function Task(props: Props) {
+    const navigate = useNavigate();
     const dueDate = props.task.due_date ? new Date(props.task.due_date) : undefined;
     const usersItems = props.users.map((user: UsersType) => {
         const fullName = `${user.first_name} ${user.last_name}`;
@@ -51,9 +52,18 @@ export function Task(props: Props) {
         return { label: fullName, value: user.id };
     });
 
+    const handleRowClick = (event: MouseEvent<HTMLTableRowElement>) => {
+        if ((event.target as HTMLElement).closest('button, a')) return;
+        navigate(`tasks/${props.task.id}`);
+    };
+
     return (
         <Fragment>
-            <TableRow style={{ position: 'relative' }}>
+            <TableRow
+                style={{ position: 'relative' }}
+                className="cursor-pointer"
+                onClick={handleRowClick}
+            >
                 <TableCell className="cursor-pointer truncate w-[16%]">
                     <Tooltip>
                         <TooltipTrigger render={<Link to={`tasks/${props.task.id}`} />}>

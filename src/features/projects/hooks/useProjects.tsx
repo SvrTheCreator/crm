@@ -8,13 +8,14 @@ import {
 import type { CreateProjectType, ProjectType } from '@/features/projects/types.ts';
 import type { UpdateField, UpdateValue } from '@/shared/types.ts';
 import { toast } from '@/components/ui/toast.tsx';
+import { retryOnce } from '@/shared/utils/retryOnce.ts';
 
 export function useProjects() {
     const [projectsList, setProjectsList] = useState<Array<ProjectType>>([]);
     const [error, setError] = useState('');
     useEffect(() => {
         async function load() {
-            const { data, error } = await readProjects();
+            const { data, error } = await retryOnce(readProjects);
 
             if (error !== null) {
                 setError(error.message);

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import type { PostgrestError } from '@supabase/supabase-js';
 import type { UpdateField, UpdateValue } from '@/shared/types.ts';
 import { toast } from '@/components/ui/toast.tsx';
+import { retryOnce } from '@/shared/utils/retryOnce.ts';
 
 type PromiseType<ItemsType> = Promise<{ data: ItemsType | null; error: PostgrestError | null }>;
 
@@ -33,7 +34,7 @@ export const useCrud = <ItemsType extends { id: string }, IdType, CreateItemType
             setItemsList([]);
             setError('');
             setLoading(true);
-            const { data, error } = await readItems(required_ID);
+            const { data, error } = await retryOnce(() => readItems(required_ID));
 
             if (error !== null) {
                 setError(error.message);
