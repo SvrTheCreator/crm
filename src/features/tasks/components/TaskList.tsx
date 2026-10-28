@@ -42,6 +42,7 @@ import {
 } from '@/components/ui/alert-dialog.tsx';
 import { useForm } from 'react-hook-form';
 import { Textarea } from '@/components/ui/textarea.tsx';
+import { ErrorMessage } from '@/shared/components/ErrorMessage.tsx';
 
 interface SortConfig {
     field: SortField | null;
@@ -141,7 +142,7 @@ export function TaskList() {
             {params.projectId === null ? (
                 'Choose a project'
             ) : error !== '' ? (
-                error
+                <ErrorMessage message={error} />
             ) : loading || usersLoading ? (
                 <div className="flex justify-center py-20">
                     <Spinner className="size-8 text-muted-foreground" />
@@ -185,51 +186,53 @@ export function TaskList() {
                     )}
                     {itemsList.length > 0 && (
                         <>
-                            <Table className="table-fixed ">
-                                <TableHeader>
-                                    <TableRow>
-                                        <TableHead
-                                            className="cursor-pointer w-[20%]"
-                                            onClick={() => {
-                                                handleConfig('title');
-                                            }}
-                                        >
-                                            Task Name
-                                        </TableHead>
-                                        <TableHead className="hidden w-[22%] 2xl:table-cell">
-                                            Description
-                                        </TableHead>
-                                        <TableHead className="w-28">Assignee</TableHead>
-                                        <TableHead
-                                            className="cursor-pointer w-32"
-                                            onClick={() => handleConfig('priority')}
-                                        >
-                                            Priority
-                                        </TableHead>
-                                        <TableHead className="w-36">Due Date</TableHead>
-                                        <TableHead
-                                            className="cursor-pointer w-44"
-                                            onClick={() => handleConfig('status')}
-                                        >
-                                            Status
-                                        </TableHead>
-                                        <TableHead className="w-20">Subtasks</TableHead>
-                                        <TableHead className="w-17">Actions</TableHead>
-                                    </TableRow>
-                                </TableHeader>
-                                <TableBody>
-                                    {sortedTaskList.map((task: TaskType) => (
-                                        <Task
-                                            setOpenDialog={setOpenDialog}
-                                            key={task.id}
-                                            users={users}
-                                            task={task}
-                                            projectUsers={projectUsers}
-                                            handleUpdateTask={handleUpdateItem}
-                                        />
-                                    ))}
-                                </TableBody>
-                            </Table>
+                            <div className="overflow-x-auto">
+                                <Table className="table-fixed min-w-[900px]">
+                                    <TableHeader>
+                                        <TableRow>
+                                            <TableHead
+                                                className="cursor-pointer w-[20%]"
+                                                onClick={() => {
+                                                    handleConfig('title');
+                                                }}
+                                            >
+                                                Task Name
+                                            </TableHead>
+                                            <TableHead className="hidden w-[22%] 2xl:table-cell">
+                                                Description
+                                            </TableHead>
+                                            <TableHead className="w-28">Assignee</TableHead>
+                                            <TableHead
+                                                className="cursor-pointer w-32"
+                                                onClick={() => handleConfig('priority')}
+                                            >
+                                                Priority
+                                            </TableHead>
+                                            <TableHead className="w-36">Due Date</TableHead>
+                                            <TableHead
+                                                className="cursor-pointer w-44"
+                                                onClick={() => handleConfig('status')}
+                                            >
+                                                Status
+                                            </TableHead>
+                                            <TableHead className="w-20">Subtasks</TableHead>
+                                            <TableHead className="w-17">Actions</TableHead>
+                                        </TableRow>
+                                    </TableHeader>
+                                    <TableBody>
+                                        {sortedTaskList.map((task: TaskType) => (
+                                            <Task
+                                                setOpenDialog={setOpenDialog}
+                                                key={task.id}
+                                                users={users}
+                                                task={task}
+                                                projectUsers={projectUsers}
+                                                handleUpdateTask={handleUpdateItem}
+                                            />
+                                        ))}
+                                    </TableBody>
+                                </Table>
+                            </div>
                             <Outlet
                                 context={{ itemsList, projectUsers, users, handleUpdateItem }}
                             />

@@ -34,6 +34,7 @@ import {
 } from '@/components/ui/alert-dialog.tsx';
 import type { ContextType } from '@/pages/workspace/Workspace.tsx';
 import { useOutletContext } from 'react-router';
+import { ErrorMessage } from '@/shared/components/ErrorMessage.tsx';
 
 type Props = {
     taskId: string;
@@ -98,7 +99,7 @@ export function SubtasksList(props: Props) {
     };
 
     return error !== '' ? (
-        error
+        <ErrorMessage message={error} />
     ) : loading ? (
         <div className="flex justify-center py-20">
             <Spinner className="size-8 text-muted-foreground" />
@@ -129,8 +130,8 @@ export function SubtasksList(props: Props) {
             {itemsList.length === 0 ? (
                 <h2>No active subtasks</h2>
             ) : (
-                <div>
-                    <Table className="table-fixed">
+                <div className="overflow-x-auto">
+                    <Table className="table-fixed min-w-[900px]">
                         <TableHeader>
                             <TableRow>
                                 <TableHead className="w-[20%]">Subtask Name</TableHead>
