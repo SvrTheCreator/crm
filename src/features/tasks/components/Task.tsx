@@ -53,7 +53,9 @@ export function Task(props: Props) {
     });
 
     const handleRowClick = (event: MouseEvent<HTMLTableRowElement>) => {
-        if ((event.target as HTMLElement).closest('button, a')) return;
+        const target = event.target as HTMLElement;
+        if (!event.currentTarget.contains(target)) return;
+        if (target.closest('button, a')) return;
         navigate(`tasks/${props.task.id}`);
     };
 
